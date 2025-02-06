@@ -54,7 +54,7 @@ export function Hero() {
       </div>
 
       {/* Desktop Content */}
-      <div className="relative hidden lg:flex items-center p-16 bg-white">
+      <div className="relative hidden lg:flex items-center p-16 ">
         <div className="max-w-xl">
           <div className="flex items-center gap-2 mb-6">
             <GraduationCap className="h-8 w-8 text-primary" />
