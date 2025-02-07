@@ -1,7 +1,7 @@
 import { SiteConfig } from "./type"
 
 export const siteConfig: SiteConfig = {
-  name: "School",
+  name: "Company",
   description:
     "An open source application built using the new router, server components and everything new in Next.js 13.",
   url: "https://sc.databayt.org",
@@ -159,19 +159,22 @@ export const marketingConfig: MarketingConfig = {
     },
 
     {
-      title: "Admission",
-      href: "/admission",
+      title: "Service",
+      href: "/service",
     },
 
-    {
-      title: "Academic",
-      href: "/academic",
-    },
 
     {
-      title: "Platform",
-      href: "/platform",
+      title: "Equipment",
+      href: "/equipment",
     },
+
+
+    {
+      title: "Documentation",
+      href: "/documentation",
+    },
+
 
   ],
 }

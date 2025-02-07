@@ -1,4 +1,5 @@
-import { Hero } from "@/components/template/hero";
+import  Hero  from "@/components/template/hero/hero";
+
 
 export default function Home() {
   return (
