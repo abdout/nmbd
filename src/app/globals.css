@@ -31,8 +31,8 @@ body {
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 47 95% 53%; 
+    --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -69,7 +69,7 @@ body {
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
+    --primary: 47 95% 53%;  /* yellow-400 */
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -252,4 +252,123 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
   scrollbar-width: none; /* Hides scrollbar in Firefox */
+}
+
+@layer components {
+  .border-animation {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Top Left Border */
+  .group .border-animation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 1px;
+    background: #fcd34d;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Top Right Border */
+  .group .border-animation::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 1px;
+    background: #fcd34d;
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Bottom Left Border */
+  .group .border-animation span::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 1px;
+    background: #fcd34d;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Bottom Right Border */
+  .group .border-animation span::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 1px;
+    background: #fcd34d;
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Left Top Border */
+  .group .border-animation .left-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 50%;
+    background: #fcd34d;
+    transform: translateY(-100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Left Bottom Border */
+  .group .border-animation .left-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 50%;
+    background: #fcd34d;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Right Top Border */
+  .group .border-animation .right-top {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 50%;
+    background: #fcd34d;
+    transform: translateY(-100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Right Bottom Border */
+  .group .border-animation .right-bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1px;
+    height: 50%;
+    background: #fcd34d;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Hover Effects */
+  .group:hover .border-animation::before,
+  .group:hover .border-animation::after,
+  .group:hover .border-animation span::before,
+  .group:hover .border-animation span::after,
+  .group:hover .border-animation .left-top,
+  .group:hover .border-animation .left-bottom,
+  .group:hover .border-animation .right-top,
+  .group:hover .border-animation .right-bottom {
+    transform: translateX(0) translateY(0);
+  }
 }

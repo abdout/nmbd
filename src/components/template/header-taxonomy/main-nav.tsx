@@ -20,21 +20,26 @@ export function MainNav({ items, children }: MainNavProps) {
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   return (
-    <div className="flex gap-6 md:gap-10">
+    <div className="flex gap-6 md:gap-10 antialiased font-sans">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
-        <Icons.logo />
-        <span className="hidden font-bold sm:inline-block">
+        {/* <Icons.logo /> */}
+        <div className="w-[18px] h-[18px] bg-yellow-400 rounded-full flex items-center justify-center ml-2"/>
+        <span className="hidden font-bold text-[16px] sm:inline-block">
           {siteConfig.name}
         </span>
+
+
+
+
       </Link>
       {items?.length ? (
-        <nav className="hidden gap-6 md:flex">
+        <nav className="hidden gap-8 antialiased font-sans md:flex ">
           {items?.map((item, index) => (
             <Link
               key={index}
               href={item.disabled ? "#" : item.href}
               className={cn(
-                "flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm",
+                "flex items-center text-lg font-bold transition-colors hover:text-foreground/80 sm:text-[15px]",
                 item.href.startsWith(`/${segment}`)
                   ? "text-foreground"
                   : "text-foreground/60",

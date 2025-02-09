@@ -84,6 +84,9 @@ export default {
         marquee: "marquee var(--duration) infinite linear",
         
       },
+      fontFamily: {
+        heading: ['var(--font-heading)'],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

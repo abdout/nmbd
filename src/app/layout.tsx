@@ -1,13 +1,9 @@
-
-// RootLayout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/providers";
-// import { Toaster } from "sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -15,13 +11,15 @@ const fontSans = FontSans({
 });
 
 const fontHeading = localFont({
-  src: "./fonts/CalSans-SemiBold.woff2",
+  src: "./fonts/Rubik-Black.ttf",
   variable: "--font-heading",
+  preload: true,
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Databayt",
-  description: "Business automation",
+  title: "الحركة الوطنية للبناء والتنمية",
+  description: "حركة إصلاح اجتماعي وسياسي شامل",
 };
 
 export default function RootLayout({
@@ -30,17 +28,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ar" suppressHydrationWarning dir="rtl">
+      <head>
+        <link rel="preload" href="./fonts/Rubik-Black.ttf" as="font" crossOrigin="anonymous" />
+      </head>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased overflow-x-hidden",
+          "min-h-screen bg-background antialiased overflow-x-hidden",
           fontSans.variable,
-          fontHeading.variable
+          fontHeading.variable,
+          "font-sans"
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
           <div className="container">
-            {/* <Toaster position="bottom-right" /> */}
             {children}
           </div>
         </ThemeProvider>

@@ -1,7 +1,7 @@
 import { SiteConfig } from "./type"
 
 export const siteConfig: SiteConfig = {
-  name: "Company",
+  name: "الحركة",
   description:
     "An open source application built using the new router, server components and everything new in Next.js 13.",
   url: "https://sc.databayt.org",
@@ -154,26 +154,30 @@ import { MarketingConfig } from "@/components/template/header-taxonomy/type"
 export const marketingConfig: MarketingConfig = {
   mainNav: [
     {
-      title: "About",
-      href: "/about",
+      title: "الأوراق",
+      href: "/papers",
     },
 
     {
-      title: "Service",
-      href: "/service",
+      title: "المقالات",
+      href: "/articles",
     },
+
 
 
     {
-      title: "Equipment",
-      href: "/equipment",
+      title: "الوثائقات",
+      href: "/videos",
     },
+
+
 
 
     {
-      title: "Documentation",
-      href: "/documentation",
+      title: "المنصة",
+      href: "/platform",
     },
+
 
 
   ],

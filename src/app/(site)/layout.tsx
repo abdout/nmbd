@@ -1,5 +1,5 @@
-// import { SiteFooter } from "@/components/site-footer"
 
+import Footer from "@/components/template/footer/footer"
 import TaxonomyHeader from "@/components/template/header-taxonomy/taxonomy-header"
 
 
@@ -12,7 +12,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <div data-wrapper="" className="border-grid flex flex-1 flex-col">
       <TaxonomyHeader />
       <main className="flex flex-1 flex-col">{children}</main>
-      {/* <SiteFooter /> */}
+      <Footer />
     </div>
   )
 }
