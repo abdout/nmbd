@@ -56,14 +56,14 @@ const AllVideos = () => {
     );
   };
 
-  const formatDate = (date: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    return new Date(date).toLocaleDateString('ar-SA', options);
-  };
+  // const formatDate = (date: string) => {
+  //   const options: Intl.DateTimeFormatOptions = {
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric',
+  //   };
+  //   return new Date(date).toLocaleDateString('ar-SA', options);
+  // };
 
 
   return (
