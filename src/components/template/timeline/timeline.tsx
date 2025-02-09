@@ -1,7 +1,5 @@
 "use client";
-import Head from "@/components/atom/head";
 import {
-  useMotionValueEvent,
   useScroll,
   useTransform,
   motion,

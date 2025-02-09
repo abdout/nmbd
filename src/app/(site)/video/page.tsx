@@ -76,7 +76,7 @@ const AllVideos = () => {
         <p>Loading...</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
-          {videos.map((video, index) => {
+          {videos.map((video) => {
             const titleWithoutEmoji = removeEmojiFromTitle(video.title);
             const author = extractAuthor(titleWithoutEmoji);
             const titleWithoutAuthor = removeAuthorFromTitle(titleWithoutEmoji, author);

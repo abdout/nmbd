@@ -2,8 +2,6 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
-import More from '@/components/template/video/more';
 import { videos,  } from '@/components/template/video/constant';
 
 const OneVideo = () => {

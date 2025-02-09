@@ -5,7 +5,7 @@ import  Hero  from "@/components/template/hero/hero";
 import { AnimatedTestimonialsDemo } from "@/components/template/testimonial/example";
 import { TimelineDemo } from "@/components/template/timeline/example";
 import FeaturedVideos from "@/components/template/video/featured-video";
-import RecentVideos from "@/components/template/video/recent";
+
 
 
 export default function Home() {
