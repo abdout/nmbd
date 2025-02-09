@@ -21,7 +21,8 @@ interface HoverEffectProps {
 }
 
 export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
-    let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
 
     return (
         <div

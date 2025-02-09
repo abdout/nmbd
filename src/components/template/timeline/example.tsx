@@ -114,10 +114,9 @@ export function TimelineDemo() {
       content: (
         <div dir="rtl">
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
-          تأسيس "الحركة الوطنية للبناء والتنمية"
+          تأسيس &quot;الحركة الوطنية للبناء والتنمية&quot;
           <br />
           توسيع النشاط الطلابي والمجتمعي، والتحدث إلى قادة العمل المجتمعي.
-
           <br />
           إنتاج محتوى فكري لإحياء أصول الدين ومختلف قضايا الشأن السوداني.
           </p>

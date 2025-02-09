@@ -80,7 +80,7 @@ const AllVideos = () => {
             const titleWithoutEmoji = removeEmojiFromTitle(video.title);
             const author = extractAuthor(titleWithoutEmoji);
             const titleWithoutAuthor = removeAuthorFromTitle(titleWithoutEmoji, author);
-            const formattedDate = formatDate(video.publishedAt);
+            // const formattedDate = formatDate(video.publishedAt);
             return (
               <Link href={`/video/${video.id}`} key={video.id} className="py-2 md:p-4">
                 <div className="flex flex-col">

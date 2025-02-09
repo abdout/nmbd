@@ -20,7 +20,7 @@ interface HoverEffectProps {
 }
 
 export const HoverEffect = ({ items, className }: HoverEffectProps) => {
-    let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     return (
         <div
