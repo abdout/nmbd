@@ -3,18 +3,17 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { author, authors } from "./constant";
+import { authors } from "./constant";
+import { author } from "./type";
 
 interface AuthorProps {
   selectedAuthor: author | null;
   setSelectedAuthor: (author: author | null) => void;
 }
 
-const Author: React.FC<AuthorProps> = ({ selectedAuthor, setSelectedAuthor }) => {
+const Author: React.FC<AuthorProps> = ({ selectedAuthor: initialAuthor, setSelectedAuthor: updateAuthor }) => {
   const [open, setOpen] = React.useState(false)
-  // const [selectedAuthor, setSelectedAuthor] = React.useState<author | null>(
-  //   null
-  // )
+  const [selectedAuthor, setSelectedAuthor] = React.useState<author | null>(initialAuthor)
 
   return (
     <div className="flex items-center space-x-4">
