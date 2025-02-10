@@ -6,3 +6,9 @@ export interface ArticleItem {
   date: string;
   author: string;
 }
+
+export type author = {
+  value: string
+  label: string
+  image?: string
+}
