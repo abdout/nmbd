@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/providers";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -22,12 +24,14 @@ export const metadata: Metadata = {
   description: "حركة إصلاح اجتماعي وسياسي شامل",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
   return (
+    <SessionProvider session={session}>
     <html lang="ar" suppressHydrationWarning dir="rtl">
       <head>
         <link rel="preload" href="./fonts/Rubik-Black.ttf" as="font" crossOrigin="anonymous" />
@@ -47,5 +51,6 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
+    </SessionProvider>
   );
 }
