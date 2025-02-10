@@ -1,5 +1,5 @@
 import connectDB from "@/lib/mongodb";
-import Member from "@/components/platform/member/model";
+import Member from "@/components/template/member/model";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 

@@ -1,5 +1,5 @@
 import connectDB from "@/lib/mongodb";
-import Task from "@/components/platform/task/model";
+import Task from "@/components/template/task/model";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 

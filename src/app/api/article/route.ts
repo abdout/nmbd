@@ -1,5 +1,5 @@
 
-import Article from "@/components/root/article/model";
+import Article from "@/components/template/article/model";
 import connectDB from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
