@@ -1,7 +1,7 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 
 import { currentUser } from "@/lib/auth";
@@ -10,7 +10,7 @@ import { sendVerificationEmail } from "@/lib/mail";
 import { SettingsSchema } from "../schemas";
 import { getUserByEmail, getUserById } from "../data/user";
 import { db } from "@/lib/db";
-import { update } from "@/auth";
+// import { update } from "@/auth";
 
 export const settings = async (
   values: z.infer<typeof SettingsSchema>
@@ -77,14 +77,14 @@ export const settings = async (
     }
   });
 
-  update({
-    user: {
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-      role: updatedUser.role,
-    }
-  });
+  // update({
+  //   user: {
+  //     name: updatedUser.name,
+  //     email: updatedUser.email,
+  //     isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
+  //     role: updatedUser.role,
+  //   }
+  // });
 
   return { success: "Settings Updated!" }
 }
