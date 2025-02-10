@@ -10,7 +10,7 @@ const Head = ({ title, description }: HeadProps) => {
 
     return (
         <div className="flex flex-col gap-1 sm:gap-2 items-center py-4 md:py-10">
-            <h2 className="font-heading text-xl leading-[1.1] sm:text-2xl md:text-5xl">
+            <h2 className="font-heading text-4xl leading-[1.1] sm:text-2xl md:text-5xl">
                 {title}
             </h2>
 

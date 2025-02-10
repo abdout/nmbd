@@ -12,7 +12,7 @@ const MobileExcute = () => {
         <Icon icon='codicon:verified' width={16} />
         <h6>المكتب التنفيذي</h6>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-center justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-center justify-center px-8 md:px-0">
         {cardsData.map((card, index) => (
           <Card key={index} className="group w-full md:w-[180px] flex  p-4 gap-6 items-center  relative border border-transparent">
             <div className="border-animation border absolute inset-0 pointer-events-none">

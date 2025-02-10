@@ -16,7 +16,7 @@ const Hero = () => {
         >
           المجتمع أولاً
         </Link>
-        <h1 className="font-heading text-4xl w-60 md:w-auto leading-normal md:text-7xl">
+        <h1 className="font-heading text-4xl w-72 md:w-auto leading-normal md:text-7xl">
           الحركة الوطنية للبناء والتنمية
         </h1>
         <p className="max-w-[53rem] leading-normal text-muted-foreground sm:text-lg px-4 md:px-0 sm:leading-8">

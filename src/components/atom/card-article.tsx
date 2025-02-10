@@ -115,7 +115,7 @@ const ArticleTitle = ({
     children: React.ReactNode;
 }) => {
     return (
-        <h4 className={cn("font-bold tracking-wide text-lg line-clamp-1", className)}>
+        <h4 className={cn("font-bold tracking-wide text-lg line-clamp-2 md:line-clamp-1 pl-8 md:pl-0", className)}>
             {children}
         </h4>
     );

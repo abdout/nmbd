@@ -169,7 +169,7 @@ export function TimelineDemo() {
   ];
   return (
     <div className="w-full">
-        <div className="-mb-20">
+        <div className="-mb-4 md:-mb-20">
         <Head title="الطريق" description="لا تصدّق سوى أثر القافلة" />
 
         </div>
