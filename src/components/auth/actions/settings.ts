@@ -1,16 +1,26 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcrypt";
-
-
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 import { SettingsSchema } from "../schemas";
 import { getUserByEmail, getUserById } from "../data/user";
 import { db } from "@/lib/db";
-// import { update } from "@/auth";
+
+// Helper function to hash passwords using Web Crypto API
+async function hash(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Buffer.from(hash).toString('base64');
+}
+
+// Helper function to compare passwords
+async function compare(password: string, hashedPassword: string): Promise<boolean> {
+  const newHash = await hash(password);
+  return newHash === hashedPassword;
+}
 
 export const settings = async (
   values: z.infer<typeof SettingsSchema>
@@ -53,19 +63,13 @@ export const settings = async (
   }
 
   if (values.password && values.newPassword && dbUser.password) {
-    const passwordsMatch = await bcrypt.compare(
-      values.password,
-      dbUser.password,
-    );
+    const passwordsMatch = await compare(values.password, dbUser.password);
 
     if (!passwordsMatch) {
       return { error: "Incorrect password!" };
     }
 
-    const hashedPassword = await bcrypt.hash(
-      values.newPassword,
-      10,
-    );
+    const hashedPassword = await hash(values.newPassword);
     values.password = hashedPassword;
     values.newPassword = undefined;
   }
@@ -76,15 +80,6 @@ export const settings = async (
       ...values,
     }
   });
-
-  // update({
-  //   user: {
-  //     name: updatedUser.name,
-  //     email: updatedUser.email,
-  //     isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-  //     role: updatedUser.role,
-  //   }
-  // });
 
   return { success: "Settings Updated!" }
 }

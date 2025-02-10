@@ -1,16 +1,19 @@
 "use server";
 
-import * as z from "zod";
-import bcrypt from "bcrypt";
-
+// import * as z from "zod";
 import { db } from "@/lib/db";
+import { getUserByEmail } from "@/components/auth/data/user";
+import { RegisterSchema } from "@/components/auth/schemas";
 
-import { sendVerificationEmail } from "@/lib/mail";
-import { generateVerificationToken } from "@/lib/tokens";
-import { RegisterSchema } from "../schemas";
-import { getUserByEmail } from "../data/user";
+// Helper function to hash passwords using Web Crypto API
+async function hash(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Buffer.from(hash).toString('base64');
+}
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const register = async (values: any) => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -18,7 +21,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   }
 
   const { email, password, name } = validatedFields.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hash(password);
 
   const existingUser = await getUserByEmail(email);
 
@@ -34,11 +37,5 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     },
   });
 
-  const verificationToken = await generateVerificationToken(email);
-  await sendVerificationEmail(
-    verificationToken.email,
-    verificationToken.token,
-  );
-
-  return { success: "Confirmation email sent!" };
+  return { success: "User created!" };
 };

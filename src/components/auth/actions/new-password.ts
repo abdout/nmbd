@@ -1,16 +1,21 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcrypt";
-
-
 import { db } from "@/lib/db";
 import { NewPasswordSchema } from "../schemas";
 import { getPasswordResetTokenByToken } from "../data/password-reset-token";
 import { getUserByEmail } from "../data/user";
 
+// Helper function to hash passwords using Web Crypto API
+async function hash(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Buffer.from(hash).toString('base64');
+}
+
 export const newPassword = async (
-  values: z.infer<typeof NewPasswordSchema> ,
+  values: z.infer<typeof NewPasswordSchema>,
   token?: string | null,
 ) => {
   if (!token) {
@@ -43,7 +48,7 @@ export const newPassword = async (
     return { error: "Email does not exist!" }
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hash(password);
 
   await db.user.update({
     where: { id: existingUser.id },
