@@ -15,6 +15,13 @@ const Author: React.FC<AuthorProps> = ({ selectedAuthor: initialAuthor, setSelec
   const [open, setOpen] = React.useState(false)
   const [selectedAuthor, setSelectedAuthor] = React.useState<author | null>(initialAuthor)
 
+  const handleSelect = (value: string) => {
+    const author = authors.find((author) => author.value === value) || null;
+    setSelectedAuthor(author);
+    updateAuthor(author);  // Call the parent's update function
+    setOpen(false);
+  };
+
   return (
     <div className="flex items-center space-x-4">
       <Popover open={open} onOpenChange={setOpen}>
@@ -33,13 +40,7 @@ const Author: React.FC<AuthorProps> = ({ selectedAuthor: initialAuthor, setSelec
                   <CommandItem
                     key={author.value}
                     value={author.value}
-                    onSelect={(value) => {
-                      setSelectedAuthor(
-                        authors.find((author) => author.value === value) ||
-                          null
-                      )
-                      setOpen(false)
-                    }}
+                    onSelect={handleSelect}
                   >
                     {author.label}
                   </CommandItem>
