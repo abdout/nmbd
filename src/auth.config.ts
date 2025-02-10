@@ -1,6 +1,6 @@
 import { getUserByEmail } from "@/components/auth/data/user";
 import { LoginSchema } from "@/components/auth/schemas";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcrypt";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
