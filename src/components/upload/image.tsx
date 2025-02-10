@@ -3,7 +3,7 @@ import React, { ChangeEvent, useEffect } from 'react'; // Added useEffect
 import { useUpload } from './context';
 
 const ImageUpload = () => {
-  const { selectedImage, setSelectedImage, previewUrl, setPreviewUrl, uploading, handleImageUpload } = useUpload();
+  const { selectedImage, setSelectedImage, previewUrl, setPreviewUrl, handleImageUpload } = useUpload();
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => { // Removed async
     const file = event.target.files?.[0];
