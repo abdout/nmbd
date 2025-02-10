@@ -1,11 +1,13 @@
 "use server";
 
-// import * as z from "zod";
+import * as z from "zod";
+import { RegisterSchema } from "../schemas";
 import { db } from "@/lib/db";
-import { getUserByEmail } from "@/components/auth/data/user";
-import { RegisterSchema } from "@/components/auth/schemas";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
+import { getUserByEmail } from "../data/user";
 
-// Helper function to hash passwords using Web Crypto API
+// Helper function to hash passwords
 async function hash(password: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
@@ -13,7 +15,7 @@ async function hash(password: string): Promise<string> {
   return Buffer.from(hash).toString('base64');
 }
 
-export const register = async (values: any) => {
+export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -37,5 +39,11 @@ export const register = async (values: any) => {
     },
   });
 
-  return { success: "User created!" };
+  const verificationToken = await generateVerificationToken(email);
+  await sendVerificationEmail(
+    verificationToken.email,
+    verificationToken.token,
+  );
+
+  return { success: "Confirmation email sent!" };
 };
