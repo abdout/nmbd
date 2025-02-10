@@ -10,8 +10,9 @@ import { useArticle } from "./context";
 import { useState } from "react";
 import { useUpload } from "@/components/upload/context";
 import { Icon } from "@iconify/react";
-import { author, authors } from "./constant";
+import { authors } from "./constant";
 import SelectPopover from "@/components/atom/popover/popover";
+import { author } from "./type";
 
 
 interface FormData {
