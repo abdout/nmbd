@@ -1,12 +1,23 @@
 import { getUserByEmail } from "@/components/auth/data/user";
 import { LoginSchema } from "@/components/auth/schemas";
-import * as bcrypt from "bcrypt";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
+// Helper function to hash passwords using Web Crypto API
+async function hash(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Buffer.from(hash).toString('base64');
+}
 
+// Helper function to compare passwords
+async function compare(password: string, hashedPassword: string): Promise<boolean> {
+  const newHash = await hash(password);
+  return newHash === hashedPassword;
+}
 
 export default {
   providers: [
@@ -28,11 +39,8 @@ export default {
           const user = await getUserByEmail(email);
           if (!user || !user.password) return null;
 
-          const passwordsMatch = await bcrypt.compare(
-            password,
-            user.password,
-          );
-
+          const passwordsMatch = await compare(password, user.password);
+          
           if (passwordsMatch) return user;
         }
 
