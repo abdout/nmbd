@@ -12,7 +12,7 @@ export default function Home() {
   return (
    <div className="">
     <Hero />
-    <div className="py-6 -mt-32">
+    <div className="py-6 -mt-28 md:-mt-32">
     <AnimatedTestimonialsDemo />
     <FeaturedVideos />
     <FeaturedArticles />

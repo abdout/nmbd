@@ -8,7 +8,7 @@ import { ArticleHoverEffect } from '@/components/atom/card-article'
 
 const FeaturedArticles = () => {
   return (
-    <div className='mt-20'>
+    <div className=''>
       <Head title="المقالات" description="ما يضر الجهل به" />
 
       <div className="max-w-5xl mx-auto px-8 -mt-10">
