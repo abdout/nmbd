@@ -1,17 +1,23 @@
 import connectDB from "@/lib/mongodb";
 import Article from "@/components/template/article/model";
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+interface RouteParams {
+  params: {
+    id: string;
+  }
+}
+
+export async function PUT(request: Request, { params }: RouteParams) {
   const { id } = params;
-  const { newTitle: title, newDesc: desc, newBody: body, newAuthor: author, newImage: image, newSlug, newCatSlug: catSlug } = await request.json() as { newTitle: string, newDesc: string, newBody: string, newImage: string, newAuthor:string, newSlug: string, newCatSlug: string };
+  const { newTitle: title, newDesc: desc, newBody: body, newAuthor: author, newImage: image, newSlug, newCatSlug: catSlug } = await request.json();
+  
   await connectDB();
   await Article.findByIdAndUpdate(id, { title, desc, body, image, author, slug: newSlug, catSlug });
   return NextResponse.json({ message: "Article updated" }, { status: 200 });
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: RouteParams) {
   const { id } = params;
   await connectDB();
   const article = await Article.findById(id);
