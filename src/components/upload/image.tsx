@@ -1,6 +1,5 @@
 // components/ImageUpload.tsx
 import React, { ChangeEvent, useEffect } from 'react'; // Added useEffect
-import { Input } from '../ui/input';
 import { useUpload } from './context';
 
 const ImageUpload = () => {
