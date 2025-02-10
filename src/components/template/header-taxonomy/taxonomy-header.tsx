@@ -9,11 +9,12 @@ import { ModeSwitcher } from './mode-switcher'
 const TaxonomyHeader = () => {
   return (
     <>
-    <header className="container z-40 antialiased font-sans bg-background px-24">
-      <div className="flex h-[4rem] items-center justify-center py-6 border-gray-200">
+    <header className="container z-40 antialiased font-sans bg-background px-1 md:px-24">
+      <div className="flex h-[4rem] items-center justify-between md:justify-center py-6 border-gray-200">
         <MainNav items={marketingConfig.mainNav} />
 
-        <div className='flex items-center gap-2 pr-20'>
+
+        <div className='flex items-center gap-2 md:pr-20'>
           <nav>
             <Link
               href="/login"

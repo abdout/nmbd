@@ -11,15 +11,15 @@ const Hero = () => {
       <div className="flex flex-col items-center gap-6 text-center">
         <Link
           href={siteConfig.links.twitter}
-          className="rounded-2xl bg-muted px-4 py-1.5  text-sm font-medium -mt-32 md:-mt-20"
+          className="rounded-2xl bg-muted px-4 py-1.5  text-sm font-medium -mt-20 md:-mt-20"
           target="_blank"
         >
           المجتمع أولاً
         </Link>
-        <h1 className="font-heading text-7xl">
+        <h1 className="font-heading text-4xl w-60 md:w-auto leading-normal md:text-7xl">
           الحركة الوطنية للبناء والتنمية
         </h1>
-        <p className="max-w-[53rem] leading-normal text-muted-foreground sm:text-lg sm:leading-8">
+        <p className="max-w-[53rem] leading-normal text-muted-foreground sm:text-lg px-4 md:px-0 sm:leading-8">
           هي حركة إصلاح اجتماعي وسياسي شامل، تقيم رؤاها وتستقي قيمها من هدي الدين
           وكريم شيم السودانيين، وتقوم على إرث المسلمين في السودان خاصة، وإرث شعب السودان
           عامة، وتجربة الأمة المسلمة والأحرار في العالم،
