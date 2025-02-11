@@ -34,12 +34,12 @@ export function Countdown({ targetDate }: { targetDate: Date }) {
         { value: timeLeft.minutes, label: "دقيقة" },
         { value: timeLeft.seconds, label: "ثانية" }
       ].map((item, index) => (
-        <div key={index} className="flex flex-col items-center bg-white/5 p-2 px-3 rounded-xl">
+        <div key={index} className="flex flex-col items-center bg-white/5 p-1 md:p-2 px-2 md:px-3 rounded-lg md:rounded-xl">
           <motion.span 
             key={item.value}
             initial={{ scale: 1.2 }}
             animate={{ scale: 1 }}
-            className="text-3xl md:text-2xl font-bold bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent"
+            className="text-2xl font-bold bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent"
           >
             {item.value}
           </motion.span>
