@@ -65,6 +65,7 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     fill
                                     className="object-cover"
                                     sizes="(max-width: 768px) 33vw, 25vw"
+                                    loading="lazy"
                                 />
                             </div>
                             <div className="w-2/3 flex flex-col justify-between py-2">
