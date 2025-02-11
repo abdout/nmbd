@@ -1,6 +1,7 @@
 import FeaturedArticles from "@/components/template/article/featured-articles";
 import Contact from "@/components/template/contact/ui";
 import { CarouselDemo } from "@/components/template/display/example";
+import Event from "@/components/template/event/event";
 import  Hero  from "@/components/template/hero/hero";
 import { AnimatedTestimonialsDemo } from "@/components/template/testimonial/example";
 import { TimelineDemo } from "@/components/template/timeline/example";
@@ -17,6 +18,7 @@ export default function Home() {
     <FeaturedVideos />
     <FeaturedArticles />
     <CarouselDemo />
+    <Event />
     <TimelineDemo />
     <Contact />
     </div>
