@@ -9,7 +9,7 @@ import { ArticleHoverEffect } from '@/components/atom/card-article'
 const FeaturedArticles = () => {
   return (
     <div className=''>
-      <Head title="المقالات" description="ما يضر الجهل به" />
+      <Head title="المقالات" description="مدونة الحركة" />
 
       <div className="max-w-5xl mx-auto md:px-8 -mt-10">
         <ArticleHoverEffect items={featuredArticles()} />
