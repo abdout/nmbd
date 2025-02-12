@@ -50,7 +50,7 @@ const MobileExcute = () => {
 
 const DesktopExcute = () => {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 ">
       <div className='flex gap-2 justify-start items-center pr-1'>
         <Icon icon='codicon:verified' width={20} />
         <h5>المكتب التنفيذي</h5>

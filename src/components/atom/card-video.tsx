@@ -70,11 +70,11 @@ export const HoverEffect = ({ items, className }: HoverEffectProps) => {
                             />
                         </div>
                         <CardTitle>{item.title}</CardTitle>
-                        <div className="flex items-center gap-2 text-sm text-zinc-400">
+                        <p className="flex items-center gap-2 text-sm ">
                             <span>{item.author}</span>
                             <span>·</span>
                             <span>{item.date}</span>
-                        </div>
+                        </p>
                     </Card>
                 </Link>
             ))}

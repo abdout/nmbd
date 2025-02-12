@@ -16,11 +16,11 @@ export function LampDesktop () {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="mt-8 bg-gradient-to-br  from-slate-300 to-slate-800 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-4xl"
+        className="mt-8 bg-gradient-to-br  from-neutral-100 to-neutral-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-4xl"
       >
         <div className="flex flex-col  items-center justify-center">
           <h1>المؤتمر العام الاول</h1>
-          <div className="mt-4 flex items-center gap-8 text-[16px] text-slate-300">
+          <div className="mt-4 flex items-center gap-8 text-[16px] text-neutral-100">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
                 <span>قاعة الصداقة</span>

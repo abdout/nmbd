@@ -73,11 +73,11 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     <ArticleTitle>{item.title}</ArticleTitle>
                                     <ArticleDescription>{item.description}</ArticleDescription>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-zinc-400">
+                                <p className="flex items-center gap-2 text-sm ">
                                     <span>{item.author}</span>
                                     <span>·</span>
                                     <span>{item.date}</span>
-                                </div>
+                                </p>
                             </div>
                         </div>
                     </ArticleCard>
@@ -130,7 +130,7 @@ const ArticleDescription = ({
     children: React.ReactNode;
 }) => {
     return (
-        <p className={cn("text-zinc-400 tracking-wide leading-relaxed text-sm line-clamp-2", className)}>
+        <p className={cn(" tracking-wide leading-relaxed text-sm line-clamp-2", className)}>
             {children}
         </p>
     );

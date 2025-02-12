@@ -42,7 +42,7 @@ const MapSection = () => {
               </div>
 
               {/* Info Section */}
-              <div className="space-y-6 bg-slate-50 p-6 rounded-lg">
+              <div className="space-y-6 bg-neutral-100 p-6 rounded-lg">
                 <div className="flex items-start space-x-4">
                   {/* <MapPin className="h-6 w-6 mt-1 flex-shrink-0" /> */}
                   <div>

@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="flex gap-4">
           <Link
             href="/login"
-            className={cn(buttonVariants({ size: "lg" })) }
+            className={cn(buttonVariants({ size: "lg" }), "text-white") }
 
           >
             يديك معانا

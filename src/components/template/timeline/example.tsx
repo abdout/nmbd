@@ -10,7 +10,7 @@ export function TimelineDemo() {
       title: "2024",
       content: (
         <div dir="rtl">
-          <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+          <p className=" text-xs md:text-sm font-normal mb-8">
           المشاركة في إجماع قوى الحراك الوطني والتواصل مع الفاعلين في المجتمع.
           <br />
           تفعيل ورقة &quot;الاقتصاد التشاركي&quot; ببدأ نشاط اقتصادي تشاركي لدعمها بمثال من الواقع العملي.
@@ -58,7 +58,7 @@ export function TimelineDemo() {
       title: "2023",
       content: (
         <div dir="rtl">
-          <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+          <p className=" text-xs md:text-sm font-normal mb-8">
           إنتاج أوراق وبرامج خاصة بالحركة لتطوير الرؤية والاستراتيجية.
           <br />
           إقامة دار &quot;الحركة الوطنية&quot; بالعمارات كمقر للنشاط السياسي والفكري.
@@ -113,7 +113,7 @@ export function TimelineDemo() {
       title: "2022",
       content: (
         <div dir="rtl">
-          <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
+          <p className=" text-xs md:text-sm font-normal mb-4">
           تأسيس &quot;الحركة الوطنية للبناء والتنمية&quot;
           <br />
           توسيع النشاط الطلابي والمجتمعي، والتحدث إلى قادة العمل المجتمعي.
