@@ -1,13 +1,13 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 // import ImageUpload from '@/components/upload/image';
 import { useTask } from "./context";
 import { useEffect, useState } from "react";
-import { useUpload } from "@/components/upload/context";
+// import { useUpload } from "@/components/upload/context";
 import { Icon } from "@iconify/react";
 import SelectPopover from "@/components/atom/popover/popover";
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -239,7 +239,7 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
                             <FormField
                                 control={form.control}
                                 name="club"
-                                render={({ field }) => (
+                                render={({ field: _ }) => (
                                     <FormItem>
                                         <FormControl>
                                             <SelectPopover
@@ -247,7 +247,7 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
                                                 selectedItem={selectedClub}
                                                 setSelectedItem={(item) => {
                                                     setSelectedClub(item);
-                                                    form.setValue("club", item?.value ?? ""); // Update form state with the selected lead value
+                                                    form.setValue("club", item?.value ?? "");
                                                 }}
                                                 label="+ الامانة"
                                             />
