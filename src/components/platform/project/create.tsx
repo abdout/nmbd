@@ -144,7 +144,7 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
               <FormField
                 control={form.control}
                 name="club"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
                       <SelectPopover
@@ -168,7 +168,7 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
               <FormField
                 control={form.control}
                 name="status"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
                       <Status
