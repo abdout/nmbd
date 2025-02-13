@@ -2,15 +2,15 @@
 import React from 'react';
 import { Icon } from "@iconify/react";
 
-interface WelcomeProps {
-  onDismiss: () => void;
-}
+// interface WelcomeProps {
+//   onDismiss: () => void;
+// }
 
-const Welcome: React.FC<WelcomeProps> = ({ onDismiss }) => {
+const Welcom = () => {
   return (
     <div className='pt-14 relative'>
       <button 
-        onClick={onDismiss}
+        
         className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
       >
         <Icon icon="mdi:close" height="24" />
@@ -33,7 +33,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onDismiss }) => {
         </div>
         
         <button 
-          onClick={onDismiss}
+          
           className="mt-8 md:mt-0 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
         >
           ابدأ الجولة السريعة
@@ -43,4 +43,3 @@ const Welcome: React.FC<WelcomeProps> = ({ onDismiss }) => {
   );
 };
 
-export default Welcome;
