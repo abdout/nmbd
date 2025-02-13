@@ -1,4 +1,3 @@
-
 import React from 'react'
 // import { RankChart } from './rank-chart';
 import { ChartTotal } from './chart-total';
@@ -7,10 +6,7 @@ import { ChartField } from './chart-field';
 import { ChartActive } from './chart-active';
 import { ChartInterst } from './chart-interst';
 
-interface ChartProps {
-  onClose: () => void;
-}
-const MemberChart: React.FC<ChartProps> = ({ onClose }) => {
+const MemberChart = () => {
   return (
     <div className='flex flex-col'>
       <div className='flex '>

@@ -1,13 +1,22 @@
 "use client";
 import { useModal } from "@/components/atom/modal/context";
-import React  from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Custom hook for managing body scroll (unchanged)
-function useBodyScroll(isOpen: boolean) {
-  // ... (keep the existing implementation)
+// Custom hook for managing body scroll
+function useBodyScroll(open: boolean) {
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
 }
 
 interface Props {
