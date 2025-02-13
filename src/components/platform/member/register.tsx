@@ -67,6 +67,12 @@ const countries = [
     { name: 'الإمارات ', cities: ['أبوظبي', 'دبي', 'الشارقة'] }
 ];
 
+interface CountryChangeEvent {
+  target: {
+    value: string;
+  }
+}
+
 const Registration: React.FC = () => {
     const { refreshMembers } = useMember();
     const [step, setStep] = useState(1);
@@ -137,7 +143,7 @@ const Registration: React.FC = () => {
         }
       };
 
-    const handleCheck = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleCheck = () => {
         const checked = form.watch("terms");
         if (checked) {
             prevStep();
@@ -150,7 +156,7 @@ const Registration: React.FC = () => {
     const [selectedCountry, setSelectedCountry] = useState('');
     const [cities, setCities] = useState<string[]>([]);
 
-    const handleCountryChange = (event: any) => {
+    const handleCountryChange = (event: CountryChangeEvent) => {
         const selectedCountryName = event.target.value;
         const selectedCountryObj = countries.find(country => country.name === selectedCountryName);
         setSelectedCountry(selectedCountryName);

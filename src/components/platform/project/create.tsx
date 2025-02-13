@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProject } from "./context";
 import { useState } from "react";
-import { useUpload } from "@/components/upload/context";
+// import { useUpload } from "@/components/upload/context";
 import SelectPopover from "@/components/atom/popover/popover";
 import { club, clubs } from "./constant";
 import Status from "./status";
@@ -33,7 +33,7 @@ interface CreateProps {
 
 const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
   const { refreshProjects } = useProject();
-  const { image } = useUpload();
+  // const { image } = useUpload();
   const [step, setStep] = useState(1);
   const [selectedClub, setSelectedClub] = useState<club | null>(null);
   // const [selectedStatus, setSelectedStatus] = useState<status | null>(null);

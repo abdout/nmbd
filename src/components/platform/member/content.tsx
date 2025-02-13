@@ -79,12 +79,6 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
   const rankColumn = table.getColumn('rank')
   const skillColumn = table.getColumn('skill')
 
-  const [open, setOpen] = useState(false)
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   useEffect(() => {
     setPage(0)
   }, [table.getFilteredRowModel(), columnFilters, sorting])
@@ -254,7 +248,7 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
         </DropdownMenu>
 
         <ShadcnDailog triggerText='' triggerIcon='mdi:analytics'>
-          <MemberChart onClose={handleClose} />
+          <MemberChart />
         </ShadcnDailog>
       </div>
 

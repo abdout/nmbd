@@ -58,6 +58,12 @@ const formSchema = z.object({
     }),
 });
 
+interface CountryChangeEvent {
+    target: {
+        value: string;
+    }
+}
+
 const Create: React.FC = () => {
     const { refreshMembers } = useMember();
     const { image } = useUpload();
@@ -110,7 +116,7 @@ const Create: React.FC = () => {
     const [selectedCountry, setSelectedCountry] = useState('');
     const [cities, setCities] = useState<string[]>([]);
 
-    const handleCountryChange = (event: any) => {
+    const handleCountryChange = (event: CountryChangeEvent) => {
         const selectedCountryName = event.target.value;
         const selectedCountryObj = countries.find(country => country.name === selectedCountryName);
         setSelectedCountry(selectedCountryName);
