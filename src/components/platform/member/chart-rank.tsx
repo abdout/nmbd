@@ -7,35 +7,35 @@ import {
     Card,
     CardContent,
     CardFooter,
-    CardHeader,
-    CardTitle,
+    // CardHeader,
+    // CardTitle,
 } from "@/components/ui/card";
 import {
-    ChartConfig,
+    // ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
 
-const chartConfig = {
-    professor: {
-        label: "أستاذ",
-        color: "hsl(var(--chart-1))",
-    },
-    master: {
-        label: "ماجستير",
-        color: "hsl(var(--chart-2))",
-    },
-    bsc: {
-        label: "بكالوريوس",
-        color: "hsl(var(--chart-3))",
-    },
-    diploma: {
-        label: "دبلوم",
-        color: "hsl(var(--chart-4))",
-    },
-} satisfies ChartConfig;
+// const chartConfig = {
+//     professor: {
+//         label: "أستاذ",
+//         color: "hsl(var(--chart-1))",
+//     },
+//     master: {
+//         label: "ماجستير",
+//         color: "hsl(var(--chart-2))",
+//     },
+//     bsc: {
+//         label: "بكالوريوس",
+//         color: "hsl(var(--chart-3))",
+//     },
+//     diploma: {
+//         label: "دبلوم",
+//         color: "hsl(var(--chart-4))",
+//     },
+// } satisfies ChartConfig;
 
 
 export function ChartRank() {

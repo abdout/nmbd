@@ -6,8 +6,8 @@ import {
     Card,
     CardContent,
     CardFooter,
-    CardHeader,
-    CardTitle,
+    // CardHeader,
+    // CardTitle,
 } from "@/components/ui/card";
 import {
     ChartConfig,

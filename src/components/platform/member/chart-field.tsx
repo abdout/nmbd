@@ -6,10 +6,10 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
-  CardDescription,
+  // CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
+  // CardHeader,
+  // CardTitle,
 } from "@/components/ui/card";
 import {
   ChartConfig,

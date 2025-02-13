@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { RankChart } from './rank-chart';
+// import { RankChart } from './rank-chart';
 import { ChartTotal } from './chart-total';
 import { ChartRank } from './chart-rank';
 import { ChartField } from './chart-field';

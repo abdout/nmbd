@@ -7,27 +7,27 @@ import {
     Card,
     CardContent,
     CardFooter,
-    CardHeader,
-    CardTitle,
+    // CardHeader,
+    // CardTitle,
 } from "@/components/ui/card";
 import {
-    ChartConfig,
+    // ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
 
-const chartConfig = {
-    male: {
-        label: "خامل",
-        color: "hsl(var(--chart-1))",
-    },
-    female: {
-        label: "نشط",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig;
+// const chartConfig = {
+//     male: {
+//         label: "خامل",
+//         color: "hsl(var(--chart-1))",
+//     },
+//     female: {
+//         label: "نشط",
+//         color: "hsl(var(--chart-2))",
+//     },
+// } satisfies ChartConfig;
 
 // ChartActive
 export function ChartActive() {
