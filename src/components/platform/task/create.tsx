@@ -281,11 +281,11 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
                                 <FormField
                                     control={form.control}
                                     name="priority"
-                                    render={({ field }) => (
+                                    render={() => (
                                         <FormItem className="flex-1 ml-4">
                                             <FormControl>
                                                 <Priority
-                                                    priority={field.value}
+                                                    priority={form.watch("priority")}
                                                     setPriority={(priority) => form.setValue("priority", priority)}
                                                 />
                                             </FormControl>
