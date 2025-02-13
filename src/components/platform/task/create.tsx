@@ -239,7 +239,7 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
                             <FormField
                                 control={form.control}
                                 name="club"
-                                render={({ field: _ }) => (
+                                render={({ field}) => (
                                     <FormItem>
                                         <FormControl>
                                             <SelectPopover
