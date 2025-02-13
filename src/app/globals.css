@@ -6,15 +6,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
   }
 
   html {
   width: 100%;
   height: 100%;
-
 }
 
 body {
+  overflow-x: hidden;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.prevent-horizontal-scroll {
+  max-width: 100vw;
   overflow-x: hidden;
 }
 
@@ -22,6 +31,7 @@ body {
 .rubik {
   font-family: var(--rubik);
 }
+
 
 @layer base {
   :root {

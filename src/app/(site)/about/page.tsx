@@ -1,10 +1,10 @@
 'use client'
 import React from 'react'
-
+import AllFeatures from '@/components/template/club/club'
 const About = () => {
   return (
     <div>
-      <h1>About</h1>
+      <AllFeatures />
     </div>
 
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/providers";
+import { ModalProvider } from "@/components/atom/modal/context";
 // import { SessionProvider } from "next-auth/react";
 // import { auth } from "@/auth";
 
@@ -46,12 +47,13 @@ export default async function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
+        <ModalProvider>
           <div className="container">
             {children}
           </div>
+        </ModalProvider>
         </ThemeProvider>
       </body>
     </html>
-    // </SessionProvider>
   );
 }

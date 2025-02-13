@@ -5,20 +5,21 @@ import { usePathname } from "next/navigation"
 
 import { siteConfig } from "./config"
 import { cn } from "@/lib/utils"
+
 import { Icons } from "./icons"
 
 export function MainNav() {
   const pathname = usePathname()
 
   return (
-    <div className="mr-4 hidden md:flex">
-      <Link href="/" className="mr-4 flex items-center gap-2 lg:mr-6">
-        <Icons.logo className="h-6 w-6" />
-        <span className="hidden font-bold lg:inline-block">
+    <div className="hidden md:flex gap-8">
+      <Link href="/" className=" flex items-center gap-2 ">
+        <Icons.platform />
+        <span className="hidden text-lg font-bold lg:inline-block">
           {siteConfig.name}
         </span>
       </Link>
-      <nav className="flex items-center gap-4 text-sm xl:gap-6">
+      <nav className="flex items-center gap-8 text-[16px] font-medium xl:gap-6">
         <Link
           href="/docs"
           className={cn(
@@ -26,7 +27,7 @@ export function MainNav() {
             pathname === "/docs" ? "text-foreground" : "text-foreground/80"
           )}
         >
-          About
+          فريق
         </Link>
         <Link
           href="/docs/components"
@@ -38,7 +39,7 @@ export function MainNav() {
               : "text-foreground/80"
           )}
         >
-          Academics
+          ورقة
         </Link>
         <Link
           href="/blocks"
@@ -49,7 +50,7 @@ export function MainNav() {
               : "text-foreground/80"
           )}
         >
-          Admissions
+          مشروع
         </Link>
         <Link
           href="/charts"
@@ -61,9 +62,9 @@ export function MainNav() {
               : "text-foreground/80"
           )}
         >
-          Platfrom
+          مهمة
         </Link>
-        {/* <Link
+        <Link
           href="/themes"
           className={cn(
             "transition-colors hover:text-foreground/80",
@@ -72,7 +73,7 @@ export function MainNav() {
               : "text-foreground/80"
           )}
         >
-          Themes
+          امانة
         </Link>
         <Link
           href="/colors"
@@ -83,8 +84,8 @@ export function MainNav() {
               : "text-foreground/80"
           )}
         >
-          Colors
-        </Link> */}
+          مال
+        </Link>
       </nav>
     </div>
   )
