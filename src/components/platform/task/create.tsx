@@ -66,7 +66,7 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
         setStep(prevStep => (prevStep > 1 ? prevStep - 1 : 1));
     };
 
-    const [progress, setProgress] = useState(0);
+    const [, setProgress] = useState(0);
     useEffect(() => {
         const calculatedProgress = (step / 4) * 100;
         setProgress(calculatedProgress);
@@ -102,7 +102,7 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
-            document.body.style.overflow = '';
+            // document.body.style.overflow = '';
         };
     }, []);
 

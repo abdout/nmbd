@@ -17,7 +17,7 @@ import { task } from '@/components/platform/task/type'
 import Link from 'next/link'
 import { useTask } from '@/components/platform/task/context'
 
-const ActionsCell: React.FC<{ row: any }> = ({ row }) => {
+const ActionsCell: React.FC<{ row: { original: task } }> = ({ row }) => {
   const { refreshTasks, tasks, deleteTask } = useTask();
   
   useEffect(() => {
