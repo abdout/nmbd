@@ -16,7 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useMember } from "@/components/platform/member/context";
+// import { useMember } from "@/components/platform/member/context";
 
 // Chart configuration for different ranks
 const chartConfig = {

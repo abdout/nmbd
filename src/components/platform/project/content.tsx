@@ -62,7 +62,7 @@ const ProjectContent: React.FC = () => {
                 </Button>
                 <div className='grid md:grid-cols-4 md:gap-x-60 gap-y-6 md:gap-y-12 md:-mx-12'>
                     {projects.map((project) => {
-                        const updatedAt = new Date(project.updatedAt);
+                        // const updatedAt = new Date(project.updatedAt);
                         // const formattedDate = `${updatedAt.getDate()}/${updatedAt.getMonth() + 1}/${updatedAt.getFullYear()}`;
                         return (
                             <div key={project._id}
