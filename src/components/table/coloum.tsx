@@ -101,7 +101,7 @@ export const columns: ColumnDef<member>[] = [
     accessorKey: 'contact',
     header: () => <div className="text-right">الاتصال</div>,
     cell: ({ row }) => {
-      const { phone, facebook, whatsapp } = row.original.contact || {};
+      const { phone, whatsapp } = row.original.contact || {};
 
       return (
         <div className='flex gap-4'>

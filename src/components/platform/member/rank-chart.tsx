@@ -40,7 +40,7 @@ const chartConfig = {
 
 export function RankChart() {
   // Replace with actual member data if needed
-  const { members } = useMember();
+  // const { members } = useMember();
 
   // Static fake data for ranks
   const engineerCount = 3;  // Example number for engineers

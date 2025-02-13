@@ -31,7 +31,7 @@ import { Input } from '@/components/ui/input'
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { useFilter } from './filter'
-import { ShadcnDailog } from '@/components/atom/dailog'
+// import { ShadcnDailog } from '@/components/atom/dailog'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Icon } from '@iconify/react'
 import { useModal } from '@/components/atom/modal/context'
@@ -80,11 +80,11 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
   const statusColumn = table.getColumn('status')
   // const priorityColumn = table.getColumn('priority')
 
-  const [open, setOpen] = useState(false)
+  // const [ setOpen] = useState(false)
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
 
   useEffect(() => {
     setPage(0)

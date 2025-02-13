@@ -32,8 +32,8 @@ import { Input } from '@/components/ui/input'
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 import { useFilter } from '../platform/member/useFilter'
 import { MixerHorizontalIcon } from "@radix-ui/react-icons"
-import { ShadcnDailog } from '../atom/dailog'
-import Create from '../root/article/create'
+import { ShadcnDailog } from '@/components/atom/dailog'
+// import Create from '../root/article/create'
 import MemberChart from '../platform/member/chart'
 
 interface DataTableProps<TData, TValue> {
@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
   const rankColumn = table.getColumn('rank');
   const skillColumn = table.getColumn('skill');
 
-  const [open, setOpen] = useState(false);
+  const [, setOpen] = useState(false);
 
   const handleClose = () => {
       setOpen(false);

@@ -8,11 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '../../ui/input-otp';
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
+// import { InputOTP, InputOTPGroup, InputOTPSlot } from '../../ui/input-otp';
+// import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
 import { Label } from '../../ui/label';
-import Rank from '../../atom/popover/popover';
+// import Rank from '../../atom/popover/popover';
 import { rank, ranks } from './rank';
 import { Progress } from '../../ui/progress';
 import SelectPopover from '../../atom/popover/popover';
@@ -21,7 +21,7 @@ import { interest, interests } from './interest';
 import ImageUpload from '@/components/upload/image';
 import { UploadProvider, useUpload } from '@/components/upload/context';
 import { MemberProvider, useMember } from './context';
-import Member from './model';
+// import Member from './model';
 import { useRouter } from 'next/navigation';
 
 interface MemberFormData {

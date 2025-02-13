@@ -17,7 +17,13 @@ import { member } from '@/components/platform/member/type'
 import Link from 'next/link'
 import { useMember } from '@/components/platform/member/context'
 
-const ActionsCell: React.FC<{ row: any }> = ({ row }) => {
+interface ActionsProps {
+  row: {
+    original: member;
+  }
+}
+
+const ActionsCell: React.FC<ActionsProps> = ({ row }) => {
   const { refreshMembers, members, deleteMember } = useMember();
   
   useEffect(() => {

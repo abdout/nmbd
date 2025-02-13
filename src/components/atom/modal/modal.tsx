@@ -1,6 +1,6 @@
 "use client";
 import { useModal } from "@/components/atom/modal/context";
-import React, { useEffect } from "react";
+import React  from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,10 +24,12 @@ function Modal({ content, sm = false }: Props) {
       opacity: 0,
       scale: 0.8,
     },
+  
     visible: { 
       opacity: 1,
       scale: 1,
       transition: {
+  
         duration: 0.2,
         ease: 'easeOut'
       }

@@ -23,7 +23,7 @@ const MemberProfile: React.FC<MemberProfileProps> = ({ id }) => {
     return <div>Loading...</div>;
   }
 
-  const { phone, facebook, whatsapp } = member.contact || {};
+  // const { phone, facebook, whatsapp } = member.contact || {};
 
   return (
     <div className='flex pt-6'>

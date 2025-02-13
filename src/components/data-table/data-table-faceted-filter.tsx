@@ -14,7 +14,7 @@ interface DataTableFacetedFilterProps<TData> {
 }
 
 export const DataTableFacetedFilter = <TData,>({
-  column,
+  
   title,
   options,
   onFilterChange

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactElement } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Icon } from "@iconify/react";
@@ -7,10 +7,10 @@ import { Icon } from "@iconify/react";
 interface DialogProps {
     triggerText: string;
     triggerIcon: string;
-    children: ReactNode;
+    children: ReactElement<{ onClose: () => void }>;
 }
 
-export function ShadcnDailog ({ triggerText, triggerIcon, children }: DialogProps) {
+export function ShadcnDailog({ triggerText, triggerIcon, children }: DialogProps) {
     const [open, setOpen] = useState(false);
 
     const handleClose = () => {
@@ -29,7 +29,7 @@ export function ShadcnDailog ({ triggerText, triggerIcon, children }: DialogProp
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                {React.cloneElement(children as React.ReactElement<any>, { onClose: handleClose })}
+                {React.cloneElement(children, { onClose: handleClose })}
             </DialogContent>
         </Dialog>
     );

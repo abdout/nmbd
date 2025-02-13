@@ -4,21 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import ImageUpload from '@/components/upload/image';
+// import ImageUpload from '@/components/upload/image';
 import { useTask } from "./context";
 import { useEffect, useState } from "react";
 import { useUpload } from "@/components/upload/context";
 import { Icon } from "@iconify/react";
 import SelectPopover from "@/components/atom/popover/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { rank, ranks } from "./rank";
-import { interest, interests } from "./interest";
-import { skill, skills } from "./skill";
-import { Progress } from "@/components/ui/progress";
-import Link from "next/link";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useRouter } from "next/navigation";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { Label } from "@/components/ui/label";
+// import { rank, ranks } from "./rank";
+// import { interest, interests } from "./interest";
+// import { skill, skills } from "./skill";
+// import { Progress } from "@/components/ui/progress";
+// import Link from "next/link";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import { useRouter } from "next/navigation";
 import Indicator from "@/components/atom/modal/indicator";
 import Status from "../project/status";
 import { club, clubs } from "../project/constant";
@@ -56,7 +56,7 @@ interface CreateProps {
 }
 const Create: React.FC<CreateProps> = ({ onClose }) => {
     const { refreshTasks } = useTask();
-    const { image } = useUpload();
+    // const { image } = useUpload();
     const [step, setStep] = useState(1);
     const nextStep = () => {
         setStep(prevStep => (prevStep < 4 ? prevStep + 1 : 4));
@@ -90,11 +90,11 @@ const Create: React.FC<CreateProps> = ({ onClose }) => {
 
 
 
-    const [selectedRank, setSelectedRank] = useState<rank | null>(null);
-    const [selectedInterests, setSelectedInterests] = useState<interest | null>(null);
-    const [selectedSkills, setSelectedSkills] = useState<skill | null>(null);
-    const [selectedCountry, setSelectedCountry] = useState('');
-    const [cities, setCities] = useState<string[]>([]);
+    // const [selectedRank, setSelectedRank] = useState<rank | null>(null);
+    // const [selectedInterests, setSelectedInterests] = useState<interest | null>(null);
+    // const [selectedSkills, setSelectedSkills] = useState<skill | null>(null);
+    // const [selectedCountry, setSelectedCountry] = useState('');
+    // const [cities, setCities] = useState<string[]>([]);
     const [selectedClub, setSelectedClub] = useState<club | null>(null);
 
 
