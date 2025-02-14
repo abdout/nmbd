@@ -248,7 +248,7 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
         </DropdownMenu>
 
         <ShadcnDailog triggerText='' triggerIcon='mdi:analytics'>
-          <MemberChart />
+          <MemberChart onClose={() => {}} />
         </ShadcnDailog>
       </div>
 

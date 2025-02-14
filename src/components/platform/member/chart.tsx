@@ -6,7 +6,11 @@ import { ChartField } from './chart-field';
 import { ChartActive } from './chart-active';
 import { ChartInterst } from './chart-interst';
 
-const MemberChart = () => {
+interface MemberChartProps {
+  onClose: () => void;
+}
+
+const MemberChart: React.FC<MemberChartProps> = ({ onClose }) => {
   return (
     <div className='flex flex-col'>
       <div className='flex '>
