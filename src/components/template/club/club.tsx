@@ -1,8 +1,9 @@
 import React from 'react';
 import { club } from './constant';
-import { FeatureCard } from './card';
+import { ClubCard } from './card';
+import Link from 'next/link';
 
-const AllFeatures = () => {
+const AllClub = () => {
   return (
     <div className="container mx-auto px-4">
       <div className="flex flex-col">
@@ -15,8 +16,10 @@ const AllFeatures = () => {
 
         <div className="w-full">
           <div className="items-center justify-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-5 gap-6">
-            {club.map((feature) => (
-              <FeatureCard key={feature.id} {...feature} />
+            {club.map((club) => (
+              <Link href={`/club/${club.id}`}>
+                <ClubCard key={club.id} {...club} />
+              </Link>
             ))}
           </div>
         </div>
@@ -25,4 +28,4 @@ const AllFeatures = () => {
   );
 };
 
-export default AllFeatures;
+export default AllClub;

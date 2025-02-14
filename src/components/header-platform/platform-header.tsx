@@ -10,7 +10,7 @@ import { CommandMenu } from '../template/header-shadcn/command-menu'
 const PlatformHeader = () => {
   return (
     <>
-    <header className="container z-40 antialiased font-sans bg-background px-1 md:px-24">
+    <header className="container z-40 antialiased font-sans bg-background px-1 md:px-24 border-b">
       <div className="flex h-[4rem] items-center justify-between md:justify-center py-6 border-gray-200">
         <MainNav items={marketingConfig.mainNav} />
 
@@ -41,7 +41,7 @@ const PlatformHeader = () => {
         </div>
       </div>
     </header>
-    <hr className="hidden md:block  border-gray-200 pb-6" />
+    {/* <hr className="hidden md:block  border-gray-200 pb-6" /> */}
     </>   
   )
 }
