@@ -11,8 +11,8 @@ import {
     Heart, 
     Stethoscope, 
     GraduationCap, 
-    Briefcase, 
-    Video 
+    // Briefcase, 
+    // Video 
   } from 'lucide-react';
   
   export const club = [
