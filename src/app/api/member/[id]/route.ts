@@ -1,16 +1,10 @@
-import { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Member from "@/components/platform/member/model";
+import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-type Context = {
-  params: {
-    id: string;
-  };
-};
-
-export async function PUT(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const { newName: name, newDob: dob, newAddress: address, newGender: gender, newRank: rank, newInterest: interest, newSkill: skill, newClub: club, newImage: image, newContact: contact } = await request.json() as { 
     newName: string, 
     newDob: string, 
@@ -28,8 +22,8 @@ export async function PUT(request: NextRequest, context: Context) {
   return NextResponse.json({ message: "Member updated" }, { status: 200 });
 }
 
-export async function GET(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function GET({ params }: { params: { id: string } }) {
+  const { id } = params;
   await connectDB();
   const member = await Member.findById(id);
   return NextResponse.json({ member }, { status: 200 });
