@@ -10,7 +10,7 @@ interface MemberChartProps {
   onClose: () => void;
 }
 
-const MemberChart: React.FC<MemberChartProps> = ({ onClose }) => {
+const MemberChart: React.FC<MemberChartProps> = () => {
   return (
     <div className='flex flex-col'>
       <div className='flex '>
