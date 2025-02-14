@@ -6,6 +6,7 @@ import { MainNav } from './main-nav'
 import { marketingConfig } from './constant'
 import { ModeSwitcher } from './mode-switcher'
 import { CommandMenu } from '../template/header-shadcn/command-menu'
+import { UserButton } from '../auth/user-button'
 
 const PlatformHeader = () => {
   return (
@@ -33,9 +34,11 @@ const PlatformHeader = () => {
 
             </Link>
           </nav> */}
+          <UserButton />
           <div className="w-full flex-1 md:w-auto md:flex-none">
               <CommandMenu />
             </div>
+            
           <ModeSwitcher />
 
         </div>
