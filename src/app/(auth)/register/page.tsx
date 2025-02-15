@@ -3,12 +3,12 @@ import React from 'react';
 import { MemberProvider } from '@/components/platform/member/context';
 import { UploadProvider } from '@/components/upload/context';
 import Create from '@/components/platform/member/create';
-import { ArticleProvider } from '@/components/root/article/context';
+
 
 const Register = () => {
 
   return (
-    <ArticleProvider>
+    
       <UploadProvider>
         <MemberProvider>
           <div>
@@ -16,7 +16,7 @@ const Register = () => {
           </div>
         </MemberProvider>
       </UploadProvider>
-    </ArticleProvider>
+    
   );
 };
 
