@@ -58,17 +58,20 @@ export const settings = async (
     return { success: "Verification email sent!" };
   }
 
-  if (values.password && values.newPassword && dbUser.password && dbUser.salt) {
+  if (values.password && values.newPassword && dbUser.password) {
+    // Split the stored password to get salt and hash
+    const [storedSalt, storedHash] = dbUser.password.split(":");
+    
     // Hash the provided password with stored salt
     const hashResult = crypto.pbkdf2Sync(
       values.password,
-      dbUser.salt,
+      storedSalt,
       1000,
       64,
       "sha512"
     ).toString("hex");
 
-    const passwordsMatch = hashResult === dbUser.password;
+    const passwordsMatch = hashResult === storedHash;
 
     if (!passwordsMatch) {
       return { error: "Incorrect password!" };
@@ -76,7 +79,7 @@ export const settings = async (
 
     // Generate new salt and hash for new password
     const newSalt = crypto.randomBytes(16).toString("hex");
-    const hashedPassword = crypto.pbkdf2Sync(
+    const newHash = crypto.pbkdf2Sync(
       values.newPassword,
       newSalt,
       1000,
@@ -84,12 +87,10 @@ export const settings = async (
       "sha512"
     ).toString("hex");
 
-    values.password = hashedPassword;
+    // Combine new salt and hash
+    values.password = `${newSalt}:${newHash}`;
     values.newPassword = undefined;
-    // Add salt to values for update
-    values.salt = newSalt;
   }
-
 
   const updatedUser = await db.user.update({
     where: { id: dbUser.id },
