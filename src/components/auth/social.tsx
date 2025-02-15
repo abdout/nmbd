@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+import { FaFacebook,  } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ export const Social = () => {
         onClick={() => onClick("google")}
       >
         <FcGoogle className="h-5 w-5" />
+        <span className="text-sm">قوقل</span>
       </Button>
       <Button
         size="lg"
@@ -34,7 +35,8 @@ export const Social = () => {
         variant="outline"
         onClick={() => onClick("github")}
       >
-        <FaGithub className="h-5 w-5" />
+        <FaFacebook className="h-5 w-5 text-[#1877F2]" />
+        <span className="text-sm">فيسبوك</span>
       </Button>
     </div>
   );
