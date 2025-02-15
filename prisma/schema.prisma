@@ -19,6 +19,7 @@ model User {
   emailVerified         DateTime?
   image                 String?
   password              String?
+  hashedPassword        String?
   salt                  String?
   role                  UserRole  @default(USER)
   isTwoFactorEnabled    Boolean   @default(false)

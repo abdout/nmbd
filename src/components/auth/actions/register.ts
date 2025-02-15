@@ -17,7 +17,6 @@ export const register = async (
   values: z.infer<typeof RegisterSchema>
 ): Promise<RegisterResponse> => {
   try {
-    // Validate input
     const validatedFields = RegisterSchema.safeParse(values);
     if (!validatedFields.success) {
       console.error("[Auth] Registration validation failed:", validatedFields.error);
@@ -26,14 +25,12 @@ export const register = async (
 
     const { email, password, name } = validatedFields.data;
     
-    // Check existing user
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       console.log("[Auth] Registration attempted with existing email:", email);
       return { error: "Email already in use!" };
     }
 
-    // Generate password hash
     const salt = crypto.randomBytes(16).toString("hex");
     const hashedPassword = crypto.pbkdf2Sync(
       password,
@@ -43,24 +40,20 @@ export const register = async (
       "sha512"
     ).toString("hex");
 
-    // Create user
     const user = await db.user.create({
       data: {
         name,
         email,
-        password: hashedPassword,
-        salt,
+        hashedPassword,  // Store as hashedPassword
+        salt,           // Store salt separately
         role: "USER",
         isTwoFactorEnabled: false,
         emailVerified: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     });
 
     console.log("[Auth] New user created:", { userId: user.id, email });
 
-    // Generate and send verification token
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(
       verificationToken.email,
