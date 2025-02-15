@@ -40,12 +40,14 @@ export const register = async (
       "sha512"
     ).toString("hex");
 
+    // Combine salt and hashed password
+    const passwordWithSalt = `${salt}:${hashedPassword}`;
+
     const user = await db.user.create({
       data: {
         name,
         email,
-        password: hashedPassword,  // Changed from hashedPassword to password
-        salt,
+        password: passwordWithSalt,  // Store combined salt and password
         role: "USER",
         isTwoFactorEnabled: false,
         emailVerified: null,
