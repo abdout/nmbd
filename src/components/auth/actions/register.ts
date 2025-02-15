@@ -44,8 +44,8 @@ export const register = async (
       data: {
         name,
         email,
-        hashedPassword,  // Store as hashedPassword
-        salt,           // Store salt separately
+        password: hashedPassword,  // Changed from hashedPassword to password
+        salt,
         role: "USER",
         isTwoFactorEnabled: false,
         emailVerified: null,
