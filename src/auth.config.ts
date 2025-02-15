@@ -49,7 +49,7 @@ export default {
         });
         const validatedFields = LoginSchema.safeParse(credentials);
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
+          const { email } = validatedFields.data;
           const user = await getUserByEmail(email);
           if (!user || !user.password) {
             console.log("[Auth Config] User not found or no password:", {
