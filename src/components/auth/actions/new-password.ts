@@ -38,7 +38,7 @@ export const newPassword = async (
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: "Email does not exist!" }
+    return { error: "Email does not exist!" };
   }
 
   const salt = crypto.randomBytes(16).toString("hex");
@@ -52,9 +52,8 @@ export const newPassword = async (
 
   await db.user.update({
     where: { id: existingUser.id },
-    data: { 
-      password: hashedPassword,
-      salt: salt 
+    data: {
+      password: hashedPassword
     },
   });
 
