@@ -37,7 +37,7 @@ const TaxonomyHeader = () => {
         </div>
       </div>
     </header>
-    <hr className="hidden md:block mx-48 border-gray-200" />
+    <hr className="hidden md:block mx-32 border-gray-200" />
     </>   
   )
 }
