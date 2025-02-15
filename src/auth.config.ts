@@ -17,7 +17,7 @@ export default {
           response_type: "code"
         }
       },
-      async profile(profile, tokens) {
+      async profile(profile) {
         console.log("[OAuth] Profile received:", {
           email: profile.email,
           sub: profile.sub,

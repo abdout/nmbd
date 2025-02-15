@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,8 +12,8 @@ const steps = [
   { title: 'المرفقات', route: 'attachment', link: editRoutes.ATTACHMENT },
   { title: 'الاتصال', route: 'contact', link: editRoutes.CONTACT },
   { title: 'المعلومات', route: 'basic-info', link: editRoutes.BASIC_INFO },
-  { title: 'العنوان', route: 'address', link: editRoutes.LOCATION },
-  { title: 'Review', route: 'review', link: editRoutes.REVIEW },
+  // { title: 'العنوان', route: 'address', link: editRoutes.LOCATION },
+  // { title: 'Review', route: 'review', link: editRoutes.REVIEW },
 ];
 
 export default function StepNavigation() {
