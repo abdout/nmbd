@@ -1,7 +1,11 @@
-
+import type { Metadata } from "next";
 import Footer from "@/components/template/footer/footer"
 import TaxonomyHeader from "@/components/template/header-taxonomy/taxonomy-header"
 
+export const metadata: Metadata = {
+  title: "الحركة الوطنية للبناء والتنمية",
+  description: "حركة إصلاح اجتماعي وسياسي شامل",
+};
 
 interface AppLayoutProps {
   children: React.ReactNode
