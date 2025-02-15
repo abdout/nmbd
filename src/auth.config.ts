@@ -2,7 +2,7 @@ import { getUserByEmail } from "@/components/auth/data/user";
 import { LoginSchema } from "@/components/auth/schemas";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import Github from "next-auth/providers/github";
+import Facebook from "next-auth/providers/facebook"
 import Google from "next-auth/providers/google";
 
 export default {
@@ -38,9 +38,9 @@ export default {
         };
       }
     }),
-    Github({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    Facebook({
+      clientId: process.env.AUTH_FACEBOOK_ID,
+      clientSecret: process.env.AUTH_FACEBOOK_SECRET,
     }),
     Credentials({
       async authorize(credentials) {
