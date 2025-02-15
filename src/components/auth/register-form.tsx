@@ -53,9 +53,10 @@ export const RegisterForm = () => {
   return (
     <CardWrapper
       headerLabel=""
-      backButtonLabel="Already have an account?"
+      backButtonLabel="لديك حساب بالفعل؟"
       backButtonHref="/login"
-      // showSocial
+      showSocial
+      
     >
       <Form {...form}>
         <form 
@@ -73,7 +74,7 @@ export const RegisterForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Name"
+                      placeholder="اسم المستخدم"
                     />
                   </FormControl>
                   <FormMessage />
@@ -90,7 +91,7 @@ export const RegisterForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Email"
+                      placeholder="البريد الإلكتروني"
                       type="email"
                     />
                   </FormControl>
@@ -108,7 +109,7 @@ export const RegisterForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Password"
+                      placeholder="كلمة المرور"
                       type="password"
                     />
                   </FormControl>
@@ -124,7 +125,7 @@ export const RegisterForm = () => {
             type="submit"
             className="w-full h-12 text-[16px] text-[#fcfcfc]"
           >
-            Join
+            التسجيل
           </Button>
         </form>
       </Form>

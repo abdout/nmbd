@@ -26,19 +26,21 @@ export const CardWrapper = ({
   showSocial
 }: CardWrapperProps) => {
   return (
-    <Card className="w-[350px] border-none shadow-none">
+    <Card className="w-[350px] border-none shadow-none text-black">
+       {showSocial && (
+        <CardFooter>
+          <Social />
+        </CardFooter>
+      )}
       <CardHeader>
+       
         <Header label={headerLabel} />
       </CardHeader>
       <CardContent>
         {children}
       </CardContent>
-      {showSocial && (
-        <CardFooter>
-          <Social />
-        </CardFooter>
-      )}
-      <CardFooter>
+      
+      <CardFooter className="text-black">
         <BackButton
           
           label={backButtonLabel}

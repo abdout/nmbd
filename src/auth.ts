@@ -8,7 +8,6 @@ import { getTwoFactorConfirmationByUserId } from "@/components/auth/data/two-fac
 import { getAccountByUserId } from "@/components/auth/data/account"
 import authConfig from "./auth.config"
 
-// Extend the built-in session types
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -26,76 +25,141 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/login",
     error: "/error",
   },
   events: {
     async linkAccount({ user }) {
+      console.log("[Auth] Link Account Event:", {
+        userId: user.id,
+        timestamp: new Date().toISOString()
+      });
+      
       if (user.id) {
         await db.user.update({
           where: { id: user.id },
-          data: { emailVerified: new Date() }
-        })
+          data: { 
+            emailVerified: new Date(),
+            updatedAt: new Date()
+          }
+        });
+        console.log("[Auth] User updated after link:", user.id);
       }
+    },
+    async signIn(message) {
+      console.log("[Auth] Sign In Event:", {
+        user: message.user.email,
+        provider: message.account?.provider,
+        timestamp: new Date().toISOString()
+      });
+    },
+    async session(message) {
+      console.log("[Auth] Session Event:", {
+        userId: message.session.user?.id,
+        expires: message.session.expires,
+        timestamp: new Date().toISOString()
+      });
     }
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (!user.id) return false
+      console.log("[Auth] Sign In Callback:", {
+        userId: user.id,
+        email: user.email,
+        provider: account?.provider,
+        timestamp: new Date().toISOString()
+      });
+
+      if (!user.id) {
+        console.log("[Auth] Sign in failed - No user ID");
+        return false;
+      }
       
-      if (account?.provider !== "credentials") return true
-
-      const existingUser = await getUserById(user.id)
-
-      if (!existingUser?.emailVerified) return false
-
-      if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
-
-        if (!twoFactorConfirmation) return false
-
-        await db.twoFactorConfirmation.delete({
-          where: { id: twoFactorConfirmation.id }
-        })
+      // Always allow OAuth providers
+      if (account?.provider !== "credentials") {
+        console.log("[Auth] OAuth login - Approved");
+        return true;
       }
 
-      return true
+      const existingUser = await getUserById(user.id);
+      console.log("[Auth] Existing user check:", {
+        found: !!existingUser,
+        emailVerified: existingUser?.emailVerified
+      });
+
+      if (!existingUser?.emailVerified) return false;
+
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+        if (!twoFactorConfirmation) return false;
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id }
+        });
+      }
+
+      return true;
     },
     async session({ token, session }) {
+      console.log("[Auth] Session Callback:", {
+        tokenId: token.sub,
+        sessionUser: session.user?.email,
+        timestamp: new Date().toISOString()
+      });
+
       if (token.sub && session.user) {
-        session.user.id = token.sub
+        session.user.id = token.sub;
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role as UserRole
+        session.user.role = token.role as UserRole;
       }
 
       if (session.user) {
-        session.user.isTwoFactorEnabled = !!token.isTwoFactorEnabled
-        session.user.name = token.name as string
-        session.user.email = token.email as string
-        session.user.isOAuth = !!token.isOAuth
+        session.user.isTwoFactorEnabled = !!token.isTwoFactorEnabled;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.isOAuth = !!token.isOAuth;
       }
 
-      return session
+      console.log("[Auth] Updated session:", {
+        userId: session.user?.id,
+        isOAuth: session.user?.isOAuth
+      });
+
+      return session;
     },
-    async jwt({ token }) {
-      if (!token.sub) return token
+    async jwt({ token, user, account }) {
+      console.log("[Auth] JWT Callback:", {
+        tokenSub: token.sub,
+        userId: user?.id,
+        provider: account?.provider,
+        timestamp: new Date().toISOString()
+      });
 
-      const existingUser = await getUserById(token.sub)
+      if (!token.sub) return token;
 
-      if (!existingUser) return token
+      const existingUser = await getUserById(token.sub);
+      if (!existingUser) {
+        console.log("[Auth] JWT - User not found:", token.sub);
+        return token;
+      }
 
-      const existingAccount = await getAccountByUserId(existingUser.id)
+      const existingAccount = await getAccountByUserId(existingUser.id);
+      
+      token.isOAuth = !!existingAccount;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
-      token.isOAuth = !!existingAccount
-      token.name = existingUser.name
-      token.email = existingUser.email
-      token.role = existingUser.role
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
+      console.log("[Auth] JWT token updated:", {
+        isOAuth: token.isOAuth,
+        role: token.role
+      });
 
-      return token
+      return token;
     }
   },
   adapter: PrismaAdapter(db),

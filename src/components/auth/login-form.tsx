@@ -73,9 +73,9 @@ export const LoginForm = () => {
   return (
     <CardWrapper
       headerLabel=""
-      backButtonLabel="Don't have an account?"
+      backButtonLabel="ليس لديك حساب؟"
       backButtonHref="/join"
-      // showSocial
+      showSocial
     >
       <Form {...form}>
         <form 
@@ -114,7 +114,7 @@ export const LoginForm = () => {
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="Email"
+                          placeholder="البريد الإلكتروني"
                           type="email"
                         />
                       </FormControl>
@@ -132,7 +132,7 @@ export const LoginForm = () => {
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="Password"
+                          placeholder="كلمة المرور"
                           type="password"
                         />
                       </FormControl>
@@ -142,8 +142,8 @@ export const LoginForm = () => {
                         asChild
                         className="px-0 font-normal"
                       >
-                        <Link href="/reset" className="tracking-wide">
-                          Forgot password?
+                        <Link href="/reset" className="tracking-wide text-black">
+                          هل نسيت كلمة المرور؟
                         </Link>
                       </Button>
                       <FormMessage />
@@ -160,7 +160,7 @@ export const LoginForm = () => {
             type="submit"
             className="w-full h-12 text-[16px] text-[#fcfcfc]"
           >
-            {showTwoFactor ? "Confirm" : "Login"}
+            {showTwoFactor ? "تأكيد" : "تسجيل الدخول"}
           </Button>
         </form>
       </Form>
