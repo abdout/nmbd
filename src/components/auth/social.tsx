@@ -12,7 +12,7 @@ export const Social = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
-  const onClick = (provider: "google" | "github") => {
+  const onClick = (provider: "google" | "facebook") => {
     signIn(provider, {
       callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
@@ -33,7 +33,7 @@ export const Social = () => {
         size="lg"
         className="w-full"
         variant="outline"
-        onClick={() => onClick("github")}
+        onClick={() => onClick("facebook")}
       >
         <FaFacebook className="h-5 w-5 text-[#1877F2]" />
         <span className="text-sm">فيسبوك</span>
