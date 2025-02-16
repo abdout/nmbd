@@ -43,11 +43,12 @@ export const CardWrapper = ({
         {children}
       </CardContent>
       
-      <CardFooter className="text-black">
+      <CardFooter className="text-black !important">
         <BackButton
           
           label={backButtonLabel}
           href={backButtonHref}
+          
           
         />
       </CardFooter>

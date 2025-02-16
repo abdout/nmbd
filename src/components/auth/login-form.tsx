@@ -66,7 +66,7 @@ export const LoginForm = () => {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError("Something went wrong"));
+        .catch(() => setError("حدث خطأ ما"));
     });
   };
 
@@ -140,10 +140,10 @@ export const LoginForm = () => {
                         size="sm"
                         variant="link"
                         asChild
-                        className="px-0 font-normal"
+                        className="px-0 font-normal text-black"
                       >
-                        <Link href="/reset" className="tracking-wide text-black">
-                          هل نسيت كلمة المرور؟
+                        <Link href="/reset" className="tracking-wide">
+                         نسيت كلمة المرور؟
                         </Link>
                       </Button>
                       <FormMessage />

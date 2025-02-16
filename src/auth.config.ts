@@ -41,6 +41,33 @@ export default {
     Facebook({
       clientId: process.env.AUTH_FACEBOOK_ID,
       clientSecret: process.env.AUTH_FACEBOOK_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      },
+      async profile(profile) {
+        console.log("[OAuth] Profile received:", {
+          email: profile.email,
+          sub: profile.sub,
+          verified: profile.email_verified,
+          timestamp: new Date().toISOString()
+        });
+        
+        if (!profile.email_verified) {
+          console.log("[Auth Config] Google email not verified:", profile.email);
+          throw new Error("Email not verified");
+        }
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          emailVerified: profile.email_verified
+        };
+      }
     }),
     Credentials({
       async authorize(credentials) {
