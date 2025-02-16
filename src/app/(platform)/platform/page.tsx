@@ -1,8 +1,16 @@
 'use client';
 import React from 'react';
 import { Icon } from "@iconify/react";
+// import { useRouter } from 'next/navigation';
 
 export default function Page() {
+
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (window.location.hash === '#_=_') {
+  //       router.replace('/platform'); 
+  //   }
+
   return (
     <div className='pt-14 relative'>
       <h1 className="font-heading font-bold text-3xl leading-normal sm:text-2xl md:text-3xl">

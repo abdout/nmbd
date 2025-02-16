@@ -4,7 +4,6 @@ import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook,  } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LOGIN_REDIRECT } from "../../routes";
 
