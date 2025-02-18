@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, 
+  // CarouselPrevious, CarouselNext 
+} from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 
@@ -26,7 +28,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ src, name, papers }) => {
       {hover && (
         <div className="absolute inset-0 z-10 bg-opacity-80 flex items-center justify-center p-4">
           <div className="relative w-full h-full max-w-xs max-h-xs flex items-center justify-center">
-            <Carousel className="w-full h-full flex items-center justify-center" dir="ltr" autoPlay={true}>
+            <Carousel className="w-full h-full flex items-center justify-center" dir="ltr" 
+            // autoPlay={true}
+            >
               <CarouselContent>
                 {papers.map((paper, index) => (
                   <CarouselItem key={index}>

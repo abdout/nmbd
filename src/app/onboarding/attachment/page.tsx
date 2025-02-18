@@ -2,14 +2,23 @@
 import React, { useState, useEffect } from "react";
 import { User } from "@prisma/client";
 import Image from "next/image";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
 
+interface FormData {
+  image: string;
+  cv: string;
+  additionalFile: string;
+}
+
+interface UploadWidgetProps {
+  open: () => void;
+}
+
 const Attachment = ({ user }: { user: User }) => {
-  const [formData, setFormData] = useState({
-    // cover: user?.cover || "",
+  const [formData, setFormData] = useState<FormData>({
     image: user?.image || "",
     cv: user?.cv || "",
     additionalFile: user?.additionalFile || ""
@@ -20,10 +29,8 @@ const Attachment = ({ user }: { user: User }) => {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  // Update formData when user prop changes
   useEffect(() => {
     setFormData({
-      // cover: user?.cover || "",
       image: user?.image || "",
       cv: user?.cv || "",
       additionalFile: user?.additionalFile || ""
@@ -52,11 +59,29 @@ const Attachment = ({ user }: { user: User }) => {
     }
   };
 
-  const updateField = (field: string, value: string) => {
+  const updateField = (field: keyof FormData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleUploadSuccess = (
+    field: keyof FormData,
+    results: CloudinaryUploadWidgetResults,
+    closeWidget: () => void
+  ) => {
+    // if (results.info && 'secure_url' in results.info) {
+    //   // For CV, check if it's a PDF
+    //   if (field === 'cv') {
+    //     if ('format' in results.info && results.info.format === 'pdf') {
+    //       updateField(field, results.info.secure_url);
+    //     }
+    //   } else {
+    //     updateField(field, results.info.secure_url);
+    //   }
+    // }
+    closeWidget();
   };
 
   return (
@@ -65,14 +90,11 @@ const Attachment = ({ user }: { user: User }) => {
         {/* Profile Picture Upload */}
         <CldUploadWidget
           uploadPreset="social"
-          onSuccess={(result: any, { widget }: { widget: any }) => {
-            if (result.info && result.info.secure_url) {
-              updateField('image', result.info.secure_url);
-            }
-            widget.close();
-          }}
+          onSuccess={(results: CloudinaryUploadWidgetResults, { widget }) => 
+            handleUploadSuccess('image', results, widget.close)
+          }
         >
-          {({ open }) => (
+          {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
               className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
@@ -94,50 +116,15 @@ const Attachment = ({ user }: { user: User }) => {
           )}
         </CldUploadWidget>
 
-        {/* Cover Picture Upload */}
-        <CldUploadWidget
-          uploadPreset="social"
-          onSuccess={(result: any, { widget }: { widget: any }) => {
-            if (result.info && result.info.secure_url) {
-              updateField('cover', result.info.secure_url);
-            }
-            widget.close();
-          }}
-        >
-          {({ open }) => (
-            <div 
-              onClick={() => open()}
-              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
-            >
-              {/* {formData.cover ? (
-                <Image
-                  src={formData.cover}
-                  alt="Cover"
-                  width={96}
-                  height={96}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                  صورة{'\n'}الغلاف
-                </span>
-              )} */}
-            </div>
-          )}
-        </CldUploadWidget>
-
         {/* CV Upload */}
         <CldUploadWidget
           uploadPreset="social"
           options={{ resourceType: "raw" }}
-          onSuccess={(result: any, { widget }: { widget: any }) => {
-            if (result.info && result.info.secure_url && result.info.format === "pdf") {
-              updateField('cv', result.info.secure_url);
-            }
-            widget.close();
-          }}
+          onSuccess={(results: CloudinaryUploadWidgetResults, { widget }) => 
+            handleUploadSuccess('cv', results, widget.close)
+          }
         >
-          {({ open }) => (
+          {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
               className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
@@ -161,14 +148,11 @@ const Attachment = ({ user }: { user: User }) => {
         <CldUploadWidget
           uploadPreset="social"
           options={{ resourceType: "raw" }}
-          onSuccess={(result: any, { widget }: { widget: any }) => {
-            if (result.info && result.info.secure_url) {
-              updateField('additionalFile', result.info.secure_url);
-            }
-            widget.close();
-          }}
+          onSuccess={(results: CloudinaryUploadWidgetResults, { widget }) => 
+            handleUploadSuccess('additionalFile', results, widget.close)
+          }
         >
-          {({ open }) => (
+          {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
               className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
