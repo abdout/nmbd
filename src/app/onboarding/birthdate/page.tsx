@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
-import UpdateButton from "@/components/onboarding/update-button";
+// import UpdateButton from "@/components/onboarding/update-button";
 import { FaBirthdayCake,
   //  FaGlobeAmericas,
   //   FaMapMarkerAlt 

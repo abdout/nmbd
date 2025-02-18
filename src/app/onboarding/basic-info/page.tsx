@@ -16,7 +16,7 @@ const BasicInfo = ({ user }: { user: User }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
-  const [pending, setPending] = useState(false);
+  const [pending ] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

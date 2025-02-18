@@ -21,7 +21,7 @@ const Education = ({ user }: { user: User }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const router = useRouter();
-  const [pending, setPending] = useState(false); 
+  const [pending] = useState(false); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -77,8 +77,8 @@ const Education = ({ user }: { user: User }) => {
               >
                 <option value="">Select Level</option>
                 <option value="High School">High School</option>
-                <option value="Bachelor's">Bachelor's Degree</option>
-                <option value="Master's">Master's Degree</option>
+                <option value="Bachelor's">Bachelor Degree</option>
+                <option value="Master's">Master Degree</option>
                 <option value="Doctorate">Doctorate</option>
                 <option value="Other">Other</option>
               </select>

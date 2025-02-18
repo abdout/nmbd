@@ -5,7 +5,7 @@ import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
-import UpdateButton from "@/components/onboarding/update-button";
+// import UpdateButton from "@/components/onboarding/update-button";
 
 const Update = ({ user }: { user: User }) => {
   // const [cover, setCover] = useState<string>(user?.cover || "");
@@ -22,10 +22,10 @@ const Update = ({ user }: { user: User }) => {
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
     const description = (formData.get("description") as string) || "";
-    const city = (formData.get("city") as string) || "";
-    const school = (formData.get("school") as string) || "";
-    const work = (formData.get("work") as string) || "";
-    const website = (formData.get("website") as string) || "";
+    // const city = (formData.get("city") as string) || "";
+    // const school = (formData.get("school") as string) || "";
+    // const work = (formData.get("work") as string) || "";
+    // const website = (formData.get("website") as string) || "";
 
     try {
       const response = await updateProfile({

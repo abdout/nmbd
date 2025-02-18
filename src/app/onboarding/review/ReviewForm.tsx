@@ -13,7 +13,9 @@ export default function ReviewForm() {
   const { name, link, coupon, discount, contactName, contactEmail } =
     newDealData;
 
-  const handleFormSubmit = async (formData: FormData) => {
+  const handleFormSubmit = async (
+    // formData: FormData
+  ) => {
     const res = await submitDealAction(newDealData as NewDealType);
     const { redirect, errorMsg, success } = res;
 
