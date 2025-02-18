@@ -1,10 +1,10 @@
-// // serverActions.ts
+// serverActions.ts
 
-// "use server";
-// import { z } from "zod";
-// import { revalidatePath } from "next/cache";
-// import { db } from "@/lib/db";
-// import { currentUser } from "@/lib/auth";
+"use server";
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+import { db } from "@/lib/db";
+import { currentUser } from "@/lib/auth";
 
 
 // export const switchFollow = async (userId: string) => {
@@ -163,207 +163,207 @@
 //   }
 // };
 
-// export const updateProfile = async (payload: {
-//   name?: string;
-//   nickname?: string;
-//   username?: string;
-//   description?: string;
-//   bio?: string;
-//   onboarded?: boolean;
+export const updateProfile = async (payload: {
+  name?: string;
+  nickname?: string;
+  username?: string;
+  description?: string;
+  bio?: string;
+  onboarded?: boolean;
 
-//   // attachment
-//   image?: string;
-//   cover?: string;
-//   cv?: string;
-//   additionalFile?: string;
+  // attachment
+  image?: string;
+  cover?: string;
+  cv?: string;
+  additionalFile?: string;
   
-//   // Contact Information
-//   phone?: string;
-//   whatsapp?: string;
-//   twitter?: string;
-//   facebook?: string;
-//   linkedin?: string;
-//   telegram?: string;
-//   instagram?: string;
-//   tiktok?: string;
+  // Contact Information
+  phone?: string;
+  whatsapp?: string;
+  twitter?: string;
+  facebook?: string;
+  linkedin?: string;
+  telegram?: string;
+  instagram?: string;
+  tiktok?: string;
   
-//   // Personal Information
-//   birthDate?: Date;
-//   birthCountry?: string;
-//   birthState?: string;
-//   birthLocality?: string;
-//   birthAdminUnit?: string;
-//   birthNeighborhood?: string;
+  // Personal Information
+  birthDate?: Date;
+  birthCountry?: string;
+  birthState?: string;
+  birthLocality?: string;
+  birthAdminUnit?: string;
+  birthNeighborhood?: string;
 
-//   // Current Location
-//   currentCountry?: string;
-//   currentState?: string;
-//   currentLocality?: string;
-//   currentAdminUnit?: string;
-//   currentNeighborhood?: string;
+  // Current Location
+  currentCountry?: string;
+  currentState?: string;
+  currentLocality?: string;
+  currentAdminUnit?: string;
+  currentNeighborhood?: string;
 
-//   // Original Location
-//   originalCountry?: string;
-//   originalState?: string;
-//   originalLocality?: string;
-//   originalAdminUnit?: string;
-//   originalNeighborhood?: string;
+  // Original Location
+  originalCountry?: string;
+  originalState?: string;
+  originalLocality?: string;
+  originalAdminUnit?: string;
+  originalNeighborhood?: string;
 
-//   nationalityId?: string;
-//   maritalStatus?: string;
-//   gender?: string;
-//   religion?: string;
+  nationalityId?: string;
+  maritalStatus?: string;
+  gender?: string;
+  religion?: string;
   
-//   // Education & Work
-//   educationLevel?: string;
-//   institution?: string;
-//   yearOfCompletion?: number;
-//   currentOccupation?: string;
-//   employmentSector?: string;
-//   workplaceAddress?: string;
+  // Education & Work
+  educationLevel?: string;
+  institution?: string;
+  yearOfCompletion?: number;
+  currentOccupation?: string;
+  employmentSector?: string;
+  workplaceAddress?: string;
   
-//   // Student Details
-//   studentInstitution?: string;
-//   studentFaculty?: string;
-//   studentYear?: number;
+  // Student Details
+  studentInstitution?: string;
+  studentFaculty?: string;
+  studentYear?: number;
 
-//   // Activities & Skills
-//   politicalParty?: string;
-//   politicalMembership?: string;
-//   socialActivityType?: string;
-//   socialDescription?: string;
-//   skills?: string[];
-//   languageSkills?: string[];
+  // Activities & Skills
+  politicalParty?: string;
+  politicalMembership?: string;
+  socialActivityType?: string;
+  socialDescription?: string;
+  skills?: string[];
+  languageSkills?: string[];
   
-//   // Emergency Contacts
-//   emergencyName1?: string;
-//   emergencyRelation1?: string;
-//   emergencyPhone1?: string;
-//   emergencyName2?: string;
-//   emergencyRelation2?: string;
-//   emergencyPhone2?: string;
+  // Emergency Contacts
+  emergencyName1?: string;
+  emergencyRelation1?: string;
+  emergencyPhone1?: string;
+  emergencyName2?: string;
+  emergencyRelation2?: string;
+  emergencyPhone2?: string;
 
-//   // Other
-//   referralSource?: string;
-//   acquaintanceName?: string;
-//   donationAmount?: number;
-//   donationDate?: Date;
-//   oathAcknowledged?: boolean;
-// }) => {
-//   const ProfileSchema = z.object({
-//     name: z.string().max(60).optional(),
-//     nickname: z.string().max(60).optional(),
-//     username: z.string().max(60).optional(),
-//     description: z.string().max(255).optional(),
-//     bio: z.string().max(500).optional(),
-//     onboarded: z.boolean().optional(),
+  // Other
+  referralSource?: string;
+  acquaintanceName?: string;
+  donationAmount?: number;
+  donationDate?: Date;
+  oathAcknowledged?: boolean;
+}) => {
+  const ProfileSchema = z.object({
+    name: z.string().max(60).optional(),
+    nickname: z.string().max(60).optional(),
+    username: z.string().max(60).optional(),
+    description: z.string().max(255).optional(),
+    bio: z.string().max(500).optional(),
+    onboarded: z.boolean().optional(),
 
-//     // attachment
-//     image: z.string().max(255).optional(),
-//     cover: z.string().max(255).optional(),
-//     cv: z.string().max(255).optional(),
-//     additionalFile: z.string().max(255).optional(),
+    // attachment
+    image: z.string().max(255).optional(),
+    cover: z.string().max(255).optional(),
+    cv: z.string().max(255).optional(),
+    additionalFile: z.string().max(255).optional(),
 
-//     // Contact Information
-//     phone: z.string().max(20).optional(),
-//     whatsapp: z.string().max(20).optional(),
-//     twitter: z.string().max(100).optional(),
-//     facebook: z.string().max(100).optional(),
-//     linkedin: z.string().max(100).optional(),
-//     telegram: z.string().max(100).optional(),
-//     instagram: z.string().max(100).optional(),
-//     tiktok: z.string().max(100).optional(),
+    // Contact Information
+    phone: z.string().max(20).optional(),
+    whatsapp: z.string().max(20).optional(),
+    twitter: z.string().max(100).optional(),
+    facebook: z.string().max(100).optional(),
+    linkedin: z.string().max(100).optional(),
+    telegram: z.string().max(100).optional(),
+    instagram: z.string().max(100).optional(),
+    tiktok: z.string().max(100).optional(),
 
-//     // Personal Information
-//     birthDate: z.date().optional(),
-//     birthCountry: z.string().max(100).optional(),
-//     birthState: z.string().max(100).optional(),
-//     birthLocality: z.string().max(100).optional(),
-//     birthAdminUnit: z.string().max(100).optional(),
-//     birthNeighborhood: z.string().max(100).optional(),
+    // Personal Information
+    birthDate: z.date().optional(),
+    birthCountry: z.string().max(100).optional(),
+    birthState: z.string().max(100).optional(),
+    birthLocality: z.string().max(100).optional(),
+    birthAdminUnit: z.string().max(100).optional(),
+    birthNeighborhood: z.string().max(100).optional(),
 
-//     // Current Location
-//     currentCountry: z.string().max(100).optional(),
-//     currentState: z.string().max(100).optional(),
-//     currentLocality: z.string().max(100).optional(),
-//     currentAdminUnit: z.string().max(100).optional(),
-//     currentNeighborhood: z.string().max(100).optional(),
+    // Current Location
+    currentCountry: z.string().max(100).optional(),
+    currentState: z.string().max(100).optional(),
+    currentLocality: z.string().max(100).optional(),
+    currentAdminUnit: z.string().max(100).optional(),
+    currentNeighborhood: z.string().max(100).optional(),
 
-//     // Original Location
-//     originalCountry: z.string().max(100).optional(),
-//     originalState: z.string().max(100).optional(),
-//     originalLocality: z.string().max(100).optional(),
-//     originalAdminUnit: z.string().max(100).optional(),
-//     originalNeighborhood: z.string().max(100).optional(),
+    // Original Location
+    originalCountry: z.string().max(100).optional(),
+    originalState: z.string().max(100).optional(),
+    originalLocality: z.string().max(100).optional(),
+    originalAdminUnit: z.string().max(100).optional(),
+    originalNeighborhood: z.string().max(100).optional(),
 
-//     nationalityId: z.string().optional(),
-//     maritalStatus: z.string().max(50).optional(),
-//     gender: z.string().max(50).optional(),
-//     religion: z.string().max(50).optional(),
+    nationalityId: z.string().optional(),
+    maritalStatus: z.string().max(50).optional(),
+    gender: z.string().max(50).optional(),
+    religion: z.string().max(50).optional(),
 
-//     // Education & Work
-//     educationLevel: z.string().max(100).optional(),
-//     institution: z.string().max(100).optional(),
-//     yearOfCompletion: z.number().int().positive().optional(),
-//     currentOccupation: z.string().max(100).optional(),
-//     employmentSector: z.string().max(100).optional(),
-//     workplaceAddress: z.string().max(200).optional(),
+    // Education & Work
+    educationLevel: z.string().max(100).optional(),
+    institution: z.string().max(100).optional(),
+    yearOfCompletion: z.number().int().positive().optional(),
+    currentOccupation: z.string().max(100).optional(),
+    employmentSector: z.string().max(100).optional(),
+    workplaceAddress: z.string().max(200).optional(),
 
-//     // Student Details
-//     studentInstitution: z.string().max(100).optional(),
-//     studentFaculty: z.string().max(100).optional(),
-//     studentYear: z.number().int().positive().optional(),
+    // Student Details
+    studentInstitution: z.string().max(100).optional(),
+    studentFaculty: z.string().max(100).optional(),
+    studentYear: z.number().int().positive().optional(),
 
-//     // Activities & Skills
-//     politicalParty: z.string().max(100).optional(),
-//     politicalMembership: z.string().max(100).optional(),
-//     socialActivityType: z.string().max(100).optional(),
-//     socialDescription: z.string().max(255).optional(),
-//     skills: z.array(z.string()).optional(),
-//     languageSkills: z.array(z.string()).optional(),
+    // Activities & Skills
+    politicalParty: z.string().max(100).optional(),
+    politicalMembership: z.string().max(100).optional(),
+    socialActivityType: z.string().max(100).optional(),
+    socialDescription: z.string().max(255).optional(),
+    skills: z.array(z.string()).optional(),
+    languageSkills: z.array(z.string()).optional(),
 
-//     // Emergency Contacts
-//     emergencyName1: z.string().max(100).optional(),
-//     emergencyRelation1: z.string().max(50).optional(),
-//     emergencyPhone1: z.string().max(20).optional(),
-//     emergencyName2: z.string().max(100).optional(),
-//     emergencyRelation2: z.string().max(50).optional(),
-//     emergencyPhone2: z.string().max(20).optional(),
+    // Emergency Contacts
+    emergencyName1: z.string().max(100).optional(),
+    emergencyRelation1: z.string().max(50).optional(),
+    emergencyPhone1: z.string().max(20).optional(),
+    emergencyName2: z.string().max(100).optional(),
+    emergencyRelation2: z.string().max(50).optional(),
+    emergencyPhone2: z.string().max(20).optional(),
 
-//     // Other
-//     referralSource: z.string().max(100).optional(),
-//     acquaintanceName: z.string().max(100).optional(),
-//     donationAmount: z.number().positive().optional(),
-//     donationDate: z.date().optional(),
-//     oathAcknowledged: z.boolean().optional(),
-//   });
+    // Other
+    referralSource: z.string().max(100).optional(),
+    acquaintanceName: z.string().max(100).optional(),
+    donationAmount: z.number().positive().optional(),
+    donationDate: z.date().optional(),
+    oathAcknowledged: z.boolean().optional(),
+  });
 
-//   const validatedFields = ProfileSchema.safeParse(payload);
+  const validatedFields = ProfileSchema.safeParse(payload);
 
-//   if (!validatedFields.success) {
-//     console.log(validatedFields.error.flatten().fieldErrors);
-//     return { success: false, error: true };
-//   }
+  if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors);
+    return { success: false, error: true };
+  }
 
-//   const user = await currentUser();
+  const user = await currentUser();
 
-//   if (!user || !user.id) {
-//     return { success: false, error: true };
-//   }
+  if (!user || !user.id) {
+    return { success: false, error: true };
+  }
 
-//   try {
-//     await db.user.update({
-//       where: {
-//         id: user.id,
-//       },
-//       data: validatedFields.data,
-//     });
-//     return { success: true, error: false };
-//   } catch (err) {
-//     console.log(err);
-//     return { success: false, error: true };
-//   }
-// };
+  try {
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: validatedFields.data,
+    });
+    return { success: true, error: false };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true };
+  }
+};
 
 // export const switchLike = async (postId: string) => {
 //   const user = await currentUser();

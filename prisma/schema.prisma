@@ -29,6 +29,86 @@ model User {
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  description          String?
+  bio                  String?         
+  cv                    String?             
+  additionalFile        String?
+
+// Contact 
+  phone                String?
+  whatsapp             String?
+  twitter              String?
+  facebook             String?
+  linkedin             String?
+  telegram             String?
+  instagram            String?
+  tiktok               String?
+
+
+// Birthday
+  birthDate            DateTime?
+  birthCountry         String?
+  birthState           String?
+  birthLocality        String?
+  birthAdminUnit       String?
+  birthNeighborhood    String?
+
+  // Current Location
+  currentCountry       String?
+  currentState         String?
+  currentLocality      String?
+  currentAdminUnit     String?
+  currentNeighborhood  String?
+
+  // Original Location
+  originalCountry      String?
+  originalState        String?
+  originalLocality     String?
+  originalAdminUnit    String?
+  originalNeighborhood String?
+
+  // Nationality
+  nationalityId      String?
+  maritalStatus      String?
+  gender             String?
+  religion           String?
+
+  // Education & Work
+  educationLevel       String?
+  institution          String?
+  yearOfCompletion     Int?
+  currentOccupation    String?             
+  employmentSector     String?             
+  workplaceAddress     String?
+
+  // Student Details
+  studentInstitution   String?
+  studentFaculty       String?
+  studentYear          Int?
+
+  // Activities & Skills
+  politicalParty       String?
+  politicalMembership  String?
+  socialActivityType   String?
+  socialDescription    String?
+  skills               String[]            
+  languageSkills       String[]            
+  
+  // Emergency Contacts
+  emergencyName1       String?
+  emergencyRelation1   String?
+  emergencyPhone1      String?
+  emergencyName2       String?
+  emergencyRelation2   String?
+  emergencyPhone2      String?
+
+  // Other
+  referralSource       String?
+  acquaintanceName     String?
+  donationAmount       Float?
+  donationDate         DateTime?
+  oathAcknowledged     Boolean?             @default(false)
 }
 
 model Account {

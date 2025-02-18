@@ -1,7 +1,7 @@
 export const cardsData = [
   {
     name: "قاسم الظافر",
-    image: "/author/gasm.png",
+    image: "/author/3.jpg",
     rank: "الامين العام",
     email: "circum:mail",
     phone: "ph:phone-call-thin",
@@ -10,7 +10,7 @@ export const cardsData = [
   },
   {
     name: "هشام احمد",
-    image: "/author/hesham.png",
+    image: "/author/4.jpg",
     rank: "الامين السياسي",
     email: "circum:mail",
     phone: "ph:phone-call-thin",
@@ -19,7 +19,7 @@ export const cardsData = [
   },
   {
     name: "المقداد الهجان",
-    image: "/author/almgdad.png",
+    image: "/author/1.jpg",
     rank: "الامين الثقافي",
     email: "circum:mail",
     phone: "ph:phone-call-thin",
@@ -27,8 +27,8 @@ export const cardsData = [
     dail: "0917150001",
   },
   {
-    name: "ابو بكر جيكوني ",
-    image: "/author/abobakr.png",
+    name: "زهير طه",
+    image: "/author/2.jpg",
     rank: "الامين الاعلامي",
     email: "circum:mail",
     phone: "ph:phone-call-thin",
