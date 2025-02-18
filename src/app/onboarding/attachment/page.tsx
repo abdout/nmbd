@@ -21,9 +21,9 @@ interface UploadWidgetProps {
 }
 
 const Attachment = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   // const user = session?.user as User;
-  const [formData, setFormData] = useState<FormData>({
+  const [formData] = useState<FormData>({
     image: "",
     cv: "",
     additionalFile: ""
