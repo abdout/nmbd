@@ -1,11 +1,14 @@
 'use client';
-import React, { useState, useEffect } from "react";
-import { User } from "@prisma/client";
+import React, { useState, 
+  // useEffect 
+} from "react";
+// import { User } from "@prisma/client";
 import Image from "next/image";
 import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
+import { useSession } from "next-auth/react";
 
 interface FormData {
   image: string;
@@ -17,11 +20,13 @@ interface UploadWidgetProps {
   open: () => void;
 }
 
-const Attachment = ({ user }: { user: User }) => {
+const Attachment = () => {
+  const { data: session } = useSession();
+  // const user = session?.user as User;
   const [formData, setFormData] = useState<FormData>({
-    image: user?.image || "",
-    cv: user?.cv || "",
-    additionalFile: user?.additionalFile || ""
+    image: "",
+    cv: "",
+    additionalFile: ""
   });
   
   const [success, setSuccess] = useState<boolean>(false);
@@ -29,13 +34,15 @@ const Attachment = ({ user }: { user: User }) => {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setFormData({
-      image: user?.image || "",
-      cv: user?.cv || "",
-      additionalFile: user?.additionalFile || ""
-    });
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setFormData({
+  //       image: user?.image || "",
+  //       cv: user?.cv || "",
+  //       additionalFile: user?.additionalFile || ""
+  //     });
+  //   }
+  // }, [user]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,9 +79,8 @@ const Attachment = ({ user }: { user: User }) => {
     closeWidget: () => void
   ) => {
     // if (results.info && 'secure_url' in results.info) {
-    //   // For CV, check if it's a PDF
-    //   if (field === 'cv') {
-    //     if ('format' in results.info && results.info.format === 'pdf') {
+    //   if (field === 'cv' && 'format' in results.info) {
+    //     if (results.info.format === 'pdf') {
     //       updateField(field, results.info.secure_url);
     //     }
     //   } else {
