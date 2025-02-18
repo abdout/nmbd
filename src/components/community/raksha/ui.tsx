@@ -1,5 +1,5 @@
 import React from 'react';
-import Title from '@/components/atom/title/databayt';
+
 import Link from 'next/link';
 import { Icon } from "@iconify/react";
 
@@ -19,7 +19,7 @@ interface WelcomeProps {
 const Welcome: React.FC<WelcomeProps> = ({ title, desc, book, icons }) => {
   return (
     <div className='px-7 pt-28'>
-      <Title title={title} description='Welcome to' />
+      <h1 className='text-2xl font-bold'>{title}</h1>
       <p className="text-[18px] font-light tracking-wider pb-7">
         {desc} 
         <br /> to <strong>contribute</strong>, you may track the ongoing development by reviewing the 

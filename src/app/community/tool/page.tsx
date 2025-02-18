@@ -1,5 +1,5 @@
-import Card from "@/components/root/community/tool";
-import toolData from "@/components/root/community/constant";
+import Card from "@/components/community/tool";
+import toolData from "@/components/community/constant";
 import React from "react";
 import Image from "next/image";
 
