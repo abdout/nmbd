@@ -8,7 +8,7 @@ import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary"
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 
 interface FormData {
   image: string;
