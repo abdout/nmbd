@@ -4,7 +4,10 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
-import { FaGraduationCap, FaBriefcase, FaBuilding } from 'react-icons/fa';
+import { FaGraduationCap, 
+  // FaBriefcase, 
+  // FaBuilding 
+} from 'react-icons/fa';
 
 const Education = ({ user }: { user: User }) => {
   const [formData, setFormData] = useState({

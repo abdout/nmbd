@@ -8,7 +8,7 @@ import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
 
 const Update = ({ user }: { user: User }) => {
-  const [cover, setCover] = useState<string>(user?.cover || "");
+  // const [cover, setCover] = useState<string>(user?.cover || "");
   const [image, setImage] = useState<string>(user?.image || "");
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -31,11 +31,11 @@ const Update = ({ user }: { user: User }) => {
       const response = await updateProfile({
         name,
         description,
-        city,
-        school,
-        work,
-        website,
-        cover,
+        // city,
+        // school,
+        // work,
+        // website,
+        // cover,
         image,
       });
       if (response.success) {
@@ -78,7 +78,7 @@ const Update = ({ user }: { user: User }) => {
           </div>
         )}
       </CldUploadWidget>
-      <CldUploadWidget
+      {/* <CldUploadWidget
         uploadPreset="social"
         onSuccess={(result: any, { widget }: { widget: any }) => {
           if (result.info && result.info.secure_url) {
@@ -102,9 +102,9 @@ const Update = ({ user }: { user: User }) => {
             </div>
           </div>
         )}
-      </CldUploadWidget>
+      </CldUploadWidget> */}
 
-      <UpdateButton />
+      {/* <UpdateButton /> */}
       {success && <span className="text-green-500">Profile has been updated!</span>}
       {error && <span className="text-red-500">Something went wrong!</span>}
     </form>

@@ -8,8 +8,8 @@ import UpdateButton from '@/components/onboarding/update-button';
 const BasicInfo = ({ user }: { user: User }) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    nickname: user?.nickname || '',
-    username: user?.username || '',
+    nickname: user?.name || '',
+    username: user?.name || '',
     bio: user?.bio || '',
     gender: user?.gender || '',
   });

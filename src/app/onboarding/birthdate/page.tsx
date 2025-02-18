@@ -4,7 +4,10 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import UpdateButton from "@/components/onboarding/update-button";
-import { FaBirthdayCake, FaGlobeAmericas, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaBirthdayCake,
+  //  FaGlobeAmericas,
+  //   FaMapMarkerAlt 
+  } from 'react-icons/fa';
 
 const Birthdate = ({ user }: { user: User }) => {
   const [formData, setFormData] = useState({
@@ -133,7 +136,7 @@ const Birthdate = ({ user }: { user: User }) => {
       </div>
 
       <div className="mt-6">
-        <UpdateButton />
+        {/* <UpdateButton /> */}
         {success && (
           <p className="text-green-500 text-sm mt-2">
             Birth information updated successfully!

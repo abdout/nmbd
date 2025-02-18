@@ -1,6 +1,6 @@
 'use server';
 import { stepOneSchema } from '@/components/onboarding/schemas';
-import { AddDealRoutes, FormErrors } from '@/components/onboarding/types';
+import { onboardingRoutes, FormErrors } from '@/components/onboarding/types';
 import { redirect } from 'next/navigation';
 
 export const stepOneFormAction = (
@@ -18,5 +18,5 @@ export const stepOneFormAction = (
     return errors;
   }
 
-  redirect(AddDealRoutes.COUPON_DETAILS);
+  redirect(onboardingRoutes.CONTACT);
 };

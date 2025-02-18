@@ -23,7 +23,7 @@ const Attachment = ({ user }: { user: User }) => {
   // Update formData when user prop changes
   useEffect(() => {
     setFormData({
-      cover: user?.cover || "",
+      // cover: user?.cover || "",
       image: user?.image || "",
       cv: user?.cv || "",
       additionalFile: user?.additionalFile || ""
@@ -109,7 +109,7 @@ const Attachment = ({ user }: { user: User }) => {
               onClick={() => open()}
               className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
             >
-              {formData.cover ? (
+              {/* {formData.cover ? (
                 <Image
                   src={formData.cover}
                   alt="Cover"
@@ -121,7 +121,7 @@ const Attachment = ({ user }: { user: User }) => {
                 <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
                   صورة{'\n'}الغلاف
                 </span>
-              )}
+              )} */}
             </div>
           )}
         </CldUploadWidget>
