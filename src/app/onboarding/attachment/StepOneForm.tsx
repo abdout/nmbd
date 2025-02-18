@@ -6,22 +6,22 @@ import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 
-interface CloudinaryResult {
-  info: {
-    secure_url: string;
-  };
-}
+// interface CloudinaryResult {
+//   info: {
+//     secure_url: string;
+//   };
+// }
 
-interface CloudinaryWidget {
-  close: () => void;
-}
+// interface CloudinaryWidget {
+//   close: () => void;
+// }
 
 interface UploadWidgetProps {
   open: () => void;
 }
 
 const Update = ({ user }: { user: User }) => {
-  const [image, setImage] = useState<string>(user?.image || "");
+  const [image] = useState<string>(user?.image || "");
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const router = useRouter();
@@ -54,13 +54,13 @@ const Update = ({ user }: { user: User }) => {
     }
   };
 
-  const handleUploadSuccess = (result: CloudinaryResult, widget: CloudinaryWidget) => {
-    if (result.info && result.info.secure_url) {
-      setImage(result.info.secure_url);
-    }
-    widget.close();
-  };
-
+  // const handleUploadSuccess = (result: CloudinaryResult, widget: CloudinaryWidget) => {
+  //   if (result.info && result.info.secure_url) {
+  //     setImage(result.info.secure_url);
+  //   }
+  //   widget.close();
+  // };
+// 
   return (
     <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
       <CldUploadWidget

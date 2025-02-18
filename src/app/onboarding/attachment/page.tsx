@@ -59,12 +59,12 @@ const Attachment = ({ user }: { user: User }) => {
     }
   };
 
-  const updateField = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  // const updateField = (field: keyof FormData, value: string) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [field]: value
+  //   }));
+  // };
 
   const handleUploadSuccess = (
     field: keyof FormData,

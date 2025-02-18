@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import { onboardingRoutes } from "@/components/onboarding/types";
 
@@ -10,8 +10,8 @@ const steps = [
   onboardingRoutes.ATTACHMENT,
   onboardingRoutes.CONTACT,
   onboardingRoutes.BASIC_INFO,
-  onboardingRoutes.LOCATION,
-  onboardingRoutes.REVIEW,
+  // onboardingRoutes.LOCATION,
+  // onboardingRoutes.REVIEW,
 ];
 
 const UpdateButton = ({ pending }: { pending: boolean }) => {
