@@ -5,10 +5,10 @@ import {
   stepOneSchema,
   stepThreeSchema,
 } from '@/components/onboarding/schemas';
-import { AddDealRoutes } from '@/components/onboarding/types';
+import { onboardingRoutes } from '@/components/onboarding/types';
 
 interface SubmitDealActionReturnType {
-  redirect?: AddDealRoutes;
+  redirect?: onboardingRoutes;
   errorMsg?: string;
   success?: boolean;
 }
@@ -19,7 +19,7 @@ export const submitDealAction = async (
   const stepOneValidated = stepOneSchema.safeParse(deal);
   if (!stepOneValidated.success) {
     return {
-      redirect: AddDealRoutes.PRODUCT_INFO,
+      redirect: onboardingRoutes.TERMS,
       errorMsg: 'Please validate product info.',
     };
   }
@@ -27,7 +27,7 @@ export const submitDealAction = async (
   const stepTwoValidated = stepTwoSchema.safeParse(deal);
   if (!stepTwoValidated.success) {
     return {
-      redirect: AddDealRoutes.COUPON_DETAILS,
+      redirect: onboardingRoutes.ATTACHMENT,
       errorMsg: 'Please validate coupon details.',
     };
   }
@@ -35,11 +35,11 @@ export const submitDealAction = async (
   const stepThreeValidated = stepThreeSchema.safeParse(deal);
   if (!stepThreeValidated.success) {
     return {
-      redirect: AddDealRoutes.PRODUCT_INFO,
+      redirect: onboardingRoutes.CONTACT,
       errorMsg: 'Please validate contact info.',
     };
   }
-  const retVal = { success: true, redirect: AddDealRoutes.PRODUCT_INFO };
+  const retVal = { success: true, redirect: onboardingRoutes.CONTACT };
   console.log(retVal);
   return retVal;
 };
