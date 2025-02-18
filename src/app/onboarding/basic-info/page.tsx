@@ -1,22 +1,46 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { updateProfile } from '@/components/onboarding/actions';
 import UpdateButton from '@/components/onboarding/update-button';
 
-const BasicInfo = ({ user }: { user: User }) => {
+const BasicInfo = () => {
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    nickname: user?.name || '',
-    username: user?.name || '',
-    bio: user?.bio || '',
-    gender: user?.gender || '',
+    name: '',
+    nickname: '',
+    username: '',
+    bio: '',
+    gender: '',
   });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [pending, setPending] = useState(false);
   const router = useRouter();
-  const [pending ] = useState(false);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Replace this with your actual user data fetching logic
+        const response = await fetch('/api/user');
+        const userData: User = await response.json();
+        
+        setFormData({
+          name: userData?.name || '',
+          nickname: userData?.name || '', // Assuming nickname maps to name
+          username: userData?.name || '', // Assuming username maps to name
+          bio: userData?.bio || '',
+          gender: userData?.gender || '',
+        });
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError(true);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,6 +54,7 @@ const BasicInfo = ({ user }: { user: User }) => {
     e.preventDefault();
     setSuccess(false);
     setError(false);
+    setPending(true);
 
     try {
       const response = await updateProfile(formData);
@@ -42,6 +67,8 @@ const BasicInfo = ({ user }: { user: User }) => {
     } catch (err) {
       console.error(err);
       setError(true);
+    } finally {
+      setPending(false);
     }
   };
 
