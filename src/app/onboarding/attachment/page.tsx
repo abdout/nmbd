@@ -157,10 +157,12 @@ const Attachment = () => {
         {/* portfolio Upload */}
         <CldUploadWidget
           uploadPreset="social"
-          onSuccess={(result: any, { widget }: { widget: any }) => {
-            if (result.info && result.info.secure_url) {
-              // updateField('portfolio', result.info.secure_url);
-            }
+          onSuccess={(result: CloudinaryUploadWidgetResults
+
+            , { widget }: { widget: { close: () => void } }) => {
+            // if (result.info && result.info.secure_url) {
+            //   updateField('portfolio', result.info.secure_url);
+            // }
             widget.close();
           }}
         >
