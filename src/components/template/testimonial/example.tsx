@@ -1,4 +1,4 @@
-import Head from "@/components/atom/head";
+import Head from "@/components/atom/site-heading";
 import { AnimatedTestimonials } from "@/components/template/testimonial/source";
 
 export function AnimatedTestimonialsDemo() {

@@ -1,7 +1,7 @@
 "use client";
 
 
-import Head from "@/components/atom/head";
+import Head from "@/components/atom/site-heading";
 import { Carousel } from "./display";
 
 

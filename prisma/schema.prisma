@@ -32,8 +32,9 @@ model User {
 
   description          String?
   bio                  String?         
-  cv                    String?             
-  additionalFile        String?
+  cv                   String? 
+  portfolio            String?            
+  additionalFile       String?
 
 // Contact 
   phone                String?

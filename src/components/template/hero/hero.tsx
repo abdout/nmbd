@@ -26,14 +26,14 @@ const Hero = () => {
         </p>
         <div className="flex gap-4">
           <Link
-            href="/login"
+            href="/onboarding"
             className={cn(buttonVariants({ size: "lg" }), "text-white") }
 
           >
             يديك معانا
           </Link>
           <Link
-            href={siteConfig.links.github}
+            href='/#'
             target="_blank"
             rel="noreferrer"
             className={cn(buttonVariants({ variant: "outline", size: "lg" }))}

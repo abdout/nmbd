@@ -4,7 +4,7 @@ import React from 'react'
 
 const page = () => {
     return (
-        <div>
+        <div className='flex flex-col items-center justify-center'>
             <p>
                 لا تستثني الحركة احداَ من عامة السودانين الصالحين في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى، ومن يتقي معوج المسلك وفاسد العمل.
             </p>

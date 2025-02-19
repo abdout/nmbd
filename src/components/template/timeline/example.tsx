@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { Timeline } from "./timeline";
-import Head from "@/components/atom/head";
+import Head from "@/components/atom/site-heading";
 
 
 export function TimelineDemo() {

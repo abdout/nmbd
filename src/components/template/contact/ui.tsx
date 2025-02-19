@@ -5,7 +5,7 @@ import Excute from './excute'
 // import Office from './office'
 import NewsLetter from './newsletter'
 import Social from './social'
-import Head from '@/components/atom/head'
+import Head from '@/components/atom/site-heading'
 import MapSection from './map'
 
 const Contact = () => {

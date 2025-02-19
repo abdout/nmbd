@@ -1,27 +1,33 @@
-import PageHeader from '@/components/onboarding/page-header';
-import StepNavigation from '@/components/onboarding/step-navigation';
+import PageHeading from '@/components/onboarding/page-heading';
+import StepNavigation from '@/components/onboarding/step-nav';
 import { AddDealContextProvider } from '@/components/onboarding/addDealContext';
 import React from 'react';
+import ButtonNavigation from '@/components/onboarding/button-nav';
 
 
-export default function DealsLayout({
+export default function OnboardingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full px-20 py-10">
-      <PageHeader
+    <div className="w-full px-20 py-14">
+      <PageHeading
         title="حبابك عشرة"
-        subtitle="سيكون لنا متسع من الموت للنوم"
+        description="سيكون لنا متسع من الموت للنوم"
       />
 
-      <div className="mt-10 mb-14 flex flex-col gap-x-10  lg:flex-row">
+      <div className="flex flex-col gap-x-6 items-center justify-center">
         <StepNavigation />
         <AddDealContextProvider>
-          <div className="w-full">{children}</div>
+          <div className="w-[50%] flex flex-col items-center ">
+            {children}
+            <ButtonNavigation />
+          </div>
         </AddDealContextProvider>
+        
       </div>
+      
     </div>
   );
 }

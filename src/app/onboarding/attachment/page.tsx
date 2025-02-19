@@ -13,6 +13,7 @@ import UpdateButton from "@/components/onboarding/update-button";
 interface FormData {
   image: string;
   cv: string;
+  portfolio: string;
   additionalFile: string;
 }
 
@@ -26,6 +27,7 @@ const Attachment = () => {
   const [formData] = useState<FormData>({
     image: "",
     cv: "",
+    portfolio: "",
     additionalFile: ""
   });
   
@@ -103,7 +105,7 @@ const Attachment = () => {
           {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
-              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
+              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
             >
               {formData.image ? (
                 <Image
@@ -133,7 +135,7 @@ const Attachment = () => {
           {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
-              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
+              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
             >
               {formData.cv ? (
                 <div className="text-center text-gray-700 text-sm">
@@ -144,6 +146,38 @@ const Attachment = () => {
               ) : (
                 <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
                   سيرة{'\n'}ذاتية
+                </span>
+              )}
+            </div>
+          )}
+        </CldUploadWidget>
+
+        {/* portfolio Upload */}
+        <CldUploadWidget
+          uploadPreset="social"
+          onSuccess={(result: any, { widget }: { widget: any }) => {
+            if (result.info && result.info.secure_url) {
+              // updateField('portfolio', result.info.secure_url);
+            }
+            widget.close();
+          }}
+        >
+          {({ open }) => (
+            <div 
+              onClick={() => open()}
+              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
+            >
+              {formData.portfolio ? (
+                <Image
+                  src={formData.portfolio}
+                  alt="Cover"
+                  width={96}
+                  height={96}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
+                  معرض{'\n'}اعمال
                 </span>
               )}
             </div>
@@ -161,7 +195,7 @@ const Attachment = () => {
           {({ open }: UploadWidgetProps) => (
             <div 
               onClick={() => open()}
-              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-black reveal"
+              className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
             >
               {formData.additionalFile ? (
                 <div className="text-center text-gray-700 text-sm">
@@ -179,7 +213,7 @@ const Attachment = () => {
         </CldUploadWidget>
       </div>
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <UpdateButton pending={pending} />
         {success && (
           <p className="text-green-500 text-sm mt-2">
@@ -191,7 +225,7 @@ const Attachment = () => {
             Failed to update files. Please try again.
           </p>
         )}
-      </div>
+      </div> */}
     </form>
   );
 };

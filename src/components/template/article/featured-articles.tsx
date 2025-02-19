@@ -1,4 +1,4 @@
-import Head from '@/components/atom/head'
+import Head from '@/components/atom/site-heading'
 import React from 'react'
 import { featuredArticles } from './constant'
 import { ArticleHoverEffect } from '@/components/atom/card-article'
