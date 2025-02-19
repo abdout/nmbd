@@ -14,9 +14,10 @@ const SiteHeading = ({ title, description }: Props) => {
                 {title}
             </h2>
 
-            <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-md sm:leading-7">
                 {description}
             </p>
+            
         </div>
     );
 };

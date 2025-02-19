@@ -10,7 +10,7 @@ const Hero = () => {
     <div className="h-screen flex flex-col items-center justify-center space-y-6">
       <div className="flex flex-col items-center gap-6 text-center">
         <Link
-          href={siteConfig.links.twitter}
+          href='/community'
           className="rounded-2xl bg-muted px-4 py-1.5  text-sm font-medium -mt-20 md:-mt-20"
           target="_blank"
         >

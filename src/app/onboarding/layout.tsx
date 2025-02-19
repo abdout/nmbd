@@ -11,7 +11,7 @@ export default function OnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full px-20 py-14">
+    <div className="w-full px-20 py-10">
       <PageHeading
         title="حبابك عشرة"
         description="سيكون لنا متسع من الموت للنوم"
