@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { User } from "@prisma/client";
+// import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 // import UpdateButton from "@/components/onboarding/update-button";
@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 
 const Birthdate = () => {
   const { data: session } = useSession();
-  const [setUser] = useState<User | null>(null);
+  // const [setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState({
     birthDate: "",
     birthCountry: "",
