@@ -1,6 +1,6 @@
 'use client';
 import React from 'react'
-import Title from '@/components/atom/title/databayt'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Icon } from "@iconify/react";
@@ -10,7 +10,7 @@ const Raksha = () => {
     return (
         <div className='px-7 pt-28'>
 
-            <Title title='Raksha' description='converting' />
+            <h1>Raksha</h1>
 
             <p className="text-[18px] font-light tracking-wider  pb-7">
                 Raksha is dedicated to converting gasoline-powered tuk-tuks into electric vehicles, <br /> to <strong>contribute</strong>, you may track the ongoing development by reviewing the Readme,
