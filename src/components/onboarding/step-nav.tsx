@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import path from 'path';
 import { useEffect, useState } from 'react';
-import BackButton from './back-button';  // Import the BackButton component
+// import BackButton from './back-button';  // Import the BackButton component
 
 const steps = [
   // { title: 'الاحكام', route: 'terms', link: '/onboarding/terms' },
@@ -19,13 +19,13 @@ export default function StepNavigation() {
   const pathname = usePathname();
   const currentPath = path.basename(pathname);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  // const [currentStep, setCurrentStep] = useState(1);
   const [visitedSteps, setVisitedSteps] = useState<{ [key: string]: boolean }>({});
   const [errorSteps, setErrorSteps] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
-    const stepIndex = steps.findIndex((step) => step.route === currentPath);
-    setCurrentStep(stepIndex);
+    // const stepIndex = steps.findIndex((step) => step.route === currentPath);
+    // setCurrentStep(stepIndex);
 
     setVisitedSteps((prev) => ({
       ...prev,

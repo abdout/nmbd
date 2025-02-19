@@ -5,9 +5,9 @@ import React, { useState,
 // import { User } from "@prisma/client";
 import Image from "next/image";
 import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
-import { useRouter } from "next/navigation";
-import { updateProfile } from "@/components/onboarding/actions";
-import UpdateButton from "@/components/onboarding/update-button";
+// import { useRouter } from "next/navigation";
+// import { updateProfile } from "@/components/onboarding/actions";
+// import UpdateButton from "@/components/onboarding/update-button";
 // import { useSession } from "next-auth/react";
 
 interface FormData {
@@ -31,10 +31,10 @@ const Attachment = () => {
     additionalFile: ""
   });
   
-  const [success, setSuccess] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [pending, setPending] = useState(false);
-  const router = useRouter();
+  // const [success, setSuccess] = useState<boolean>(false);
+  // const [error, setError] = useState<boolean>(false);
+  // const [pending, setPending] = useState(false);
+  // const router = useRouter();
 
   // useEffect(() => {
   //   if (user) {
@@ -46,27 +46,27 @@ const Attachment = () => {
   //   }
   // }, [user]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSuccess(false);
-    setError(false);
-    setPending(true);
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setSuccess(false);
+  //   setError(false);
+  //   setPending(true);
 
-    try {
-      const response = await updateProfile(formData);
-      if (response.success) {
-        setSuccess(true);
-        router.refresh();
-      } else {
-        setError(true);
-      }
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    } finally {
-      setPending(false);
-    }
-  };
+  //   try {
+  //     const response = await updateProfile(formData);
+  //     if (response.success) {
+  //       setSuccess(true);
+  //       router.refresh();
+  //     } else {
+  //       setError(true);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError(true);
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
 
   // const updateField = (field: keyof FormData, value: string) => {
   //   setFormData(prev => ({
@@ -93,7 +93,9 @@ const Attachment = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+    <form 
+    // onSubmit={handleSubmit} 
+    className="p-6 flex flex-col gap-4">
       <div className="flex flex-row gap-6">
         {/* Profile Picture Upload */}
         <CldUploadWidget
