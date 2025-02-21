@@ -1,8 +1,22 @@
+'use client';
 import { Checkbox } from '@/components/ui/checkbox'
+import { useRouter } from 'next/navigation';
 import Link from 'next/link'
-import React from 'react'
+import { useState } from 'react'
+import { toast } from 'sonner';
 
-const page = () => {
+const TermsPage = () => {
+    const [accepted, setAccepted] = useState(false);
+    const router = useRouter();
+
+    const handleCheckboxChange = (checked: boolean) => {
+        setAccepted(checked);
+        if (checked) {
+            toast.success("تم قبول الشروط");
+            router.push('/onboarding/attachment');
+        }
+    };
+
     return (
         <div className='flex flex-col items-center justify-center'>
             <p>
@@ -11,6 +25,8 @@ const page = () => {
             <div className="flex items-center gap-2 pt-8">
                 <Checkbox
                     id="terms"
+                    checked={accepted}
+                    onCheckedChange={handleCheckboxChange}
                 />
                 <label
                     htmlFor="terms"
@@ -23,4 +39,4 @@ const page = () => {
     )
 }
 
-export default page
+export default TermsPage;

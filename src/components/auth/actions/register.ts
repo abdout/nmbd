@@ -51,6 +51,8 @@ export const register = async (
         role: "USER",
         isTwoFactorEnabled: false,
         emailVerified: null,
+        onboardingStatus: "PENDING",
+        onboardingStep: 1,
       },
     });
 

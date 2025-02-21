@@ -1,4 +1,3 @@
-
 import NextAuth from "next-auth"
 import authConfig from "./auth.config"
 import { 
@@ -7,57 +6,49 @@ import {
   DEFAULT_LOGIN_REDIRECT, 
   publicRoutes 
 } from "./routes"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const { auth } = NextAuth(authConfig)
+const { auth: authNextAuth } = NextAuth(authConfig)
 
-export default auth((req) => {
+export default authNextAuth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
-
-  console.log("[Middleware] Request Details:", {
-    path: nextUrl.pathname,
-    isLoggedIn,
-    sessionData: req.auth,
-    timestamp: new Date().toISOString()
-  });
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+  const isOnboardingRoute = nextUrl.pathname.startsWith("/onboarding")
 
   if (isApiAuthRoute) {
-    console.log("[Middleware] API Auth Route:", nextUrl.pathname);
     return
   }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      console.log("[Middleware] Authenticated user on auth route - redirecting to:", DEFAULT_LOGIN_REDIRECT);
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
-    console.log("[Middleware] Unauthenticated user on auth route - allowing");
     return
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    console.log("[Middleware] Unauthorized access - redirecting to login:", {
-      from: nextUrl.pathname,
-      isPublic: isPublicRoute
-    });
-    
     const callbackUrl = nextUrl.pathname + nextUrl.search
     const encodedCallbackUrl = encodeURIComponent(callbackUrl)
-    const loginUrl = `/login?callbackUrl=${encodedCallbackUrl}`
-
-    console.log("[Middleware] Redirect URL:", loginUrl);
-    return Response.redirect(new URL(loginUrl, nextUrl))
+    return Response.redirect(new URL(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl))
   }
 
-  return
+  // If logged in and not in onboarding, redirect to onboarding
+  if (isLoggedIn && !isOnboardingRoute && req.auth?.user?.onboardingStatus === "PENDING") {
+    return NextResponse.redirect(new URL("/onboarding", nextUrl))
+  }
+
+  return NextResponse.next()
 })
 
 export const config = {
   matcher: [
     '/((?!api/auth|_next/static|_next/image|favicon.ico|fonts).*)',
+    "/dashboard/:path*",
+    "/profile/:path*"
   ],
 }

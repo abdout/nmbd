@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input";
 import Address from '@/components/onboarding/address';
 import { mockUser } from '@/components/onboarding/constant';
 import Birthdate from '@/components/onboarding/birthdate';
-
+import { useSession } from "next-auth/react";
 
 const BasicInfo = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     nickname: '',
@@ -21,7 +23,12 @@ const BasicInfo = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [pending, setPending] = useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    if (!session?.user) {
+      router.push("/login");
+    }
+  }, [session, router]);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -65,7 +72,7 @@ const BasicInfo = () => {
       const response = await updateProfile(formData);
       if (response.success) {
         setSuccess(true);
-        router.refresh();
+        router.push("/onboarding/next-step");
       } else {
         setError(true);
       }
