@@ -14,7 +14,15 @@ export default function OnboardingLayout({
 
   return (
     <div className="px-20 py-10">
-      <Toaster position="top-center" />
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            maxWidth: '200px',
+            minWidth: '200px'
+          }
+        }}
+      />
       <PageHeading
         title="حبابك عشرة"
         description="سيكون لنا متسع من الموت للنوم"

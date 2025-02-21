@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
@@ -65,19 +65,14 @@ const Contact = ({ user }: { user: User }) => {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto py-12">
       <Tabs defaultValue="هاتف" dir="rtl">
         
 
-        {tabsData.map(({ icon, field, placeholder }) => (
+        {tabsData.map(({ field, placeholder }) => (
           <TabsContent key={field} value={field}>
             <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  {icon}
-                  <span>{field}</span>
-                </div>
-              </CardHeader>
+              
               <CardContent className="-mt-12">
                 <Label className="flex items-center gap-2 py-2">
                   {field.charAt(0).toUpperCase() + field.slice(1)}

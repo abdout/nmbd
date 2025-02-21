@@ -210,7 +210,7 @@ const Address = ({ user }: { user: User }) => {
                   items={countries}
                   selectedItem={formData.currentCountry}
                   setSelectedItem={(item) => handleSelect('current', 'Country', item)}
-                  label={formData.currentCountry?.label || 'اختر الدولة'}
+                  label={formData.currentCountry?.label || 'السكن'}
                 />
               </div>
             )}
@@ -221,7 +221,7 @@ const Address = ({ user }: { user: User }) => {
                   items={states[formData.currentCountry.value] || []}
                   selectedItem={formData.currentState}
                   setSelectedItem={(item) => handleSelect('current', 'State', item)}
-                  label={formData.currentState?.label || 'اختر الولاية'}
+                    label={formData.currentState?.label || 'الولاية'}
                 />
               </div>
             )}
@@ -232,7 +232,7 @@ const Address = ({ user }: { user: User }) => {
                   items={localities[formData.currentState.value] || []}
                   selectedItem={formData.currentLocality}
                   setSelectedItem={(item) => handleSelect('current', 'Locality', item)}
-                  label={formData.currentLocality?.label || 'اختر المدينة'}
+                  label={formData.currentLocality?.label || 'المدينة'}
                 />
               </div>
             )}
@@ -243,7 +243,7 @@ const Address = ({ user }: { user: User }) => {
                   items={adminUnits[formData.currentLocality.value] || []}
                   selectedItem={formData.currentAdminUnit}
                   setSelectedItem={(item) => handleSelect('current', 'AdminUnit', item)}
-                  label={formData.currentAdminUnit?.label || 'اختر الوحدة'}
+                  label={formData.currentAdminUnit?.label || 'الوحدة'}
                 />
               </div>
             )}
@@ -254,7 +254,7 @@ const Address = ({ user }: { user: User }) => {
                   items={neighborhoods[formData.currentAdminUnit.value] || []}
                   selectedItem={formData.currentNeighborhood}
                   setSelectedItem={(item) => handleSelect('current', 'Neighborhood', item)}
-                  label={formData.currentNeighborhood?.label || 'اختر الحي'}
+                  label={formData.currentNeighborhood?.label || 'الحي'}
                 />
               </div>
             )}
@@ -283,7 +283,7 @@ const Address = ({ user }: { user: User }) => {
                   items={countries}
                   selectedItem={formData.originalCountry}
                   setSelectedItem={(item) => handleSelect('original', 'Country', item)}
-                  label={formData.originalCountry?.label || 'اختر الدولة'}
+                  label={formData.originalCountry?.label || 'السكن'}
                 />
               </div>
             )}
@@ -294,7 +294,7 @@ const Address = ({ user }: { user: User }) => {
                   items={states[formData.originalCountry.value] || []}
                   selectedItem={formData.originalState}
                   setSelectedItem={(item) => handleSelect('original', 'State', item)}
-                  label={formData.originalState?.label || 'اختر الولاية'}
+                  label={formData.originalState?.label || 'الولاية'}
                 />
               </div>
             )}
@@ -305,7 +305,7 @@ const Address = ({ user }: { user: User }) => {
                   items={localities[formData.originalState.value] || []}
                   selectedItem={formData.originalLocality}
                   setSelectedItem={(item) => handleSelect('original', 'Locality', item)}
-                  label={formData.originalLocality?.label || 'اختر المدينة'}
+                  label={formData.originalLocality?.label || 'المدينة'}
                 />
               </div>
             )}
@@ -316,7 +316,7 @@ const Address = ({ user }: { user: User }) => {
                   items={adminUnits[formData.originalLocality.value] || []}
                   selectedItem={formData.originalAdminUnit}
                   setSelectedItem={(item) => handleSelect('original', 'AdminUnit', item)}
-                  label={formData.originalAdminUnit?.label || 'اختر الوحدة'}
+                  label={formData.originalAdminUnit?.label || 'الوحدة'}
                 />
               </div>
             )}
@@ -327,7 +327,7 @@ const Address = ({ user }: { user: User }) => {
                   items={neighborhoods[formData.originalAdminUnit.value] || []}
                   selectedItem={formData.originalNeighborhood}
                   setSelectedItem={(item) => handleSelect('original', 'Neighborhood', item)}
-                  label={formData.originalNeighborhood?.label || 'اختر الحي'}
+                  label={formData.originalNeighborhood?.label || 'الحي'}
                 />
               </div>
             )}

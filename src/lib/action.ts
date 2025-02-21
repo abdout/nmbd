@@ -267,3 +267,42 @@ export const getUsers = async () => {
     return [];
   }
 };
+
+export const updateProfile = async (
+  currentState: { success: boolean; error: boolean },
+  data: Partial<UserSchema>  // Make it partial to allow updating specific fields
+) => {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: true, message: "Not authenticated" };
+    }
+
+    await db.user.update({
+      where: { id: session.user.id },
+      data: {
+        name: data.name,
+        fullname: data.fullname,
+        bio: data.bio,
+        phone: data.phone,
+        whatsapp: data.whatsapp,
+        twitter: data.twitter,
+        facebook: data.facebook,
+        linkedin: data.linkedin,
+        telegram: data.telegram,
+        instagram: data.instagram,
+        tiktok: data.tiktok,
+        currentCountry: data.currentCountry,
+        currentState: data.currentState,
+        currentLocality: data.currentLocality,
+        updatedAt: new Date(),
+      },
+    });
+
+    revalidatePath("/profile");
+    return { success: true, error: false };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: true };
+  }
+};
