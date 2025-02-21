@@ -3,6 +3,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ChevronDown } from "lucide-react";
 
 interface Item {
   label: string;
@@ -23,8 +24,9 @@ const SelectPopover: React.FC<SelectPopoverProps> = ({ items, selectedItem, setS
     <div className="flex items-center space-x-4">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[150px] justify-start">
+          <Button variant="outline" className="w-[200px] h-10 justify-between">
             {selectedItem ? <>{selectedItem.label}</> : <>{label}</>}
+            <ChevronDown className=" h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 z-50 relative" side="bottom" align="start">

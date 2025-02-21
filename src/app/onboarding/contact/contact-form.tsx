@@ -70,25 +70,18 @@ const Contact = ({ user }: { user: User }) => {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
       <Tabs defaultValue="هاتف" dir="rtl"> {/* Set defaultValue to "هاتف" */}
-        <div className="flex items-center justify-between">
-          <TabsList className="flex gap-4">
-            {tabsData.slice().reverse().map(({ icon, field }) => (
-              <TabsTrigger key={field} value={field} className="p-1 flex justify-center reveal">
-                {icon}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        
 
         {tabsData.map(({ icon, field, placeholder }) => (
           <TabsContent key={field} value={field}> {/* Ensure value matches field */}
             <Card>
               <CardHeader />
-              <CardContent className="space-y-4">
-                <Label className="flex items-center gap-2">
-                  {icon} {field.charAt(0).toUpperCase() + field.slice(1)}
+              <CardContent className="-mt-12">
+                <Label className="flex items-center gap-2 py-2">
+                  {/* {icon} */}
+                   {field.charAt(0).toUpperCase() + field.slice(1)}
                 </Label>
                 <Input
                   type="text"
@@ -96,16 +89,25 @@ const Contact = ({ user }: { user: User }) => {
                   value={formData[field as FormDataKey]}
                   onChange={handleChange}
                   placeholder={placeholder}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 h-9 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </CardContent>
             </Card>
           </TabsContent>
         ))}
+         <div className="flex items-center justify-between">
+          <TabsList className="flex gap-2 bg-background">
+            {tabsData.slice().reverse().map(({ icon, field }) => (
+              <TabsTrigger key={field} value={field} className="p-1 flex justify-center">
+                {icon}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
       </Tabs>
 
-      <div className="mt-6 justify-end">
-        <UpdateButton pending={pending} />  {/* Pass pending state */}
+      <div className=" justify-end">
+        {/* <UpdateButton pending={pending} /> */}
         {success && (
           <p className="text-green-500 text-sm mt-2">
             Contact information updated successfully!

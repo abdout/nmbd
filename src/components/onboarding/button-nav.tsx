@@ -9,7 +9,7 @@ const ButtonNavigation = () => {
     
   return (
     <div>
-        <div className="flex justify-center space-x-reverse space-x-4 pt-10">
+        <div className="flex justify-center space-x-reverse space-x-4">
       <Button onClick={() => router.back()} size="sm" className='bg-neutral-950 hover:bg-neutral-800'>
         <ArrowRight className="ml-2 h-4 w-4" /> السابق
       </Button>

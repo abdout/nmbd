@@ -4,6 +4,11 @@ import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { updateProfile } from '@/components/onboarding/actions';
 import UpdateButton from '@/components/onboarding/update-button';
+import { Input } from "@/components/ui/input";
+import Address from '@/components/onboarding/address';
+import { mockUser } from '@/components/onboarding/constant';
+import Birthdate from '@/components/onboarding/birthdate';
+
 
 const BasicInfo = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +30,7 @@ const BasicInfo = () => {
         // Replace this with your actual user data fetching logic
         const response = await fetch('/api/user');
         const userData: User = await response.json();
-        
+
         setFormData({
           name: userData?.name || '',
           nickname: userData?.name || '', // Assuming nickname maps to name
@@ -73,78 +78,30 @@ const BasicInfo = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-2xl mx-auto">
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium mb-2">الاسم</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="الاسم الكامل"
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-2">الكنية</label>
-          <input
-            type="text"
-            name="nickname"
-            value={formData.nickname}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="الكنية"
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-2">اسم المستخدم</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="اسم المستخدم"
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-2">السيرة الذاتية</label>
-          <textarea
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="السيرة الذاتية"
-            rows={4}
-          />
-        </div>
+    <form onSubmit={handleSubmit} className=" max-w-2xl mx-auto space-y-4">
+      <div className="flex gap-4">
+      <Input
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        placeholder="الاسم الكامل"
+      />
 
-        <div>
-          <label className="block text-sm font-medium mb-2">الجنس</label>
-          <input
-            type="text"
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="الجنس"
-          />
-        </div>
+      <Input
+        type="text"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        placeholder="اسم المستخدم"
+      />
       </div>
+      <div className="flex gap-4">
+      <Address user={mockUser} />
+      <Birthdate user={mockUser} />
 
-      <div className="mt-6">
-        <UpdateButton pending={pending} />
-        {success && (
-          <p className="text-green-500 text-sm mt-2">تم تحديث المعلومات بنجاح!</p>
-        )}
-        {error && (
-          <p className="text-red-500 text-sm mt-2">فشل في تحديث المعلومات. حاول مرة أخرى.</p>
-        )}
       </div>
+      
     </form>
   );
 };

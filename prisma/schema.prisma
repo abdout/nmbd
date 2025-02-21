@@ -54,6 +54,8 @@ model User {
   birthLocality        String?
   birthAdminUnit       String?
   birthNeighborhood    String?
+  birthMonth           Int?
+  birthYear            Int?
 
   // Current Location
   currentCountry       String?
