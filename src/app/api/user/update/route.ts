@@ -16,7 +16,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(updatedUser);
-  } catch (_error) {
+  } catch (error) {
+    console.error("Error updating user:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 } 

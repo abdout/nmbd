@@ -1,6 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { User } from '@prisma/client';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateProfile } from '@/components/onboarding/actions';
 import { Input } from "@/components/ui/input";

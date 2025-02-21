@@ -72,10 +72,15 @@ const Contact = ({ user }: { user: User }) => {
         {tabsData.map(({ icon, field, placeholder }) => (
           <TabsContent key={field} value={field}>
             <Card>
-              <CardHeader />
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  {icon}
+                  <span>{field}</span>
+                </div>
+              </CardHeader>
               <CardContent className="-mt-12">
                 <Label className="flex items-center gap-2 py-2">
-                   {field.charAt(0).toUpperCase() + field.slice(1)}
+                  {field.charAt(0).toUpperCase() + field.slice(1)}
                 </Label>
                 <Input
                   type="text"

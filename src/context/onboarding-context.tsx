@@ -1,27 +1,33 @@
 "use client";
-
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from 'react';
 import { useSession } from "next-auth/react";
 
-const OnboardingContext = createContext<{
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
-  userData: any;
-  updateUserData: (data: any) => void;
-}>({
-  currentStep: 1,
-  setCurrentStep: () => {},
-  userData: {},
-  updateUserData: () => {},
+interface OnboardingData {
+  step: number;
+  formData: Record<string, unknown>;
+}
+
+interface OnboardingContextType {
+  data: OnboardingData;
+  setData: React.Dispatch<React.SetStateAction<OnboardingData>>;
+}
+
+const defaultState: OnboardingData = {
+  step: 1,
+  formData: {}
+};
+
+export const OnboardingContext = createContext<OnboardingContextType>({
+  data: defaultState,
+  setData: () => {}
 });
 
-export const OnboardingProvider = ({ children }: { children: React.ReactNode }) => {
+export function OnboardingProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [userData, setUserData] = useState({});
+  const [data, setData] = useState<OnboardingData>(defaultState);
 
   const updateUserData = async (data: any) => {
-    setUserData(prev => ({ ...prev, ...data }));
+    setData(prev => ({ ...prev, ...data }));
     
     // Update user data in database
     await fetch("/api/user/update", {
@@ -31,8 +37,8 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <OnboardingContext.Provider value={{ currentStep, setCurrentStep, userData, updateUserData }}>
+    <OnboardingContext.Provider value={{ data, setData }}>
       {children}
     </OnboardingContext.Provider>
   );
-}; 
+} 
