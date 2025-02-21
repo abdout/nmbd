@@ -173,7 +173,20 @@ const Address = ({ user }: { user: User }) => {
     e.preventDefault();
 
     try {
-      const response = await updateProfile(formData);
+      const submissionData = {
+        currentCountry: formData.currentCountry?.value || '',
+        currentState: formData.currentState?.value || '',
+        currentLocality: formData.currentLocality?.value || '',
+        currentAdminUnit: formData.currentAdminUnit?.value || '',
+        currentNeighborhood: formData.currentNeighborhood?.value || '',
+        originalCountry: formData.originalCountry?.value || '',
+        originalState: formData.originalState?.value || '',
+        originalLocality: formData.originalLocality?.value || '',
+        originalAdminUnit: formData.originalAdminUnit?.value || '',
+        originalNeighborhood: formData.originalNeighborhood?.value || ''
+      };
+
+      const response = await updateProfile(submissionData);
       if (response.success) {
         router.refresh();
       }
