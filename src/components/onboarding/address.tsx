@@ -5,9 +5,6 @@ import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import SelectPopover from "@/components/atom/popover/popover";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 
 interface Item {
   label: string;
