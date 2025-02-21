@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
-import UpdateButton from "@/components/onboarding/update-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SelectPopover from "@/components/atom/popover/popover";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface Item {
   label: string;
@@ -21,6 +23,7 @@ type FormDataType = {
 };
 
 const Address = ({ user }: { user: User }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormDataType>({
     currentCountry: user?.currentCountry
       ? { label: user.currentCountry, value: user.currentCountry }
@@ -53,10 +56,6 @@ const Address = ({ user }: { user: User }) => {
       ? { label: user.originalNeighborhood, value: user.originalNeighborhood }
       : null,
   });
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const router = useRouter();
-  const [pending, setPending] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [originalStep, setOriginalStep] = useState(1);
 
@@ -172,36 +171,14 @@ const Address = ({ user }: { user: User }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSuccess(false);
-    setError(false);
-    setPending(true);
 
     try {
-      const submissionData = {
-        currentCountry: formData.currentCountry?.value || user.currentCountry || '',
-        currentState: formData.currentState?.value || user.currentState || '',
-        currentLocality: formData.currentLocality?.value || user.currentLocality || '',
-        currentAdminUnit: formData.currentAdminUnit?.value || user.currentAdminUnit || '',
-        currentNeighborhood: formData.currentNeighborhood?.value || user.currentNeighborhood || '',
-        originalCountry: formData.originalCountry?.value || user.originalCountry || '',
-        originalState: formData.originalState?.value || user.originalState || '',
-        originalLocality: formData.originalLocality?.value || user.originalLocality || '',
-        originalAdminUnit: formData.originalAdminUnit?.value || user.originalAdminUnit || '',
-        originalNeighborhood: formData.originalNeighborhood?.value || user.originalNeighborhood || '',
-      };
-
-      const response = await updateProfile(submissionData);
+      const response = await updateProfile(formData);
       if (response.success) {
-        setSuccess(true);
         router.refresh();
-      } else {
-        setError(true);
       }
     } catch (err) {
       console.error(err);
-      setError(true);
-    } finally {
-      setPending(false);
     }
   };
 
@@ -359,16 +336,6 @@ const Address = ({ user }: { user: User }) => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* <div className="mt-6">
-        <UpdateButton pending={pending} />
-        {success && (
-          <p className="text-green-500 text-sm mt-2">تم تحديث المعلومات بنجاح!</p>
-        )}
-        {error && (
-          <p className="text-red-500 text-sm mt-2">فشل في تحديث المعلومات. حاول مرة أخرى.</p>
-        )}
-      </div> */}
     </form>
   );
 };

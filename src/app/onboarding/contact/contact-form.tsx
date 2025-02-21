@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/components/onboarding/actions";
-import UpdateButton from "@/components/onboarding/update-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,7 @@ import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaI
 type FormDataKey = "phone" | "whatsapp" | "twitter" | "facebook" | "linkedin" | "telegram" | "instagram" | "tiktok";
 
 const Contact = ({ user }: { user: User }) => {
+  const router = useRouter();
   const [formData, setFormData] = useState<Record<FormDataKey, string>>({
     phone: user?.phone || "",
     whatsapp: user?.whatsapp || "",
@@ -25,8 +25,6 @@ const Contact = ({ user }: { user: User }) => {
   });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [pending, setPending] = useState(false);  // Track form submission status
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,7 +38,6 @@ const Contact = ({ user }: { user: User }) => {
     e.preventDefault();
     setSuccess(false);
     setError(false);
-    setPending(true);  // Start submission
 
     try {
       const response = await updateProfile(formData);
@@ -53,8 +50,6 @@ const Contact = ({ user }: { user: User }) => {
     } catch (err) {
       console.error(err);
       setError(true);
-    } finally {
-      setPending(false);  // End submission
     }
   };
 
@@ -71,16 +66,15 @@ const Contact = ({ user }: { user: User }) => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-      <Tabs defaultValue="هاتف" dir="rtl"> {/* Set defaultValue to "هاتف" */}
+      <Tabs defaultValue="هاتف" dir="rtl">
         
 
         {tabsData.map(({ icon, field, placeholder }) => (
-          <TabsContent key={field} value={field}> {/* Ensure value matches field */}
+          <TabsContent key={field} value={field}>
             <Card>
               <CardHeader />
               <CardContent className="-mt-12">
                 <Label className="flex items-center gap-2 py-2">
-                  {/* {icon} */}
                    {field.charAt(0).toUpperCase() + field.slice(1)}
                 </Label>
                 <Input
@@ -107,7 +101,6 @@ const Contact = ({ user }: { user: User }) => {
       </Tabs>
 
       <div className=" justify-end">
-        {/* <UpdateButton pending={pending} /> */}
         {success && (
           <p className="text-green-500 text-sm mt-2">
             Contact information updated successfully!

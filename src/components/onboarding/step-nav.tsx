@@ -42,7 +42,7 @@ export default function StepNavigation() {
       {/* <BackButton currentStep={currentStep} /> */}
       <div className=" ">
         <div className="relative flex flex-row justify-between  lg:gap-4">
-          {steps.map((step, i) => {
+          {steps.map((step) => {
             const isActive = currentPath === step.route;
             const isVisited = visitedSteps[step.route];
             const hasError = errorSteps[step.route];
@@ -51,7 +51,7 @@ export default function StepNavigation() {
               <Link
                 href={step.link}
                 key={step.link}
-                className="group z-20 flex items-center gap-2 "
+                className="group z-20 flex items-center gap-2"
                 prefetch={true}
               >
                 <span

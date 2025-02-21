@@ -3,15 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { updateProfile } from '@/components/onboarding/actions';
-import UpdateButton from '@/components/onboarding/update-button';
 import { Input } from "@/components/ui/input";
 import Address from '@/components/onboarding/address';
 import { mockUser } from '@/components/onboarding/constant';
 import Birthdate from '@/components/onboarding/birthdate';
-import { useSession } from "next-auth/react";
 
 const BasicInfo = () => {
-  const { data: session } = useSession();
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
@@ -20,67 +17,22 @@ const BasicInfo = () => {
     bio: '',
     gender: '',
   });
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [pending, setPending] = useState(false);
 
-  useEffect(() => {
-    if (!session?.user) {
-      router.push("/login");
-    }
-  }, [session, router]);
-
-  // Fetch user data on component mount
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // Replace this with your actual user data fetching logic
-        const response = await fetch('/api/user');
-        const userData: User = await response.json();
-
-        setFormData({
-          name: userData?.name || '',
-          nickname: userData?.name || '', // Assuming nickname maps to name
-          username: userData?.name || '', // Assuming username maps to name
-          bio: userData?.bio || '',
-          gender: userData?.gender || '',
-        });
-      } catch (err) {
-        console.error('Error fetching user data:', err);
-        setError(true);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSuccess(false);
-    setError(false);
-    setPending(true);
 
     try {
       const response = await updateProfile(formData);
       if (response.success) {
-        setSuccess(true);
         router.push("/onboarding/next-step");
-      } else {
-        setError(true);
       }
     } catch (err) {
       console.error(err);
-      setError(true);
-    } finally {
-      setPending(false);
     }
   };
 

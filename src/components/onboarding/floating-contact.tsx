@@ -8,7 +8,6 @@ import {
   IconNewSection,
   IconTerminal2,
 } from "@tabler/icons-react";
-import Image from "next/image";
 
 export function FloatingContact() {
   const links = [
@@ -34,18 +33,6 @@ export function FloatingContact() {
       ),
       href: "#",
     },
-    // {
-    //   title: "Aceternity UI",
-    //   icon: (
-    //     // <Image
-    //     //   src="1.png"
-    //     //   width={20}
-    //     //   height={20}
-    //     //   alt="Aceternity Logo"
-    //     // />
-    //   ),
-    //   href: "#",
-    // },
     {
       title: "Changelog",
       icon: (
