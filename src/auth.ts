@@ -15,8 +15,6 @@ declare module "next-auth" {
       role: UserRole
       isTwoFactorEnabled: boolean
       isOAuth: boolean
-      onboardingStatus?: string
-      onboardingStep?: number
     } & DefaultSession["user"]
   }
 }
