@@ -1,0 +1,198 @@
+# GitHub Branch Management Guide
+
+## Core Branches
+
+### Main Branch (`main`)
+- Production-ready code
+- Protected from direct pushes
+- Requires pull request reviews
+- Always deployable
+
+### Development Branch (`develop`)
+- Integration branch for features
+- Source for feature branches
+- Regularly synced with `main`
+- Testing ground for features
+
+## Working with Branches
+
+### Creating a New Feature
+1. Update develop branch:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+2. Create feature branch:
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+
+### Making Changes
+1. Add and commit changes:
+   ```bash
+   git add .
+   git commit -m "feat: add new feature"
+   ```
+2. Push to remote:
+   ```bash
+   git push origin feature/new-feature
+   ```
+
+## Branch Types
+
+### Feature Branches
+- Prefix: `feature/*`
+- Purpose: New functionality, enhancements
+- Example: `feature/user-auth`
+
+### Bugfix Branches
+- Prefix: `bugfix/*`
+- Purpose: Non-critical fixes
+- Example: `bugfix/login-validation`
+
+### Hotfix Branches
+- Prefix: `hotfix/*`
+- Purpose: Critical production fixes
+- Example: `hotfix/security-patch`
+
+### Release Branches
+- Prefix: `release/*`
+- Purpose: Version preparation
+- Example: `release/v1.0.0`
+
+## Best Practices
+
+### Branch Naming
+- Use descriptive names
+- Follow prefix conventions
+- Use hyphens for spaces
+- Include ticket numbers if applicable
+
+### Commit Messages
+Format: `<type>(<scope>): <description>`
+
+Examples:
+- `feat(auth): add Google OAuth`
+- `fix(ui): correct button alignment`
+- `docs(readme): update installation steps`
+
+### Pull Requests
+1. Use descriptive titles
+2. Reference related issues
+3. Add meaningful descriptions
+4. Request appropriate reviewers
+5. Include testing notes
+
+## Common Workflows
+
+### Starting New Feature
+1. Update develop:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+2. Create feature branch:
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+3. Make changes and commit:
+   ```bash
+   git add .
+   git commit -m "feat: implement feature"
+   ```
+
+### Handling Merge Conflicts
+1. Get latest changes:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout feature/branch
+   git merge develop
+   ```
+2. Resolve conflicts in your editor
+3. Complete merge:
+   ```bash
+   git add .
+   git commit -m "merge: resolve conflicts"
+   ```
+
+### Creating a Release
+1. Create release branch:
+   ```bash
+   git checkout -b release/v1.0.0 develop
+   ```
+2. Make release preparations
+3. Merge to main and develop:
+   ```bash
+   git checkout main
+   git merge release/v1.0.0
+   git checkout develop
+   git merge release/v1.0.0
+   ```
+
+## Branch Protection
+
+### Main Branch Rules
+- Require pull request reviews
+- Require status checks
+- Prevent force pushes
+- Include administrators
+
+### Develop Branch Rules
+- Require basic protection
+- Require code owner reviews
+- Allow force pushes with lease
+- Maintain linear history
+
+## Code Review Guidelines
+
+### For Authors
+1. Self-review changes
+2. Run tests locally
+3. Update documentation
+4. Check coding standards
+5. Write clear descriptions
+
+### For Reviewers
+1. Check code quality
+2. Verify functionality
+3. Review documentation
+4. Test edge cases
+5. Provide constructive feedback
+
+## Emergency Procedures
+
+### Hotfix Process
+1. Create hotfix branch from main
+2. Fix critical issue
+3. Test thoroughly
+4. Deploy to production
+5. Merge back to develop
+
+### Quick Rollback Steps
+1. Identify last stable version
+2. Create rollback branch
+3. Deploy previous version
+4. Investigate root cause
+
+## Maintenance
+
+### Regular Cleanup
+1. Delete merged local branches
+2. Remove stale remote branches
+3. Update documentation
+4. Review protection rules
+
+### Health Checks
+1. Review open PRs
+2. Check branch age
+3. Verify build status
+4. Monitor test coverage
+
+## Additional Resources
+
+- [GitHub Flow Guide](https://guides.github.com/introduction/flow/)
+- [Git Documentation](https://git-scm.com/doc)
+- [GitHub Documentation](https://docs.github.com)
+
+export default ({ children }) => <div className="prose max-w-none">{children}</div>;
