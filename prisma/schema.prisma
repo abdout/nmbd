@@ -91,13 +91,24 @@ model User {
   studentFaculty       String?
   studentYear          Int?
 
-  // Activities & Skills
-  politicalParty       String?
-  politicalMembership  String?
-  socialActivityType   String?
-  socialDescription    String?
-  skills               String[]            
-  languageSkills       String[]            
+  // Activities 
+  partyMember Boolean @default(false)
+  partyName String?
+  partyStartDate DateTime?
+  partyEndDate DateTime?
+  
+  unionMember Boolean @default(false)
+  unionName String?
+  unionStartDate DateTime?
+  unionEndDate DateTime?
+  
+  ngoMember Boolean @default(false)
+  ngoName String?
+  ngoActivity String?
+  
+  clubMember Boolean @default(false)
+  clubName String?
+  clubType String?      
   
   // Emergency Contacts
   emergencyName1       String?
@@ -118,6 +129,8 @@ model User {
   onboardingStatus String? @default("PENDING")  // "PENDING" | "COMPLETED"
   onboardingStep   Int?    @default(1)
 }
+
+
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId

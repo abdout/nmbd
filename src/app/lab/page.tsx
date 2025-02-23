@@ -1,9 +1,7 @@
-import React from 'react'
+import { onboardingRoutes } from '@/components/onboarding/types';
+import { redirect } from 'next/navigation';
+// import React from 'react';
 
-const Lab = () => {
-  return (
-    <div>Lab</div>
-  )
+export default function AddPage() {
+  redirect(onboardingRoutes.TERMS);
 }
-
-export default Lab

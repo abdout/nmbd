@@ -99,6 +99,40 @@ export const {
         });
       }
 
+      // Initialize all user fields
+      await db.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerified: new Date(),
+          onboardingStatus: "PENDING",
+          onboardingStep: 1,
+          skills: [],
+          languageSkills: [],
+          phone: null,
+          whatsapp: null,
+          twitter: null,
+          facebook: null,
+          linkedin: null,
+          telegram: null,
+          instagram: null,
+          tiktok: null,
+          birthCountry: null,
+          birthState: null,
+          birthLocality: null,
+          currentCountry: null,
+          currentState: null,
+          currentLocality: null,
+          birthDate: null,
+          nationalityId: null,
+          maritalStatus: null,
+          gender: null,
+          religion: null,
+          educationLevel: null,
+          institution: null,
+          yearOfCompletion: null,
+          currentOccupation: null
+        }
+      });
       return true;
     },
     async session({ token, session }) {

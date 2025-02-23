@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const stepOneSchema = z.object({
   name: z.string().min(1, 'Please enter a name for the product.'),
@@ -41,3 +41,64 @@ export type NewDealType = z.infer<typeof newDealSchema>;
 export type NewDealInitialValuesType = z.infer<
   typeof newDealInitialValuesSchema
 >;
+
+export const termsSchema = z.object({
+  oathAcknowledged: z.boolean().refine(val => val === true, {
+    message: "يجب الموافقة على الشروط للمتابعة"
+  })
+});
+
+export const attachmentSchema = z.object({
+  image: z.string().optional(),
+  cv: z.string().optional(),
+  additionalFile: z.string().optional()
+});
+
+export const contactSchema = z.object({
+  phone: z.string()
+    .min(10, "رقم الهاتف يجب أن يكون 10 أرقام على الأقل")
+    .max(15, "رقم الهاتف لا يمكن أن يتجاوز 15 رقم"),
+  whatsapp: z.string().optional(),
+  twitter: z.string()
+    .startsWith('@', 'يجب أن يبدأ بـ @')
+    .optional()
+    .or(z.literal('')),
+  facebook: z.string()
+    .url('يجب أن يكون رابط صحيح')
+    .optional()
+    .or(z.literal('')),
+  linkedin: z.string()
+    .url('يجب أن يكون رابط صحيح')
+    .optional()
+    .or(z.literal('')),
+  telegram: z.string()
+    .startsWith('@', 'يجب أن يبدأ بـ @')
+    .optional()
+    .or(z.literal('')),
+  instagram: z.string()
+    .startsWith('@', 'يجب أن يبدأ بـ @')
+    .optional()
+    .or(z.literal('')),
+  tiktok: z.string()
+    .startsWith('@', 'يجب أن يبدأ بـ @')
+    .optional()
+    .or(z.literal(''))
+});
+
+export type ContactFormData = z.infer<typeof contactSchema>;
+
+export const addressSchema = z.object({
+  currentCountry: z.string(),
+  currentState: z.string(),
+  currentLocality: z.string(),
+  currentAdminUnit: z.string().optional(),
+  currentNeighborhood: z.string().optional(),
+  // ... other address fields
+});
+
+export const birthdateSchema = z.object({
+  birthCountry: z.string(),
+  birthLocality: z.string(),
+  birthYear: z.number().int().min(1940).max(new Date().getFullYear()),
+  birthMonth: z.number().int().min(1).max(12)
+});

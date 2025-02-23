@@ -2,14 +2,14 @@ export interface FormErrors {
   [key: string]: string | undefined;
 }
 
-export enum onboardingRoutes {
-  TERMS = '/onboarding/terms',
-  ATTACHMENT = '/onboarding/attachment',
-  CONTACT = '/onboarding/contact',
-  BASIC_INFO = '/onboarding/basic-info',
-  ADDRESS = '/onboarding/address',
-  EDUCATION = '/onboarding/education',
-}
+export const onboardingRoutes = {
+  TERMS: "/lab/terms",
+  ATTACHMENT: "/lab/attachment",
+  CONTACT: "/lab/contact",
+  INFORMATION: "/lab/information",
+  ACTIVITY: "/lab/activity",
+  NEXT_STEP: "/lab/next-step"
+} as const;
 
 export enum editRoutes {
   TERMS = '/x/profile/edit/terms',

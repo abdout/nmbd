@@ -13,7 +13,7 @@ const TermsPage = () => {
         setAccepted(checked);
         if (checked) {
             toast.success("تم قبول الشروط");
-            router.push('/onboarding/attachment');
+            router.push('/lab/attachment');
         }
     };
 
