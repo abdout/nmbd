@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { contactSchema, ContactSchema } from "./validation";
@@ -16,7 +17,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
 
-const tabsData = [
+type ContactField = keyof Omit<ContactSchema, 'id'>;
+
+const tabsData: Array<{icon: React.ReactNode, name: ContactField, label: string, placeholder: string}> = [
   { icon: <FaTiktok size={24} />, name: 'tiktok', label: 'TikTok', placeholder: '@username' },
   { icon: <FaInstagram size={24} />, name: 'instagram', label: 'Instagram', placeholder: '@username' },
   { icon: <FaLinkedin size={24} />, name: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/in/username' },
@@ -81,15 +84,13 @@ const ContactForm = ({
 
   return (
     <form className="max-w-2xl mx-auto" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold mb-8">
-        {type === "create" ? "Add new contact" : "Update contact"}
-      </h1>
+      
 
       {data?.id && (
         <input type="hidden" {...register('id')} defaultValue={data.id} />
       )}
 
-      <Tabs defaultValue="phone">
+      <Tabs defaultValue="phone" dir="rtl">
         <div className="flex items-center justify-between mb-6">
           <TabsList className="flex gap-2 bg-background">
             {tabsData.slice().reverse().map(({ icon, name, label }) => (

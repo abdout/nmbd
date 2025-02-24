@@ -106,8 +106,8 @@ export const {
           emailVerified: new Date(),
           onboardingStatus: "PENDING",
           onboardingStep: 1,
-          skills: [],
-          languageSkills: [],
+          
+          
           phone: null,
           whatsapp: null,
           twitter: null,

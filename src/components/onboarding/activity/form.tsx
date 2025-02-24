@@ -12,6 +12,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ACTIVITY_FIELDS, CLUB_TYPES } from "./constants";
 import { submitActivityForm } from "./action";
+import { ActivityFieldName } from "./constants";
+import { toast } from "sonner";
 
 interface ActivityFormProps {
   user: {
@@ -40,6 +42,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   const {
     register,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<ActivitySchema>({
     resolver: zodResolver(activitySchema),
@@ -61,46 +64,85 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     }
   });
 
-  const watchPartyMember = watch('partyMember');
-  const watchUnionMember = watch('unionMember');
-  const watchNgoMember = watch('ngoMember');
-  const watchClubMember = watch('clubMember');
+  const handleSwitchChange = (name: ActivityFieldName) => (checked: boolean) => {
+    setValue(name, checked);
+    if (!checked) {
+      switch (name) {
+        case 'partyMember':
+          setValue('partyName', '');
+          setValue('partyStartDate', '');
+          setValue('partyEndDate', '');
+          break;
+        case 'unionMember':
+          setValue('unionName', '');
+          setValue('unionStartDate', '');
+          setValue('unionEndDate', '');
+          break;
+        case 'ngoMember':
+          setValue('ngoName', '');
+          setValue('ngoActivity', '');
+          break;
+        case 'clubMember':
+          setValue('clubName', '');
+          setValue('clubType', '');
+          break;
+      }
+    }
+  };
+
+  const renderField = (field: typeof ACTIVITY_FIELDS.political[0]) => {
+    if (field.type === 'toggle') {
+      return (
+        <div className="flex items-center justify-between flex-row-reverse">
+          <Switch
+            id={field.name}
+            checked={!!watch(field.name)}
+            onCheckedChange={handleSwitchChange(field.name)}
+            {...register(field.name)}
+          />
+          <Label htmlFor={field.name}>{field.label}</Label>
+        </div>
+      );
+    }
+    return (
+      <>
+        <Label htmlFor={field.name}>{field.label}</Label>
+        <Input
+          id={field.name}
+          type={field.type}
+          {...register(field.name)}
+        />
+        {errors[field.name] && (
+          <span className="text-sm text-red-500">
+            {errors[field.name]?.message}
+          </span>
+        )}
+      </>
+    );
+  };
 
   return (
-    <form ref={formRef} action={(formData) => {
-      setIsSubmitting(true);
-      startTransition(() => {
-        submitActivityForm(formData);
-      });
-      setIsSubmitting(false);
-    }} className="space-y-8">
+    <form
+      ref={formRef}
+      action={(formData: FormData) => {
+        setIsSubmitting(true);
+        startTransition(async () => {
+          const result = await submitActivityForm(formData);
+          if (result.success) {
+            toast.success("تم حفظ معلومات النشاطات بنجاح");
+          } else {
+            toast.error("حدث خطأ أثناء حفظ المعلومات");
+          }
+          setIsSubmitting(false);
+        });
+      }}
+      className="space-y-8"
+    >
       <div className="space-y-4">
         <h3 className="text-lg font-medium">النشاط السياسي</h3>
         {ACTIVITY_FIELDS.political.map((field) => (
-          <div key={field.name} className={`space-y-2 ${field.conditional && !watchPartyMember ? 'hidden' : ''}`}>
-            {field.type === 'toggle' ? (
-              <div className="flex items-center justify-between">
-                <Label htmlFor={field.name}>{field.label}</Label>
-                <Switch
-                  id={field.name}
-                  {...register(field.name)}
-                />
-              </div>
-            ) : (
-              <>
-                <Label htmlFor={field.name}>{field.label}</Label>
-                <Input
-                  id={field.name}
-                  type={field.type}
-                  {...register(field.name)}
-                />
-                {errors[field.name] && (
-                  <span className="text-sm text-red-500">
-                    {errors[field.name]?.message}
-                  </span>
-                )}
-              </>
-            )}
+          <div key={field.name} className={`space-y-2 ${field.conditional && !watch(field.conditional) ? 'hidden' : ''}`}>
+            {renderField(field)}
           </div>
         ))}
       </div>
@@ -108,30 +150,8 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">النشاط النقابي</h3>
         {ACTIVITY_FIELDS.union.map((field) => (
-          <div key={field.name} className={`space-y-2 ${field.conditional && !watchUnionMember ? 'hidden' : ''}`}>
-            {field.type === 'toggle' ? (
-              <div className="flex items-center justify-between">
-                <Label htmlFor={field.name}>{field.label}</Label>
-                <Switch
-                  id={field.name}
-                  {...register(field.name)}
-                />
-              </div>
-            ) : (
-              <>
-                <Label htmlFor={field.name}>{field.label}</Label>
-                <Input
-                  id={field.name}
-                  type={field.type}
-                  {...register(field.name)}
-                />
-                {errors[field.name] && (
-                  <span className="text-sm text-red-500">
-                    {errors[field.name]?.message}
-                  </span>
-                )}
-              </>
-            )}
+          <div key={field.name} className={`space-y-2 ${field.conditional && !watch(field.conditional) ? 'hidden' : ''}`}>
+            {renderField(field)}
           </div>
         ))}
       </div>
@@ -139,12 +159,14 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">النشاط الاجتماعي</h3>
         {ACTIVITY_FIELDS.social.map((field) => (
-          <div key={field.name} className={`space-y-2 ${field.conditional && !watchNgoMember ? 'hidden' : ''}`}>
+          <div key={field.name} className={`space-y-2 ${field.conditional && !watch(field.conditional) ? 'hidden' : ''}`}>
             {field.type === 'toggle' ? (
               <div className="flex items-center justify-between">
                 <Label htmlFor={field.name}>{field.label}</Label>
                 <Switch
                   id={field.name}
+                  checked={!!watch(field.name)}
+                  onCheckedChange={handleSwitchChange(field.name)}
                   {...register(field.name)}
                 />
               </div>
@@ -183,12 +205,14 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">النشاط الشبابي</h3>
         {ACTIVITY_FIELDS.club.map((field) => (
-          <div key={field.name} className={`space-y-2 ${field.conditional && !watchClubMember ? 'hidden' : ''}`}>
+          <div key={field.name} className={`space-y-2 ${field.conditional && !watch(field.conditional) ? 'hidden' : ''}`}>
             {field.type === 'toggle' ? (
               <div className="flex items-center justify-between">
                 <Label htmlFor={field.name}>{field.label}</Label>
                 <Switch
                   id={field.name}
+                  checked={!!watch(field.name)}
+                  onCheckedChange={handleSwitchChange(field.name)}
                   {...register(field.name)}
                 />
               </div>
@@ -230,6 +254,16 @@ export default function ActivityForm({ user }: ActivityFormProps) {
             )}
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isPending}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+        >
+          {isPending ? 'جاري الحفظ...' : 'حفظ'}
+        </button>
       </div>
     </form>
   );

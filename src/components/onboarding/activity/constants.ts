@@ -7,7 +7,7 @@ export const CLUB_TYPES = [
   'أخرى'
 ] as const;
 
-type ActivityFieldName = 
+export type ActivityFieldName = 
   | 'partyMember' | 'partyName' | 'partyStartDate' | 'partyEndDate'
   | 'unionMember' | 'unionName' | 'unionStartDate' | 'unionEndDate'
   | 'ngoMember' | 'ngoName' | 'ngoActivity'

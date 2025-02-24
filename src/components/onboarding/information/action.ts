@@ -19,29 +19,10 @@ export async function createInformation(state: ActionState, data: InformationSch
     await db.user.update({
       where: { id: user.id },
       data: {
-        name: data.name,
-        fullname: data.fullname,
-        description: data.description || '',
-        bio: data.bio || '',
-        birthMonth: data.birthMonth,
-        birthYear: data.birthYear,
-        currentLocality: data.currentLocality || '',
-        currentCountry: data.currentCountry || '',
-        currentState: data.currentState || '',
-        currentAdminUnit: data.currentAdminUnit || '',
-        currentNeighborhood: data.currentNeighborhood || '',
-        originalLocality: data.originalLocality || '',
-        originalCountry: data.originalCountry || '',
-        educationLevel: data.educationLevel || '',
-        institution: data.institution || '',
-        yearOfCompletion: data.yearOfCompletion || 0,
-        currentOccupation: data.currentOccupation || '',
-        employmentSector: data.employmentSector || '',
-        workplaceAddress: data.workplaceAddress || '',
-        maritalStatus: data.maritalStatus || '',
-        gender: data.gender || '',
-        religion: data.religion || '',
-        nationalityId: data.nationalityId || '',
+        ...data,
+        birthMonth: data.birthMonth ? parseInt(data.birthMonth) : null,
+        birthYear: data.birthYear ? parseInt(data.birthYear) : null,
+        yearOfCompletion: data.yearOfCompletion || null,
         onboardingStep: 1
       }
     });
@@ -67,15 +48,16 @@ export async function getInformation() {
         fullname: true,
         description: true,
         bio: true,
+        birthCountry: true,
+        birthState: true,
+        birthLocality: true,
         birthMonth: true,
         birthYear: true,
-
         currentLocality: true,
         currentCountry: true,
         currentState: true,
         currentAdminUnit: true,
         currentNeighborhood: true,
-
         originalLocality: true,
         originalCountry: true,
         educationLevel: true,
@@ -84,8 +66,10 @@ export async function getInformation() {
         currentOccupation: true,
         employmentSector: true,
         workplaceAddress: true,
-
-        
+        maritalStatus: true,
+        gender: true,
+        religion: true,
+        nationalityId: true,
       }
     });
 
@@ -105,30 +89,56 @@ export async function updateInformation(state: ActionState, data: InformationSch
     await db.user.update({
       where: { id: user.id },
       data: {
-        name: data.name,
-        fullname: data.fullname,
-        description: data.description || '',
-        bio: data.bio || '',
-        birthMonth: data.birthMonth,
-        birthYear: data.birthYear,
-        currentLocality: data.currentLocality || '',
-        currentCountry: data.currentCountry || '',
-        currentState: data.currentState || '',
-        currentAdminUnit: data.currentAdminUnit || '',
-        currentNeighborhood: data.currentNeighborhood || '',
-        originalLocality: data.originalLocality || '',
-        originalCountry: data.originalCountry || '',
-        educationLevel: data.educationLevel || '',
-        institution: data.institution || '',
-        yearOfCompletion: data.yearOfCompletion || 0,
-        currentOccupation: data.currentOccupation || '',
-        employmentSector: data.employmentSector || '',
-        workplaceAddress: data.workplaceAddress || '',
-        maritalStatus: data.maritalStatus || '',
-        gender: data.gender || '',
-        religion: data.religion || '',
-        nationalityId: data.nationalityId || '',
-        onboardingStep: 1
+        ...data,
+        birthMonth: data.birthMonth ? parseInt(data.birthMonth) : null,
+        birthYear: data.birthYear ? parseInt(data.birthYear) : null,
+        yearOfCompletion: data.yearOfCompletion || null,
+      }
+    });
+
+    revalidatePath("/lab");
+    return { success: true, error: false };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: true };
+  }
+}
+
+// Delete
+export async function deleteInformation(state: ActionState) {
+  try {
+    const user = await currentUser();
+    if (!user?.id) return { success: false, error: true };
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        name: null,
+        fullname: null,
+        description: null,
+        bio: null,
+        birthCountry: null,
+        birthState: null,
+        birthLocality: null,
+        birthMonth: null,
+        birthYear: null,
+        currentLocality: null,
+        currentCountry: null,
+        currentState: null,
+        currentAdminUnit: null,
+        currentNeighborhood: null,
+        originalLocality: null,
+        originalCountry: null,
+        educationLevel: null,
+        institution: null,
+        yearOfCompletion: null,
+        currentOccupation: null,
+        employmentSector: null,
+        workplaceAddress: null,
+        maritalStatus: null,
+        gender: null,
+        religion: null,
+        nationalityId: null,
       }
     });
 

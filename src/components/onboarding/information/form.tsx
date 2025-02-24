@@ -1,103 +1,100 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { informationSchema, InformationSchema } from "./validation";
-import { createInformation, updateInformation } from "./action";
-import { useActionState } from "react";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { informationSchema } from "./validation";
+import { createInformation, updateInformation } from "./action";
 import { INFORMATION_FIELDS } from "./constants";
-import { useTransition } from "react";
-import type { InformationSchema as InformationSchemaType } from "./validation";
+import type { InformationSchema } from "./validation";
 
-const InformationForm = ({
-  type,
-  data,
-}: {
+interface Item {
+  label: string;
+  value: string;
+}
+
+interface FormProps {
   type: "create" | "update";
-  data?: InformationSchemaType;
-}) => {
+  data?: InformationSchema;
+}
+
+const InformationForm = ({ type, data }: FormProps) => {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const [selectedCountry, setSelectedCountry] = useState<Item | null>(null);
+  const [selectedState, setSelectedState] = useState<Item | null>(null);
+  const [selectedCity, setSelectedCity] = useState<Item | null>(null);
+  const [selectedBirthCountry, setSelectedBirthCountry] = useState<Item | null>(null);
+  const [selectedBirthState, setSelectedBirthState] = useState<Item | null>(null);
+  const [selectedBirthLocality, setSelectedBirthLocality] = useState<Item | null>(null);
+  const [selectedYear, setSelectedYear] = useState<Item | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<Item | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InformationSchemaType>({
+  } = useForm<InformationSchema>({
     resolver: zodResolver(informationSchema),
     defaultValues: data,
   });
 
-  const [isPending, startTransition] = useTransition();
-  const [state, formAction] = useActionState(
-    type === "create" ? createInformation : updateInformation,
-    {
-      success: false,
-      error: false,
-    }
-  );
+  const onSubmit = handleSubmit((formData) => {
+    startTransition(async () => {
+      try {
+        const formPayload = {
+          ...formData,
+          currentCountry: selectedCountry?.value || null,
+          currentState: selectedState?.value || null,
+          currentLocality: selectedCity?.value || null,
+          birthCountry: selectedBirthCountry?.value || null,
+          birthState: selectedBirthState?.value || null,
+          birthLocality: selectedBirthLocality?.value || null,
+          birthYear: selectedYear?.value || null,
+          birthMonth: selectedMonth?.value || null,
+        };
 
-  const onSubmit = handleSubmit((data) => {
-    startTransition(() => {
-      formAction(data);
+        const action = type === "create" ? createInformation : updateInformation;
+        const result = await action({ success: false, error: false }, formPayload);
+
+        if (result.success) {
+          toast.success(`Information ${type}d successfully!`);
+          router.refresh();
+        } else {
+          toast.error("Failed to save information");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("An error occurred");
+      }
     });
   });
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (state.success) {
-      toast(`Information has been ${type === "create" ? "created" : "updated"}!`);
-      router.refresh();
-    }
-  }, [state, router, type]);
-
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">
-        {type === "create" ? "Add Information" : "Update Information"}
-      </h1>
-
-      <div className="grid grid-cols-2 gap-4">
-        {INFORMATION_FIELDS.map(({ name, label, type }) => (
-          <div key={name} className="space-y-2">
-            <Label htmlFor={name}>{label}</Label>
-            {type === 'textarea' ? (
-              <Textarea
-                id={name}
-                {...register(name as keyof InformationSchemaType)}
-                defaultValue={data?.[name as keyof InformationSchemaType] || ''}
-                aria-invalid={errors[name as keyof InformationSchemaType] ? "true" : "false"}
-              />
-            ) : (
-              <Input
-                id={name}
-                type={type}
-                {...register(name as keyof InformationSchemaType)}
-                defaultValue={data?.[name as keyof InformationSchemaType] || ''}
-                aria-invalid={errors[name as keyof InformationSchemaType] ? "true" : "false"}
-              />
-            )}
-            {errors[name as keyof InformationSchemaType] && (
-              <span className="text-sm text-red-500">
-                {errors[name as keyof InformationSchemaType]?.message}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
+    <form onSubmit={onSubmit} className="flex flex-col gap-8" noValidate>
+      {INFORMATION_FIELDS.map((field) => (
+        <div key={field.name} className="flex flex-col gap-2">
+          <label htmlFor={field.name}>{field.label}</label>
+          <input
+            id={field.name}
+            type={field.type}
+            {...register(field.name as keyof InformationSchema)}
+            className="border p-2 rounded"
+          />
+          {errors[field.name as keyof InformationSchema] && (
+            <span className="text-red-500 text-sm">
+              {errors[field.name as keyof InformationSchema]?.message}
+            </span>
+          )}
+        </div>
+      ))}
 
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-neutral-900 text-white p-2 rounded-md hover:bg-neutral-800 disabled:bg-neutral-400"
+        className="bg-blue-500 text-white p-3 rounded disabled:opacity-50"
       >
         {isPending ? "Saving..." : type === "create" ? "Create" : "Update"}
       </button>
@@ -105,4 +102,4 @@ const InformationForm = ({
   );
 };
 
-export default InformationForm; 
+export default InformationForm;
