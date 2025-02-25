@@ -15,6 +15,32 @@ import Image from "next/image";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
 
+// Helper function to convert PDF URL to preview URL
+const getPdfPreviewUrl = (url: string) => {
+  if (url.includes('cloudinary.com')) {
+    // For Cloudinary PDFs, use a more direct transformation
+    if (url.includes('/upload/')) {
+      const baseUrl = url.substring(0, url.indexOf('/upload/') + 8);
+      const filename = url.substring(url.lastIndexOf('/') + 1);
+      const folder = url.substring(url.indexOf('/upload/') + 8, url.lastIndexOf('/') + 1);
+      
+      // Format: {baseUrl}/q_auto,f_jpg,pg_1/{folder}{filename}
+      return `${baseUrl}q_auto,f_jpg,pg_1/${folder}${filename}`;
+    }
+    
+    // For raw uploads
+    if (url.includes('/raw/upload/')) {
+      const baseUrl = url.substring(0, url.indexOf('/raw/upload/') + 12);
+      const filename = url.substring(url.lastIndexOf('/') + 1);
+      const folder = url.substring(url.indexOf('/raw/upload/') + 12, url.lastIndexOf('/') + 1);
+      
+      // Convert PDF to image for raw uploads too
+      return `${baseUrl}q_auto,f_jpg,pg_1/${folder}${filename.replace('.pdf', '')}`;
+    }
+  }
+  return url;
+};
+
 const AttachmentForm = ({
   type,
   data,
@@ -77,9 +103,9 @@ const AttachmentForm = ({
       className="flex flex-col gap-8" 
       onSubmit={onSubmit}
     >
-      <h1 className="text-xl font-semibold">
+      {/* <h1 className="text-xl font-semibold">
         {type === "create" ? "Upload Files" : "Update Files"}
-      </h1>
+      </h1> */}
 
       <div className="flex flex-row gap-6">
         {ATTACHMENT_FIELDS.map(({ name, label, type: fieldType }) => (
@@ -100,20 +126,42 @@ const AttachmentForm = ({
                 className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
               >
                 {formValues[name] ? (
-                  fieldType === 'image' ? (
+                  // Only the profile picture (صورة شخصية) should be treated as an image
+                  // All other fields (سيرة ذاتية, معرض اعمال, ملف اضافي) should be treated as PDFs
+                  label === 'صورة شخصية' ? (
                     <Image
                       src={formValues[name] || ''}
                       alt={label}
                       width={96}
                       height={96}
                       className="absolute inset-0 w-full h-full object-cover"
+                      unoptimized
                     />
                   ) : (
-                    <div className="text-center text-gray-700 text-sm">
-                      <span>File Uploaded</span>
-                      <br />
-                      <span className="text-xs">(Click to change)</span>
-                    </div>
+                    <>
+                      {/* Display PDF preview for all three PDF fields if they are on Cloudinary */}
+                      {formValues[name] && formValues[name].includes('cloudinary.com') ? (
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={getPdfPreviewUrl(formValues[name])}
+                            alt={label}
+                            width={96}
+                            height={96}
+                            className="absolute inset-0 w-full h-full object-contain"
+                            unoptimized
+                          />
+                          <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                            PDF
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center text-gray-700 text-sm">
+                          <span>File Uploaded</span>
+                          <br />
+                          <span className="text-xs">(Click to change)</span>
+                        </div>
+                      )}
+                    </>
                   )
                 ) : (
                   <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">

@@ -22,14 +22,14 @@ import { getNextRoute } from '../utils';
 type ContactField = keyof Omit<ContactSchema, 'id'>;
 
 const tabsData: Array<{icon: React.ReactNode, name: ContactField, label: string, placeholder: string}> = [
-  { icon: <FaTiktok size={24} />, name: 'tiktok', label: 'TikTok', placeholder: '@username' },
-  { icon: <FaInstagram size={24} />, name: 'instagram', label: 'Instagram', placeholder: '@username' },
-  { icon: <FaLinkedin size={24} />, name: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/in/username' },
-  { icon: <FaTelegram size={24} />, name: 'telegram', label: 'Telegram', placeholder: '@username' },
-  { icon: <FaFacebook size={24} />, name: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/username' },
-  { icon: <FaTwitter size={24} />, name: 'twitter', label: 'Twitter', placeholder: 'https://twitter.com/username' },
-  { icon: <FaWhatsapp size={24} />, name: 'whatsapp', label: 'WhatsApp', placeholder: '+1234567890' },
-  { icon: <FaPhone size={20} />, name: 'phone', label: 'Phone', placeholder: '+1234567890' },
+  { icon: <FaTiktok size={24} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
+  { icon: <FaInstagram size={24} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
+  { icon: <FaLinkedin size={24} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
+  { icon: <FaTelegram size={24} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
+  { icon: <FaFacebook size={24} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
+  { icon: <FaTwitter size={24} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
+  { icon: <FaWhatsapp size={24} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
+  { icon: <FaPhone size={20} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
 ];
 
 const ContactForm = ({
@@ -108,16 +108,6 @@ const ContactForm = ({
       )}
 
       <Tabs defaultValue="phone" dir="rtl">
-        <div className="flex items-center justify-between mb-6">
-          <TabsList className="flex gap-2 bg-background">
-            {tabsData.slice().reverse().map(({ icon, name, label }) => (
-              <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
-                {icon}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
-
         {tabsData.map(({ name, label, placeholder }) => (
           <TabsContent key={name} value={name}>
             <Card>
@@ -142,6 +132,15 @@ const ContactForm = ({
             </Card>
           </TabsContent>
         ))}
+        <div className="flex items-center justify-between mb-6">
+          <TabsList className="flex gap-2 bg-background">
+            {tabsData.slice().reverse().map(({ icon, name, label }) => (
+              <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
+                {icon}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
       </Tabs>
       
       {state.error && (

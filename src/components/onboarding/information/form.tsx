@@ -52,30 +52,43 @@ const InformationForm = ({ type, data }: FormProps) => {
   const onSubmit = handleSubmit((formData) => {
     startTransition(async () => {
       try {
-        const formPayload = {
-          ...formData,
-          currentCountry: selectedCountry?.value || null,
-          currentState: selectedState?.value || null,
-          currentLocality: selectedCity?.value || null,
-          birthCountry: selectedBirthCountry?.value || null,
-          birthState: selectedBirthState?.value || null,
-          birthLocality: selectedBirthLocality?.value || null,
-          birthYear: selectedYear?.value || null,
-          birthMonth: selectedMonth?.value || null,
+        setIsSubmitting?.(true);
+        
+        // Include all fields from the form data to ensure all data is saved to the database
+        // For numeric fields that need to be integers in the database, we'll handle them separately
+        const minimalData = {
+          ...formData, // Include all fields from the form
+          // We'll let the server actions handle the conversion
         };
-
-        const action = type === "create" ? createInformation : updateInformation;
-        const result = await action({ success: false, error: false }, formPayload);
-
-        if (result.success) {
-          toast.success(`Information ${type}d successfully!`);
-          router.push(getNextRoute(pathname));
+        
+        console.log("Submitting minimal data:", minimalData);
+        
+        const initialState = { success: false, error: false };
+        
+        if (type === "create") {
+          const result = await createInformation(initialState, minimalData);
+          
+          if (result.success) {
+            toast.success("Information created successfully!");
+            router.push(getNextRoute(pathname));
+          } else {
+            toast.error("Failed to create information");
+          }
         } else {
-          toast.error("Failed to save information");
+          const result = await updateInformation(initialState, minimalData);
+          
+          if (result.success) {
+            toast.success("Information updated successfully!");
+            router.push(getNextRoute(pathname));
+          } else {
+            toast.error("Failed to update information");
+          }
         }
       } catch (error) {
-        console.error(error);
-        toast.error("An error occurred");
+        console.error("Form submission error:", error);
+        toast.error("An error occurred while submitting the form");
+      } finally {
+        setIsSubmitting?.(false);
       }
     });
   });

@@ -8,7 +8,7 @@ export const onboardingRoutes = {
   CONTACT: "/lab/contact",
   INFORMATION: "/lab/information",
   ACTIVITY: "/lab/activity",
-  NEXT_STEP: "/lab/next-step"
+  REVIEW: "/lab/review"
 } as const;
 
 export enum editRoutes {

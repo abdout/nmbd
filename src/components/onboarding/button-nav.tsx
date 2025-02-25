@@ -31,11 +31,14 @@ const ButtonNavigation = () => {
                 return;
             }
         }
-        router.push(getNextRoute(pathname));
+        
+        const nextRoute = getNextRoute(pathname);
+        router.push(nextRoute);
     };
 
     const handlePrevious = () => {
-        router.push(getPreviousRoute(pathname));
+        const prevRoute = getPreviousRoute(pathname);
+        router.push(prevRoute);
     };
 
     return (

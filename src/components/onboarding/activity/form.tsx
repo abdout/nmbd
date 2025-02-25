@@ -43,7 +43,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(
     (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
-      submitActivityForm(formData as unknown as FormData),
+      submitActivityForm(formData),
     {
       success: false,
       nextUrl: '/lab/activity'
