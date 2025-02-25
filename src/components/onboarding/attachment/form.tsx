@@ -7,11 +7,13 @@ import { createAttachment, updateAttachment } from "./action";
 import { useActionState } from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ATTACHMENT_FIELDS } from "./constants";
 import { useTransition } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
+import { useFormContext } from '@/components/onboarding/form-context';
+import { getNextRoute } from '../utils';
 
 const AttachmentForm = ({
   type,
@@ -20,6 +22,9 @@ const AttachmentForm = ({
   type: "create" | "update";
   data?: AttachmentSchema;
 }) => {
+  // Get form context separately
+  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
+
   const {
     setValue,
     handleSubmit,
@@ -40,23 +45,38 @@ const AttachmentForm = ({
     }
   );
 
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const onSubmitSuccess = () => {
+    toast.success(`Files have been ${type === "create" ? "uploaded" : "updated"}!`);
+    router.push(getNextRoute(pathname));
+  };
+
   const onSubmit = handleSubmit((data) => {
     startTransition(() => {
       formAction(data);
     });
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    setCurrentFormId('attachment');
+  }, [setCurrentFormId]);
 
   useEffect(() => {
     if (state.success) {
-      toast(`Files have been ${type === "create" ? "uploaded" : "updated"}!`);
-      router.refresh();
+      onSubmitSuccess();
+    } else if (state.error) {
+      toast.error("Something went wrong!");
     }
-  }, [state, router, type]);
+  }, [state]);
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+    <form 
+      ref={formRef} 
+      className="flex flex-col gap-8" 
+      onSubmit={onSubmit}
+    >
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Upload Files" : "Update Files"}
       </h1>
@@ -111,9 +131,10 @@ const AttachmentForm = ({
       )}
 
       <button
+        id="submit-attachment"
         type="submit"
         disabled={isPending}
-        className="w-full bg-neutral-900 text-white p-2 rounded-md hover:bg-neutral-800 disabled:bg-neutral-400"
+        className="hidden w-full bg-neutral-900 text-white p-2 rounded-md hover:bg-neutral-800 disabled:bg-neutral-400"
       >
         {isPending ? "Saving..." : type === "create" ? "Upload" : "Update"}
       </button>

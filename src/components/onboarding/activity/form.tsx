@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { activitySchema, ActivitySchema } from "./validation";
 import { useFormContext } from '@/components/onboarding/form-context';
-import { useTransition } from "react";
+import { useTransition, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,9 @@ import { ACTIVITY_FIELDS, CLUB_TYPES } from "./constants";
 import { submitActivityForm } from "./action";
 import { ActivityFieldName } from "./constants";
 import { toast } from "sonner";
+import { useRouter, usePathname } from "next/navigation";
+import { getNextRoute } from '../utils';
+import { useActionState } from "react";
 
 interface ActivityFormProps {
   user: {
@@ -36,14 +39,25 @@ interface ActivityFormProps {
 }
 
 export default function ActivityForm({ user }: ActivityFormProps) {
-  const { formRef, setIsSubmitting } = useFormContext();
+  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
   const [isPending, startTransition] = useTransition();
+  const [state, formAction] = useActionState(
+    (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
+      submitActivityForm(formData as unknown as FormData),
+    {
+      success: false,
+      nextUrl: '/lab/activity'
+    }
+  );
+  const router = useRouter();
+  const pathname = usePathname();
 
   const {
     register,
     watch,
     setValue,
     formState: { errors },
+    handleSubmit,
   } = useForm<ActivitySchema>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
@@ -63,6 +77,10 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       clubType: user.clubType || '',
     }
   });
+
+  useEffect(() => {
+    setCurrentFormId('activity');
+  }, [setCurrentFormId]);
 
   const handleSwitchChange = (name: ActivityFieldName) => (checked: boolean) => {
     setValue(name, checked);
@@ -121,21 +139,27 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     );
   };
 
+  const onSubmitSuccess = () => {
+    toast.success("تم حفظ معلومات النشاطات بنجاح");
+    router.push(getNextRoute(pathname));
+  };
+
+  useEffect(() => {
+    if (state.success) {
+      onSubmitSuccess();
+    } else if (!state.success) {
+      toast.error("حدث خطأ أثناء حفظ المعلومات");
+    }
+  }, [state]);
+
   return (
     <form
       ref={formRef}
-      action={(formData: FormData) => {
-        setIsSubmitting(true);
-        startTransition(async () => {
-          const result = await submitActivityForm(formData);
-          if (result.success) {
-            toast.success("تم حفظ معلومات النشاطات بنجاح");
-          } else {
-            toast.error("حدث خطأ أثناء حفظ المعلومات");
-          }
-          setIsSubmitting(false);
+      onSubmit={handleSubmit((data) => {
+        startTransition(() => {
+          formAction(data);
         });
-      }}
+      })}
       className="space-y-8"
     >
       <div className="space-y-4">
@@ -256,15 +280,11 @@ export default function ActivityForm({ user }: ActivityFormProps) {
         ))}
       </div>
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-        >
-          {isPending ? 'جاري الحفظ...' : 'حفظ'}
-        </button>
-      </div>
+      <button 
+        id="submit-activity" 
+        type="submit" 
+        className="hidden"
+      />
     </form>
   );
 } 

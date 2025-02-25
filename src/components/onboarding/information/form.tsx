@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { informationSchema } from "./validation";
 import { createInformation, updateInformation } from "./action";
 import { INFORMATION_FIELDS } from "./constants";
 import type { InformationSchema } from "./validation";
+import { useFormContext } from '@/components/onboarding/form-context';
+import { getNextRoute } from '../utils';
 
 interface Item {
   label: string;
@@ -23,6 +25,7 @@ interface FormProps {
 const InformationForm = ({ type, data }: FormProps) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const pathname = usePathname();
   const [selectedCountry, setSelectedCountry] = useState<Item | null>(null);
   const [selectedState, setSelectedState] = useState<Item | null>(null);
   const [selectedCity, setSelectedCity] = useState<Item | null>(null);
@@ -31,6 +34,7 @@ const InformationForm = ({ type, data }: FormProps) => {
   const [selectedBirthLocality, setSelectedBirthLocality] = useState<Item | null>(null);
   const [selectedYear, setSelectedYear] = useState<Item | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Item | null>(null);
+  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
 
   const {
     register,
@@ -40,6 +44,10 @@ const InformationForm = ({ type, data }: FormProps) => {
     resolver: zodResolver(informationSchema),
     defaultValues: data,
   });
+
+  useEffect(() => {
+    setCurrentFormId('information');
+  }, [setCurrentFormId]);
 
   const onSubmit = handleSubmit((formData) => {
     startTransition(async () => {
@@ -61,7 +69,7 @@ const InformationForm = ({ type, data }: FormProps) => {
 
         if (result.success) {
           toast.success(`Information ${type}d successfully!`);
-          router.refresh();
+          router.push(getNextRoute(pathname));
         } else {
           toast.error("Failed to save information");
         }
@@ -73,7 +81,12 @@ const InformationForm = ({ type, data }: FormProps) => {
   });
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-8" noValidate>
+    <form
+      ref={formRef}
+      onSubmit={onSubmit}
+      className="flex flex-col gap-8"
+      noValidate
+    >
       {INFORMATION_FIELDS.map((field) => (
         <div key={field.name} className="flex flex-col gap-2">
           <label htmlFor={field.name}>{field.label}</label>
@@ -92,12 +105,11 @@ const InformationForm = ({ type, data }: FormProps) => {
       ))}
 
       <button
+        id="submit-information"
         type="submit"
         disabled={isPending}
-        className="bg-blue-500 text-white p-3 rounded disabled:opacity-50"
-      >
-        {isPending ? "Saving..." : type === "create" ? "Create" : "Update"}
-      </button>
+        className="hidden"
+      />
     </form>
   );
 };

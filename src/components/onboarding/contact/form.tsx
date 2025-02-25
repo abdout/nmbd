@@ -8,7 +8,7 @@ import { createContact, updateContact } from "./action";
 import { useActionState } from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ import { useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { useFormContext } from '@/components/onboarding/form-context';
+import { getNextRoute } from '../utils';
 
 type ContactField = keyof Omit<ContactSchema, 'id'>;
 
@@ -37,6 +39,8 @@ const ContactForm = ({
   type: "create" | "update";
   data?: ContactSchema;
 }) => {
+  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
+  
   const {
     register,
     handleSubmit,
@@ -74,18 +78,31 @@ const ContactForm = ({
   });
 
   const router = useRouter();
+  const pathname = usePathname();
+
+  const onSubmitSuccess = () => {
+    toast.success(`Contact has been ${type === "create" ? "created" : "updated"}!`);
+    router.push(getNextRoute(pathname));
+  };
 
   useEffect(() => {
     if (state.success) {
-      toast(`Contact has been ${type === "create" ? "created" : "updated"}!`);
-      router.refresh();
+      onSubmitSuccess();
+    } else if (state.error) {
+      toast.error("Failed to save contact information");
     }
-  }, [state, router, type]);
+  }, [state]);
+
+  useEffect(() => {
+    setCurrentFormId('contact');
+  }, [setCurrentFormId]);
 
   return (
-    <form className="max-w-2xl mx-auto" onSubmit={onSubmit}>
-      
-
+    <form 
+      ref={formRef} 
+      className="max-w-2xl mx-auto" 
+      onSubmit={onSubmit}
+    >
       {data?.id && (
         <input type="hidden" {...register('id')} defaultValue={data.id} />
       )}
@@ -131,9 +148,15 @@ const ContactForm = ({
         <span className="text-red-500">Something went wrong!</span>
       )}
       
-      <Button type="submit" className="w-full mt-8" disabled={isPending}>
+      <Button type="submit" className="hidden w-full mt-8" disabled={isPending}>
         {isPending ? "Saving..." : type === "create" ? "Create" : "Update"}
       </Button>
+
+      <button 
+        id="submit-contact" 
+        type="submit" 
+        className="hidden"
+      />
     </form>
   );
 };

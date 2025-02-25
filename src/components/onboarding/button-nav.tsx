@@ -5,16 +5,14 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
 import { onboardingRoutes } from './types'
 import { useTransition } from "react";
-import { updateUser } from "@/lib/action";
+import { useFormContext } from './form-context';
+import { getNextRoute, getPreviousRoute } from './utils';
 
-const ButtonNavigation = ({ 
-  formRef 
-}: { 
-  formRef?: React.RefObject<HTMLFormElement | null> 
-}) => {
+const ButtonNavigation = () => {
     const router = useRouter()
     const pathname = usePathname()
     const [isPending, startTransition] = useTransition()
+    const { formRef, currentFormId } = useFormContext();
 
     const getCurrentStepIndex = (path: string): number => {
         return Object.values(onboardingRoutes).findIndex(
@@ -22,63 +20,35 @@ const ButtonNavigation = ({
         ) + 1;
     };
 
-    const getNextRoute = (currentPath: string): string => {
-        const routes = Object.values(onboardingRoutes) as string[];
-        const currentIndex = routes.indexOf(currentPath);
-        return routes[currentIndex + 1] || routes[currentIndex];
-    };
-
-    const getPreviousRoute = (currentPath: string): string => {
-        const routes = Object.values(onboardingRoutes) as string[];
-        const currentIndex = routes.indexOf(currentPath);
-        return routes[currentIndex - 1] || routes[currentIndex];
-    };
-
-    const handleNext = () => {
+    const handleNext = async () => {
         if (formRef?.current) {
-            // Trigger form validation
-            const isValid = formRef.current.checkValidity();
-            if (!isValid) {
-                toast.error("يرجى إكمال جميع الحقول المطلوبة");
-                formRef.current.reportValidity();
+            const submitButton = formRef.current.querySelector(
+                '#submit-activity, #submit-contact, #submit-information, #submit-attachment'
+            ) as HTMLButtonElement;
+            
+            if (submitButton) {
+                submitButton.click();
                 return;
             }
-
-            // Submit form data optimistically
-            startTransition(async () => {
-                const formData = new FormData(formRef.current!);
-                const result = await updateUser({ success: false, error: false }, {
-                    ...Object.fromEntries(formData),
-                    currentStep: getCurrentStepIndex(pathname),
-                    role: "USER",
-                    isTwoFactorEnabled: false,
-                    skills: [],
-                    languageSkills: []
-                });
-
-                if (result.success) {
-                    toast.success("تم حفظ البيانات");
-                    router.push(getNextRoute(pathname));
-                } else {
-                    toast.error("حدث خطأ أثناء حفظ البيانات");
-                }
-            });
-        } else {
-            router.push(getNextRoute(pathname));
         }
+        router.push(getNextRoute(pathname));
+    };
+
+    const handlePrevious = () => {
+        router.push(getPreviousRoute(pathname));
     };
 
     return (
         <div className="flex justify-center space-x-reverse space-x-4">
             <Button 
-                onClick={() => router.push(getPreviousRoute(pathname))} 
+                onClick={handlePrevious}
                 size="sm" 
                 className='bg-neutral-950 hover:bg-neutral-800'
             >
                 <ArrowRight className="ml-2 h-4 w-4" /> السابق
             </Button>
             <Button 
-                onClick={handleNext} 
+                onClick={handleNext}
                 variant="outline" 
                 size="sm"
                 disabled={isPending}
