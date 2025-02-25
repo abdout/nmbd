@@ -21,15 +21,15 @@ const SelectPopover: React.FC<SelectPopoverProps> = ({ items, selectedItem, setS
   const [open, setOpen] = React.useState(false)
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[200px] h-10 justify-between">
+          <Button variant="outline" className="w-full h-10 justify-between">
             {selectedItem ? <>{selectedItem.label}</> : <>{label}</>}
-            <ChevronDown className=" h-4 w-4 shrink-0 opacity-50" />
+            <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0 z-50 relative" side="bottom" align="start">
+        <PopoverContent className="p-0 z-50 relative w-full min-w-[200px]" side="bottom" align="start">
           <Command>
             <CommandInput placeholder={`أبحث عن ${label} ...`} />
             <CommandList>
@@ -54,7 +54,6 @@ const SelectPopover: React.FC<SelectPopoverProps> = ({ items, selectedItem, setS
           </Command>
         </PopoverContent>
       </Popover>
-
     </div>
   )
 }

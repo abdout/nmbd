@@ -23,6 +23,23 @@ export const informationSchema = z.object({
   educationLevel: z.string().optional(),
   institution: z.string().optional(),
   yearOfCompletion: z.string().optional(),
+  major: z.string().optional(),
+
+  // Bachelor's information
+  bachelorInstitution: z.string().optional(),
+  bachelorMajor: z.string().optional(),
+  bachelorCompletionYear: z.string().optional(),
+  
+  // Master's information
+  masterInstitution: z.string().optional(),
+  masterMajor: z.string().optional(),
+  masterCompletionYear: z.string().optional(),
+  
+  // PhD information
+  phdInstitution: z.string().optional(),
+  phdMajor: z.string().optional(),
+  phdCompletionYear: z.string().optional(),
+  
   currentOccupation: z.string().optional(),
   employmentSector: z.string().optional(),
   workplaceAddress: z.string().optional(),
