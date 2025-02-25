@@ -595,7 +595,28 @@ const InformationForm = ({ type, data }: FormProps) => {
                 </div>
               )}
 
-              {/* Remove completion message */}
+              {Number(currentLocationStep) === 6 && (
+                <div className="relative">
+                  <div className="absolute right-[8.7rem] top-[7px] z-10">
+                    <button
+                      type="button"
+                      onClick={resetLocationSelection}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <SelectPopover
+                    items={[]} // Empty items as this is the final selection
+                    selectedItem={selectedCurrentNeighborhood}
+                    setSelectedItem={() => {}} // No action needed on selection
+                    label={selectedCurrentNeighborhood?.label || "الحي"}
+                  />
+                </div>
+              )}
 
               {/* Show any validation errors */}
               {(errors.currentCountry || errors.currentState || errors.currentLocality ||
@@ -736,7 +757,7 @@ const InformationForm = ({ type, data }: FormProps) => {
                   <SelectPopover
                     items={[]} // Empty items as this is the final selection
                     selectedItem={selectedBirthMonth}
-                    setSelectedItem={() => { }} // No action needed on selection
+                    setSelectedItem={() => {}} // No action needed on selection
                     label={selectedBirthMonth?.label || "شهر الميلاد"}
                   />
                 </div>
