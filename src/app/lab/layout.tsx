@@ -21,10 +21,14 @@ export default function LabLayout({
           position="bottom-right"
           toastOptions={{
             style: {
-              maxWidth: '200px',
-              minWidth: '200px'
-            }
+              maxWidth: '400px',
+              minWidth: '300px',
+              padding: '16px',
+              fontSize: '16px'
+            },
+            duration: 5000
           }}
+          closeButton
         />
         {!isReviewPage && (
           <PageHeading

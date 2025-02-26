@@ -8,31 +8,101 @@ import { useTransition } from "react";
 import { useFormContext } from './form-context';
 import { getNextRoute, getPreviousRoute } from './utils';
 
+// Custom event to trigger form submission
+export const triggerFormSubmit = () => {
+    console.log('Dispatching global form submit event');
+    // Create and dispatch a custom event
+    const submitEvent = new Event('submit-form', { bubbles: true });
+    window.dispatchEvent(submitEvent);
+    
+    // Try the global function approach as well
+    try {
+        if ((window as any).submitInformationForm) {
+            console.log('Using global submit function');
+            (window as any).submitInformationForm();
+            return true;
+        }
+    } catch (e) {
+        console.error('Error calling global submit function:', e);
+    }
+    
+    return false;
+};
+
 const ButtonNavigation = () => {
     const router = useRouter()
     const pathname = usePathname()
     const [isPending, startTransition] = useTransition()
-    const { formRef, currentFormId } = useFormContext();
-
-    const getCurrentStepIndex = (path: string): number => {
-        return Object.values(onboardingRoutes).findIndex(
-            route => path.includes(route.split('/').pop() || '')
-        ) + 1;
-    };
+    
+    // Try to use form context, but don't fail if it's not available
+    let formContextValue = null;
+    try {
+        formContextValue = useFormContext();
+    } catch (error) {
+        console.log('Form context not available, continuing without it');
+    }
+    
+    const { formRef, currentFormId } = formContextValue || { formRef: null, currentFormId: null };
 
     const handleNext = async () => {
+        console.log('Next button clicked, formRef:', formRef?.current);
+        console.log('Current form ID:', currentFormId);
+        
+        // Try to submit the form if it exists
         if (formRef?.current) {
+            console.log('Form exists, attempting to submit');
+            try {
+                // Try to find and click the debug submit button first (most reliable)
+                const debugButtonId = `#debug-submit-${currentFormId}`;
+                const debugButton = document.querySelector(debugButtonId) as HTMLButtonElement;
+                if (debugButton) {
+                    console.log(`Found debug button ${debugButtonId}, clicking it`);
+                    debugButton.click();
+                    return;
+                }
+                
+                // Use global function if available
+                if (currentFormId === 'information' && (window as any).submitInformationForm) {
+                    console.log('Using global submit function for information form');
+                    if ((window as any).submitInformationForm()) {
+                        return;
+                    }
+                }
+                
+                // Use requestSubmit() as a fallback
+                const formElement = formRef.current as HTMLFormElement;
+                console.log('Using requestSubmit on form');
+                formElement.requestSubmit();
+                console.log('Form submission requested');
+                return;
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+            
+            // Fallback to the submit button if requestSubmit fails
             const submitButton = formRef.current.querySelector(
-                '#submit-activity, #submit-contact, #submit-information, #submit-attachment'
+                `#submit-${currentFormId}`
             ) as HTMLButtonElement;
             
             if (submitButton) {
-                submitButton.click();
-                return;
+                console.log(`Clicking submit button #submit-${currentFormId}`);
+                try {
+                    submitButton.click();
+                    return;
+                } catch (clickError) {
+                    console.error('Error clicking submit button:', clickError);
+                }
+            } else {
+                console.error(`Submit button #submit-${currentFormId} not found`);
             }
+        } else {
+            console.warn('Form reference is null or undefined');
         }
         
+        // If all else fails, just navigate to the next route
         const nextRoute = getNextRoute(pathname);
+        console.log('Failed to submit form, navigating to:', nextRoute);
+        toast.error('Failed to submit form, navigating to next step anyway');
         router.push(nextRoute);
     };
 

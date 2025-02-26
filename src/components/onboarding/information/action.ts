@@ -1,38 +1,94 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
-import { InformationSchema } from "./validation";
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { db } from '@/lib/db';
+import { currentUser } from '@/lib/auth';
+import type { InformationSchema } from './validation';
+import { informationSchema } from './validation';
 
+// Action result type
+interface ActionResult {
+  success: boolean;
+  error?: string;
+}
+
+// ActionState for backwards compatibility
 export type ActionState = {
   success: boolean;
   error: boolean;
   message?: string;
 };
 
-// Create
-export async function createInformation(state: ActionState, data: InformationSchema) {
+/**
+ * Create new information record
+ */
+export async function createInformation(
+  prevState: any,
+  formData: InformationSchema | FormData
+): Promise<ActionResult> {
   try {
+    console.log('Server: createInformation called with formData:', 
+      formData instanceof FormData ? 'FormData object' : formData);
+      
+    // Authenticate user
     const user = await currentUser();
-    if (!user?.id) return { success: false, error: true };
+    if (!user?.id) {
+      console.error('User not found or not authenticated');
+      return { success: false, error: 'User not found or not authenticated' };
+    }
 
+    // Handle either FormData or direct object
+    let processedData: InformationSchema;
+    
+    if (formData instanceof FormData) {
+      // If it's FormData, extract the values
+      const formObject: Record<string, any> = {};
+      formData.forEach((value, key) => {
+        formObject[key] = value;
+      });
+      processedData = formObject as InformationSchema;
+    } else {
+      // If it's already an object
+      processedData = formData;
+    }
+
+    // Validate form data
+    const validatedData = informationSchema.safeParse(processedData);
+    if (!validatedData.success) {
+      console.error('Validation error:', validatedData.error);
+      return { success: false, error: 'البيانات المدخلة غير صحيحة' };
+    }
+
+    // Convert string values to numbers where needed
+    const data = {
+      ...validatedData.data,
+      birthMonth: validatedData.data.birthMonth ? parseInt(validatedData.data.birthMonth) : null,
+      birthYear: validatedData.data.birthYear ? parseInt(validatedData.data.birthYear) : null,
+      studentYear: validatedData.data.studentYear ? parseInt(validatedData.data.studentYear) : null,
+      yearOfCompletion: validatedData.data.yearOfCompletion ? parseInt(validatedData.data.yearOfCompletion) : null,
+      bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
+      masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
+      phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
+    };
+
+    // Create information record
     await db.user.update({
       where: { id: user.id },
       data: {
-        ...data,
-        birthMonth: data.birthMonth ? parseInt(data.birthMonth) : null,
-        birthYear: data.birthYear ? parseInt(data.birthYear) : null,
-        yearOfCompletion: data.yearOfCompletion ? parseInt(data.yearOfCompletion) : null,
-        onboardingStep: 1
+        ...(data as any),
+        // Add hasCompletedInformation to schema.prisma for a proper fix
       }
     });
 
-    revalidatePath("/lab");
-    return { success: true, error: false };
+    // Revalidate paths
+    revalidatePath('/onboarding/information');
+    revalidatePath('/dashboard');
+
+    return { success: true };
   } catch (error) {
-    console.error(error);
-    return { success: false, error: true };
+    console.error('Error creating information:', error);
+    return { success: false, error: 'حدث خطأ أثناء حفظ البيانات' };
   }
 }
 
@@ -81,62 +137,72 @@ export async function getInformation() {
   }
 }
 
-// Update
-export async function updateInformation(state: ActionState, data: InformationSchema) {
-  console.log("updateInformation called with data:", data);
-  
-  // Safety check - if data is null or undefined, return error
-  if (!data) {
-    console.error("updateInformation received null/undefined data");
-    return { success: false, error: true, message: "No data provided" };
-  }
-  
+/**
+ * Update existing information record
+ */
+export async function updateInformation(
+  prevState: any,
+  formData: InformationSchema | FormData
+): Promise<ActionResult> {
   try {
+    console.log('Server: updateInformation called with formData:', 
+      formData instanceof FormData ? 'FormData object' : formData);
+    
+    // Authenticate user
     const user = await currentUser();
-    if (!user?.id) return { success: false, error: true };
+    if (!user?.id) {
+      console.error('User not found or not authenticated');
+      return { success: false, error: 'User not found or not authenticated' };
+    }
 
-    // Create a clean data object with all fields from the schema
-    const cleanData = {
-      name: data.name || null,
-      fullname: data.fullname || null,
-      description: data.description || null,
-      bio: data.bio || null,
-      birthMonth: data.birthMonth ? parseInt(data.birthMonth) : null,
-      birthYear: data.birthYear ? parseInt(data.birthYear) : null,
-      birthCountry: data.birthCountry || null,
-      birthState: data.birthState || null,
-      birthLocality: data.birthLocality || null,
-      currentLocality: data.currentLocality || null,
-      currentCountry: data.currentCountry || null,
-      currentState: data.currentState || null,
-      currentAdminUnit: data.currentAdminUnit || null,
-      currentNeighborhood: data.currentNeighborhood || null,
-      originalLocality: data.originalLocality || null,
-      originalCountry: data.originalCountry || null,
-      educationLevel: data.educationLevel || null,
-      institution: data.institution || null,
-      yearOfCompletion: data.yearOfCompletion ? parseInt(data.yearOfCompletion) : null,
-      currentOccupation: data.currentOccupation || null,
-      employmentSector: data.employmentSector || null,
-      workplaceAddress: data.workplaceAddress || null,
-      maritalStatus: data.maritalStatus || null,
-      gender: data.gender || null,
-      religion: data.religion || null,
-      nationalityId: data.nationalityId || null,
+    // Handle either FormData or direct object
+    let processedData: InformationSchema;
+    
+    if (formData instanceof FormData) {
+      // If it's FormData, extract the values
+      const formObject: Record<string, any> = {};
+      formData.forEach((value, key) => {
+        formObject[key] = value;
+      });
+      processedData = formObject as InformationSchema;
+    } else {
+      // If it's already an object
+      processedData = formData;
+    }
+
+    // Validate form data
+    const validatedData = informationSchema.safeParse(processedData);
+    if (!validatedData.success) {
+      console.error('Validation error:', validatedData.error);
+      return { success: false, error: 'البيانات المدخلة غير صحيحة' };
+    }
+
+    // Convert string values to numbers where needed
+    const data = {
+      ...validatedData.data,
+      birthMonth: validatedData.data.birthMonth ? parseInt(validatedData.data.birthMonth) : null,
+      birthYear: validatedData.data.birthYear ? parseInt(validatedData.data.birthYear) : null,
+      studentYear: validatedData.data.studentYear ? parseInt(validatedData.data.studentYear) : null,
+      yearOfCompletion: validatedData.data.yearOfCompletion ? parseInt(validatedData.data.yearOfCompletion) : null,
+      bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
+      masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
+      phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
     };
 
-    console.log("Clean data for update:", cleanData);
-
+    // Update information
     await db.user.update({
       where: { id: user.id },
-      data: cleanData
+      data: data as any
     });
 
-    revalidatePath("/lab");
-    return { success: true, error: false };
+    // Revalidate paths
+    revalidatePath('/onboarding/information');
+    revalidatePath('/dashboard');
+
+    return { success: true };
   } catch (error) {
-    console.error("Error in updateInformation:", error);
-    return { success: false, error: true, message: String(error) };
+    console.error('Error updating information:', error);
+    return { success: false, error: 'حدث خطأ أثناء تحديث البيانات' };
   }
 }
 

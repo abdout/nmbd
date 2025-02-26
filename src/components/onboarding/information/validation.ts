@@ -20,11 +20,28 @@ export const informationSchema = z.object({
 
   originalLocality: z.string().optional(),
   originalCountry: z.string().optional(),
+  
+  // Education fields
   educationLevel: z.string().optional(),
+  
+  // Common education fields
   institution: z.string().optional(),
   yearOfCompletion: z.string().optional(),
   major: z.string().optional(),
-
+  currentOccupation: z.string().optional(),
+  
+  // Student fields
+  studentInstitution: z.string().optional(),
+  studentFaculty: z.string().optional(),
+  studentProgram: z.string().optional(),
+  studentYear: z.string().optional(),
+  studentGraduationYear: z.string().optional(),
+  
+  // Diploma information
+  diplomaInstitution: z.string().optional(),
+  diplomaMajor: z.string().optional(),
+  diplomaCompletionYear: z.string().optional(),
+  
   // Bachelor's information
   bachelorInstitution: z.string().optional(),
   bachelorMajor: z.string().optional(),
@@ -40,19 +57,21 @@ export const informationSchema = z.object({
   phdMajor: z.string().optional(),
   phdCompletionYear: z.string().optional(),
   
-  currentOccupation: z.string().optional(),
+  // Professor information
+  professorInstitution: z.string().optional(),
+  professorMajor: z.string().optional(),
+  professorCompletionYear: z.string().optional(),
+  academicRank: z.string().optional(),
+  
+  // Occupation information
   employmentSector: z.string().optional(),
+  companyName: z.string().optional(),
   workplaceAddress: z.string().optional(),
-
-  studentInstitution: z.string().optional(),
-  studentFaculty: z.string().optional(),
-  studentProgram: z.string().optional(),
-  studentYear: z.number().optional(),
-
+  
+  // Other fields
   maritalStatus: z.string().optional(),
   gender: z.string().optional(),
   religion: z.string().optional(),
-  
   nationalityId: z.string().optional(),
 });
 

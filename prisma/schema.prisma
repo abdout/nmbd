@@ -102,9 +102,15 @@ model User {
   phdMajor             String?
   phdCompletionYear    Int?
   
+  // Professor information
+  professorInstitution  String?
+  professorMajor        String?
+  professorCompletionYear Int?
+  
   currentOccupation    String?             
   employmentSector     String?             
   workplaceAddress     String?
+  companyName          String?
 
   // Student Details
   studentInstitution   String?

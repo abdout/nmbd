@@ -107,7 +107,15 @@ export const {
           onboardingStatus: "PENDING",
           onboardingStep: 1,
           
+          // Basic info
+          fullname: null,
+          description: null,
+          bio: null,
+          cv: null,
+          portfolio: null,
+          additionalFile: null,
           
+          // Contact
           phone: null,
           whatsapp: null,
           twitter: null,
@@ -116,22 +124,108 @@ export const {
           telegram: null,
           instagram: null,
           tiktok: null,
+          
+          // Birth details
+          birthDate: null,
           birthCountry: null,
           birthState: null,
           birthLocality: null,
+          birthAdminUnit: null,
+          birthNeighborhood: null,
+          birthMonth: null,
+          birthYear: null,
+          
+          // Current location
           currentCountry: null,
           currentState: null,
           currentLocality: null,
-          birthDate: null,
+          currentAdminUnit: null,
+          currentNeighborhood: null,
+          
+          // Original location
+          originalCountry: null,
+          originalState: null,
+          originalLocality: null,
+          originalAdminUnit: null,
+          originalNeighborhood: null,
+          
+          // Personal details
           nationalityId: null,
           maritalStatus: null,
           gender: null,
           religion: null,
+          
+          // Education & work
           educationLevel: null,
           institution: null,
           yearOfCompletion: null,
-          currentOccupation: null
-        }
+          major: null,
+          studentYear: null,
+          
+          // Bachelor's info
+          bachelorInstitution: null,
+          bachelorMajor: null,
+          bachelorCompletionYear: null,
+          
+          // Master's info
+          masterInstitution: null,
+          masterMajor: null,
+          masterCompletionYear: null,
+          
+          // PhD info
+          phdInstitution: null,
+          phdMajor: null,
+          phdCompletionYear: null,
+          
+          // Professor info
+          professorInstitution: null,
+          professorMajor: null,
+          professorCompletionYear: null,
+          
+          // Occupation
+          currentOccupation: null,
+          employmentSector: null,
+          workplaceAddress: null,
+          companyName: null,
+          
+          // Student details
+          studentInstitution: null,
+          studentFaculty: null,
+          
+          // Activities
+          partyMember: false,
+          partyName: null,
+          partyStartDate: null,
+          partyEndDate: null,
+          
+          unionMember: false,
+          unionName: null,
+          unionStartDate: null,
+          unionEndDate: null,
+          
+          ngoMember: false,
+          ngoName: null,
+          ngoActivity: null,
+          
+          clubMember: false,
+          clubName: null,
+          clubType: null,
+          
+          // Emergency contacts
+          emergencyName1: null,
+          emergencyRelation1: null,
+          emergencyPhone1: null,
+          emergencyName2: null,
+          emergencyRelation2: null,
+          emergencyPhone2: null,
+          
+          // Other
+          referralSource: null,
+          acquaintanceName: null,
+          donationAmount: null,
+          donationDate: null,
+          oathAcknowledged: false
+        } as any
       });
       return true;
     },
