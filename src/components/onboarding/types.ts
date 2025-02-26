@@ -3,12 +3,12 @@ export interface FormErrors {
 }
 
 export const onboardingRoutes = {
-  TERMS: "/lab/terms",
-  ATTACHMENT: "/lab/attachment",
-  CONTACT: "/lab/contact",
-  INFORMATION: "/lab/information",
-  ACTIVITY: "/lab/activity",
-  REVIEW: "/lab/review"
+  TERMS: "/onboarding/terms",
+  ATTACHMENT: "/onboarding/attachment",
+  CONTACT: "/onboarding/contact",
+  INFORMATION: "/onboarding/information",
+  ACTIVITY: "/onboarding/activity",
+  REVIEW: "/onboarding/review"
 } as const;
 
 export enum editRoutes {
