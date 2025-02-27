@@ -1,298 +1,222 @@
 'use client';
-import { useState } from "react";
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
+import { useEffect } from "react";
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InformationSchema } from "./validation";
-import SelectPopover from "@/components/atom/popover/popover";
-
-interface Item {
-  label: string;
-  value: string;
-}
+import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
+import { Option } from "../../atom/auto-complete";
+import { Label } from "@/components/ui/label";
 
 interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  watch?: UseFormWatch<InformationSchema>; // Make watch optional to fix type error
 }
+
+// Reuse the same country data structure as in location component
+const COUNTRIES: Option[] = [
+  { value: "sudan", label: "السودان" },
+  { value: "egypt", label: "مصر" },
+  { value: "saudi_arabia", label: "السعودية" },
+  { value: "jordan", label: "الأردن" },
+  { value: "libya", label: "ليبيا" },
+  { value: "south_sudan", label: "جنوب السودان" },
+  { value: "eritrea", label: "إريتريا" },
+  { value: "yemen", label: "اليمن" },
+];
+
+// Reuse the same states data structure
+const STATES: Record<string, Option[]> = {
+  "sudan": [
+    { value: "khartoum_state", label: "ولاية الخرطوم" },
+    { value: "river_nile", label: "نهر النيل" },
+    { value: "kassala", label: "كسلا" }
+  ],
+  "egypt": [
+    { value: "cairo_gov", label: "محافظة القاهرة" },
+    { value: "alexandria_gov", label: "محافظة الإسكندرية" },
+    { value: "luxor_gov", label: "محافظة الأقصر" }
+  ],
+  "saudi_arabia": [
+    { value: "riyadh_province", label: "منطقة الرياض" },
+    { value: "makkah_province", label: "منطقة مكة المكرمة" },
+    { value: "eastern_province", label: "المنطقة الشرقية" }
+  ],
+  "jordan": [
+    { value: "amman_gov", label: "محافظة عمان" },
+    { value: "zarqa_gov", label: "محافظة الزرقاء" },
+    { value: "irbid_gov", label: "محافظة إربد" }
+  ],
+  "libya": [
+    { value: "tripoli_gov", label: "محافظة طرابلس" },
+    { value: "benghazi_gov", label: "محافظة بنغازي" },
+    { value: "misrata_gov", label: "محافظة مصراتة" }
+  ],
+  "south_sudan": [
+    { value: "central_equatoria", label: "ولاية الاستوائية الوسطى" },
+    { value: "jonglei", label: "ولاية جونقلي" },
+    { value: "unity", label: "ولاية الوحدة" }
+  ],
+  "eritrea": [
+    { value: "maekel", label: "إقليم ماكل" },
+    { value: "anseba", label: "إقليم عنسبا" },
+    { value: "gash_barka", label: "إقليم قاش بركة" }
+  ],
+  "yemen": [
+    { value: "sanaa_gov", label: "محافظة صنعاء" },
+    { value: "aden_gov", label: "محافظة عدن" },
+    { value: "taiz_gov", label: "محافظة تعز" }
+  ]
+};
+
+// Reuse the same localities data structure
+const LOCALITIES: Record<string, Option[]> = {
+  "khartoum_state": [
+    { value: "khartoum_locality", label: "محلية الخرطوم" },
+    { value: "omdurman_locality", label: "محلية أم درمان" },
+    { value: "bahri_locality", label: "محلية بحري" }
+  ],
+  "river_nile": [
+    { value: "atbara_locality", label: "محلية عطبرة" },
+    { value: "damar_locality", label: "محلية الدامر" },
+    { value: "shendi_locality", label: "محلية شندي" }
+  ],
+  "cairo_gov": [
+    { value: "cairo_east", label: "القاهرة الشرقية" },
+    { value: "cairo_west", label: "القاهرة الغربية" },
+    { value: "cairo_central", label: "وسط القاهرة" }
+  ],
+  "riyadh_province": [
+    { value: "riyadh_city_area", label: "منطقة مدينة الرياض" },
+    { value: "diriyah_area", label: "منطقة الدرعية" },
+    { value: "kharj_area", label: "منطقة الخرج" }
+  ],
+  // Additional localities for other states would be included here
+};
+
+// Generate birth years (100 years from current year)
+const generateBirthYears = (): Option[] => {
+  return Array.from({ length: 100 }, (_, i) => {
+    const year = new Date().getFullYear() - i;
+    return { value: year.toString(), label: year.toString() };
+  });
+};
+
+// Birth months with Arabic names
+const BIRTH_MONTHS: Option[] = [
+  { value: "1", label: "يناير" },
+  { value: "2", label: "فبراير" },
+  { value: "3", label: "مارس" },
+  { value: "4", label: "ابريل" },
+  { value: "5", label: "مايو" },
+  { value: "6", label: "يونيو" },
+  { value: "7", label: "يوليو" },
+  { value: "8", label: "اغسطس" },
+  { value: "9", label: "سبتمبر" },
+  { value: "10", label: "اكتوبر" },
+  { value: "11", label: "نوفمبر" },
+  { value: "12", label: "ديسمبر" }
+];
 
 const Birthdate = ({
   register,
   errors,
-  setValue
+  setValue,
+  watch
 }: BirthdateProps) => {
-  // Birth Information step state
-  const [birthInfoStep, setBirthInfoStep] = useState<number>(1);
-  const [selectedBirthCountry, setSelectedBirthCountry] = useState<Item | null>(null);
-  const [selectedBirthState, setSelectedBirthState] = useState<Item | null>(null);
-  const [selectedBirthLocality, setSelectedBirthLocality] = useState<Item | null>(null);
-  const [selectedBirthYear, setSelectedBirthYear] = useState<Item | null>(null);
-  const [selectedBirthMonth, setSelectedBirthMonth] = useState<Item | null>(null);
-
-  // Options data for location fields
-  const countries: Item[] = [
-    { label: 'السودان', value: 'SD' },
-    { label: 'مصر', value: 'EG' },
-    { label: 'السعودية', value: 'SA' },
-    { label: 'الامارات', value: 'AE' },
+  // Define the hierarchical steps
+  const birthdateSteps: SelectionStep[] = [
+    {
+      id: "country",
+      title: "الميلاد",
+      placeholder: "اختر دولة الميلاد",
+      emptyMessage: "لا توجد دول متاحة",
+      getOptions: () => COUNTRIES
+    },
+    {
+      id: "state",
+      title: "ولاية الميلاد",
+      placeholder: "اختر ولاية الميلاد",
+      emptyMessage: "لا توجد ولايات متاحة",
+      getOptions: (prev) => {
+        const countryId = prev.country?.value;
+        return countryId ? (STATES[countryId] || []) : [];
+      }
+    },
+    {
+      id: "locality",
+      title: "محلية الميلاد",
+      placeholder: "اختر محلية الميلاد",
+      emptyMessage: "لا توجد محليات متاحة",
+      getOptions: (prev) => {
+        const stateId = prev.state?.value;
+        return stateId ? (LOCALITIES[stateId] || []) : [];
+      }
+    },
+    {
+      id: "year",
+      title: "سنة الميلاد",
+      placeholder: "اختر سنة الميلاد",
+      emptyMessage: "لا توجد سنوات متاحة",
+      getOptions: () => generateBirthYears()
+    },
+    {
+      id: "month",
+      title: "شهر الميلاد",
+      placeholder: "اختر شهر الميلاد",
+      emptyMessage: "لا توجد شهور متاحة",
+      getOptions: () => BIRTH_MONTHS
+    }
   ];
 
-  const states: Record<string, Item[]> = {
-    SD: [
-      { label: 'الخرطوم', value: 'KH' },
-      { label: 'الجزيرة', value: 'GZ' },
-      { label: 'نهر النيل', value: 'NR' },
-    ],
-    EG: [
-      { label: 'القاهرة', value: 'CA' },
-      { label: 'الإسكندرية', value: 'AL' },
-      { label: 'أسيوط', value: 'AS' },
-    ],
-    SA: [
-      { label: 'الرياض', value: 'RI' },
-      { label: 'مكة', value: 'MK' },
-    ],
-    AE: [
-      { label: 'دبي', value: 'DU' },
-      { label: 'أبوظبي', value: 'AD' },
-    ],
+  // Register all fields required by React Hook Form
+  useEffect(() => {
+    register('birthCountry', { required: "يرجى اختيار دولة الميلاد" });
+    register('birthState', { required: "يرجى اختيار ولاية الميلاد" });
+    register('birthLocality', { required: "يرجى اختيار محلية الميلاد" });
+    register('birthYear', { required: "يرجى اختيار سنة الميلاد" });
+    register('birthMonth', { required: "يرجى اختيار شهر الميلاد" });
+  }, [register]);
+
+  // Handle completion of the hierarchical selection
+  const handleComplete = (selections: Record<string, Option>) => {
+    // Map the selections to the form values
+    setValue('birthCountry', selections.country.label);
+    setValue('birthState', selections.state.label);
+    setValue('birthLocality', selections.locality.label);
+    setValue('birthYear', selections.year.label);
+    setValue('birthMonth', selections.month.label);
   };
 
-  const localities: Record<string, Item[]> = {
-    KH: [
-      { label: 'أم درمان', value: 'OMD' },
-      { label: 'بحري', value: 'BH' },
-    ],
-    CA: [
-      { label: 'مدينة نصر', value: 'NS' },
-      { label: 'الزمالك', value: 'ZM' },
-    ],
-  };
-
-  // Data options for birth information
-  const birthYears: Item[] = Array.from({ length: 100 }, (_, i) => {
-    const year = new Date().getFullYear() - i;
-    return { label: year.toString(), value: year.toString() };
-  });
-
-  const birthMonths: Item[] = [
-    { label: 'يناير', value: '1' },
-    { label: 'فبراير', value: '2' },
-    { label: 'مارس', value: '3' },
-    { label: 'ابريل', value: '4' },
-    { label: 'مايو', value: '5' },
-    { label: 'يونيو', value: '6' },
-    { label: 'يوليو', value: '7' },
-    { label: 'اغسطس', value: '8' },
-    { label: 'سبتمبر', value: '9' },
-    { label: 'اكتوبر', value: '10' },
-    { label: 'نوفمبر', value: '11' },
-    { label: 'ديسمبر', value: '12' },
-  ];
-
-  // Function to get birth information field label
-  const getBirthInfoStepLabel = (step: number): string => {
-    switch (step) {
-      case 1: return "الميلاد";
-      case 2: return "ولاية الميلاد";
-      case 3: return "محلية الميلاد";
-      case 4: return "سنة الميلاد";
-      case 5: return "شهر الميلاد";
-      default: return "معلومات الميلاد";
-    }
-  };
-
-  // Handle selection for birth information fields
-  const handleBirthInfoSelect = (fieldName: string, item: Item | null) => {
-    // Update form values when an item is selected
-    if (item) {
-      setValue(fieldName as any, item.label);
-    } else {
-      setValue(fieldName as any, '');
-    }
-
-    // Update step state based on the field being updated
-    switch (fieldName) {
-      case 'birthCountry':
-        setSelectedBirthCountry(item);
-        if (item) setBirthInfoStep(2);
-        break;
-      case 'birthState':
-        setSelectedBirthState(item);
-        if (item) setBirthInfoStep(3);
-        break;
-      case 'birthLocality':
-        setSelectedBirthLocality(item);
-        if (item) setBirthInfoStep(4);
-        break;
-      case 'birthYear':
-        setSelectedBirthYear(item);
-        if (item) setBirthInfoStep(5);
-        break;
-      case 'birthMonth':
-        setSelectedBirthMonth(item);
-        if (item) setBirthInfoStep(6); // Move to completion step
-        break;
-    }
-  };
-
-  // Function to reset birth information selection
-  const resetBirthInfoSelection = () => {
-    setBirthInfoStep(1);
-    setSelectedBirthCountry(null);
-    setSelectedBirthState(null);
-    setSelectedBirthLocality(null);
-    setSelectedBirthYear(null);
-    setSelectedBirthMonth(null);
-    setValue('birthCountry', '');
-    setValue('birthState', '');
-    setValue('birthLocality', '');
-    setValue('birthYear', '');
-    setValue('birthMonth', '');
+  // Custom animation timing configurations
+  const timing = {
+    transitionDelay: 250,
+    dropdownDelay: 600
   };
 
   return (
-    <div className="">
-      {/* Hidden inputs to store values */}
-      <input type="hidden" {...register('birthCountry')} value={selectedBirthCountry?.label || ''} />
-      <input type="hidden" {...register('birthState')} value={selectedBirthState?.label || ''} />
-      <input type="hidden" {...register('birthLocality')} value={selectedBirthLocality?.label || ''} />
-      <input type="hidden" {...register('birthYear')} value={selectedBirthYear?.label || ''} />
-      <input type="hidden" {...register('birthMonth')} value={selectedBirthMonth?.label || ''} />
-
-      {/* Show the current step popover */}
-      {Number(birthInfoStep) === 1 && (
-        <div className="relative">
-          <SelectPopover
-            items={countries}
-            selectedItem={selectedBirthCountry}
-            setSelectedItem={(item) => handleBirthInfoSelect('birthCountry', item)}
-            label={getBirthInfoStepLabel(birthInfoStep)}
-          />
-        </div>
-      )}
-
-      {Number(birthInfoStep) === 2 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetBirthInfoSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedBirthCountry ? states[selectedBirthCountry.value] || [] : []}
-            selectedItem={selectedBirthState}
-            setSelectedItem={(item) => handleBirthInfoSelect('birthState', item)}
-            label={getBirthInfoStepLabel(birthInfoStep)}
-          />
-        </div>
-      )}
-
-      {Number(birthInfoStep) === 3 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetBirthInfoSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedBirthState ? localities[selectedBirthState.value] || [] : []}
-            selectedItem={selectedBirthLocality}
-            setSelectedItem={(item) => handleBirthInfoSelect('birthLocality', item)}
-            label={getBirthInfoStepLabel(birthInfoStep)}
-          />
-        </div>
-      )}
-
-      {Number(birthInfoStep) === 4 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetBirthInfoSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={birthYears}
-            selectedItem={selectedBirthYear}
-            setSelectedItem={(item) => handleBirthInfoSelect('birthYear', item)}
-            label={getBirthInfoStepLabel(birthInfoStep)}
-          />
-        </div>
-      )}
-
-      {Number(birthInfoStep) === 5 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetBirthInfoSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={birthMonths}
-            selectedItem={selectedBirthMonth}
-            setSelectedItem={(item) => handleBirthInfoSelect('birthMonth', item)}
-            label={getBirthInfoStepLabel(birthInfoStep)}
-          />
-        </div>
-      )}
-
-      {Number(birthInfoStep) === 6 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetBirthInfoSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={[]} // Empty items as this is the final selection
-            selectedItem={selectedBirthMonth}
-            setSelectedItem={() => {}} // No action needed on selection
-            label={selectedBirthMonth?.label || "شهر الميلاد"}
-          />
-        </div>
-      )}
-
-      {/* Show any validation errors */}
+    <div className="w-full">
+      {/* AnimatedHierarchicalSelect component with improved z-index and positioning */}
+      <div className="relative" style={{ 
+        zIndex: 50,
+        position: "relative",
+        isolation: "isolate" 
+      }}>
+        <AnimatedHierarchicalSelect 
+          steps={birthdateSteps} 
+          onComplete={handleComplete}
+          timing={timing}
+          className="w-full"
+        />
+      </div>
+      
+      {/* Display validation errors */}
       {(errors.birthCountry || errors.birthState || errors.birthLocality ||
         errors.birthYear || errors.birthMonth) && (
-          <div className="text-red-500 text-sm mt-2">
-            يرجى إكمال بيانات الميلاد
-          </div>
-        )}
+        <div className="text-red-500 text-sm mt-1">
+          يرجى إكمال بيانات الميلاد
+        </div>
+      )}
     </div>
   );
 };

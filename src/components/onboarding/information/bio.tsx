@@ -10,7 +10,7 @@ interface BioProps {
 
 const Bio = ({ register, errors }: BioProps) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-6">
       <Input
         id="bio"
         placeholder="Bio"

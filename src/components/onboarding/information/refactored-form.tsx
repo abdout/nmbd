@@ -271,29 +271,34 @@ const RefactoredForm = ({ type, data }: FormProps) => {
 
   return (
     <form
+    
       ref={localFormRef}
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="h-48 flex flex-col -mt-6"
+      className="h-48 flex flex-col -mt-6 mx-auto"
       noValidate
     >
-      <ScrollArea className="h-full w-full">
-        <div dir="rtl" className="flex flex-col gap-6 pr-4 ">
+      <ScrollArea className="">
+        <div dir="rtl" className="flex flex-col gap-6 px-6 w-full ">
           <Name register={register} errors={errors} />
-          <ID register={register} errors={errors} setValue={setValue} />
-          {/* Row 3: Location and Birth - Integrated from LocationBirthRow */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+          <ID register={register} errors={errors} setValue={setValue} watch={watch} />
+          
+          {/* Use a grid layout with lower gap and additional container styling */}
+          <div dir="rtl" className="grid grid-cols-2 gap-6" >
+            <div className="relative" >
               <Location 
                 register={register}
                 errors={errors}
                 setValue={setValue}
+                watch={watch}
               />
             </div>
-            <div>
+            
+            <div className="relative">
               <Birthdate
                 register={register}
                 errors={errors}
                 setValue={setValue}
+                watch={watch}
               />
             </div>
           </div>

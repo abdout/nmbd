@@ -12,7 +12,7 @@ export default async function InformationPage() {
   ) : undefined;
   
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="w-[55%] mx-auto">
       <Suspense fallback={<div>Loading...</div>}>
         {/* Original form kept as backup
         <InformationForm 

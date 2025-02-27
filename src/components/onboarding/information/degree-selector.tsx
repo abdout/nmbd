@@ -12,8 +12,8 @@ const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeS
   return (
     <div dir="rtl" className="flex flex-col">
       <p className="text-sm font-semibold mb-2">الدرجة العلمية:</p>
-      <hr className="w-20 h-[1px] bg-black -mt-1 mb-2" />
-      <div className="flex justify-between">
+      <hr className="w-20 h-[1px] bg-black -mt-1 mb-3" />
+      <div className="flex justify-between pl-10">
         {[
           { id: 'student', label: 'طالب' },
           { id: 'diploma', label: 'دبلوم' },

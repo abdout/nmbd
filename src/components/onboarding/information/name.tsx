@@ -9,7 +9,7 @@ interface NameProps {
 
 const Name = ({ register, errors }: NameProps) => {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-6">
       <div>
         <Input
           id="name"

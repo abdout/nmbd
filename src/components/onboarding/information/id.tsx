@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
@@ -7,15 +7,21 @@ interface IDProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  watch: UseFormWatch<InformationSchema>;
 }
 
-const ID = ({ register, errors, setValue }: IDProps) => {
+const ID = ({ register, errors, setValue, watch }: IDProps) => {
+  // Get current values using watch
+  const maritalStatus = watch('maritalStatus');
+  const gender = watch('gender');
+  const religion = watch('religion');
+
   return (
-    <div className="flex items-center justify-between gap-2">
+    <div className="flex items-center justify-between gap-4">
       <div className="w-1/4">
         <Select
           onValueChange={(value) => setValue('maritalStatus', value)}
-          defaultValue=""
+          value={maritalStatus || ""}
           dir="rtl"
         >
           <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الحالة">
@@ -36,7 +42,7 @@ const ID = ({ register, errors, setValue }: IDProps) => {
       <div className="w-1/4">
         <Select
           onValueChange={(value) => setValue('gender', value)}
-          defaultValue=""
+          value={gender || ""}
           dir="rtl"
         >
           <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الجنس">
@@ -55,7 +61,7 @@ const ID = ({ register, errors, setValue }: IDProps) => {
       <div className="w-1/4">
         <Select
           onValueChange={(value) => setValue('religion', value)}
-          defaultValue=""
+          value={religion || ""}
           dir="rtl"
         >
           <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الديانة">

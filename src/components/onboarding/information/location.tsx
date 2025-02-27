@@ -1,290 +1,254 @@
 'use client';
-import { useState } from "react";
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
+import { useEffect } from "react";
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InformationSchema } from "./validation";
-import SelectPopover, { Item } from "./select-popover";
+import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
+import { Option } from "../../atom/auto-complete";
+import { Label } from "@/components/ui/label";
 
 interface LocationProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  watch?: UseFormWatch<InformationSchema>;
 }
+
+// Sample location data in the same format as auto-location.tsx
+const COUNTRIES: Option[] = [
+  { value: "sudan", label: "السودان" },
+  { value: "egypt", label: "مصر" },
+  { value: "saudi_arabia", label: "السعودية" },
+  { value: "jordan", label: "الأردن" },
+  { value: "libya", label: "ليبيا" },
+  { value: "south_sudan", label: "جنوب السودان" },
+  { value: "eritrea", label: "إريتريا" },
+  { value: "yemen", label: "اليمن" },
+];
+
+// Sample states/provinces by country
+const STATES: Record<string, Option[]> = {
+  "sudan": [
+    { value: "khartoum_state", label: "ولاية الخرطوم" },
+    { value: "river_nile", label: "نهر النيل" },
+    { value: "kassala", label: "كسلا" }
+  ],
+  "egypt": [
+    { value: "cairo_gov", label: "محافظة القاهرة" },
+    { value: "alexandria_gov", label: "محافظة الإسكندرية" },
+    { value: "luxor_gov", label: "محافظة الأقصر" }
+  ],
+  "saudi_arabia": [
+    { value: "riyadh_province", label: "منطقة الرياض" },
+    { value: "makkah_province", label: "منطقة مكة المكرمة" },
+    { value: "eastern_province", label: "المنطقة الشرقية" }
+  ],
+  "jordan": [
+    { value: "amman_gov", label: "محافظة عمان" },
+    { value: "zarqa_gov", label: "محافظة الزرقاء" },
+    { value: "irbid_gov", label: "محافظة إربد" }
+  ],
+  "libya": [
+    { value: "tripoli_gov", label: "محافظة طرابلس" },
+    { value: "benghazi_gov", label: "محافظة بنغازي" },
+    { value: "misrata_gov", label: "محافظة مصراتة" }
+  ],
+  "south_sudan": [
+    { value: "central_equatoria", label: "ولاية الاستوائية الوسطى" },
+    { value: "jonglei", label: "ولاية جونقلي" },
+    { value: "unity", label: "ولاية الوحدة" }
+  ],
+  "eritrea": [
+    { value: "maekel", label: "إقليم ماكل" },
+    { value: "anseba", label: "إقليم عنسبا" },
+    { value: "gash_barka", label: "إقليم قاش بركة" }
+  ],
+  "yemen": [
+    { value: "sanaa_gov", label: "محافظة صنعاء" },
+    { value: "aden_gov", label: "محافظة عدن" },
+    { value: "taiz_gov", label: "محافظة تعز" }
+  ]
+};
+
+// Sample localities (larger city areas) by state
+const LOCALITIES: Record<string, Option[]> = {
+  "khartoum_state": [
+    { value: "khartoum_locality", label: "محلية الخرطوم" },
+    { value: "omdurman_locality", label: "محلية أم درمان" },
+    { value: "bahri_locality", label: "محلية بحري" }
+  ],
+  "river_nile": [
+    { value: "atbara_locality", label: "محلية عطبرة" },
+    { value: "damar_locality", label: "محلية الدامر" },
+    { value: "shendi_locality", label: "محلية شندي" }
+  ],
+  "cairo_gov": [
+    { value: "cairo_east", label: "القاهرة الشرقية" },
+    { value: "cairo_west", label: "القاهرة الغربية" },
+    { value: "cairo_central", label: "وسط القاهرة" }
+  ],
+  "riyadh_province": [
+    { value: "riyadh_city_area", label: "منطقة مدينة الرياض" },
+    { value: "diriyah_area", label: "منطقة الدرعية" },
+    { value: "kharj_area", label: "منطقة الخرج" }
+  ],
+  // Additional localities for other states would be included here
+};
+
+// Sample admin units (smaller administrative divisions) by locality
+const ADMIN_UNITS: Record<string, Option[]> = {
+  "khartoum_locality": [
+    { value: "khartoum_downtown", label: "وسط الخرطوم" },
+    { value: "khartoum_east", label: "شرق الخرطوم" },
+    { value: "khartoum_south", label: "جنوب الخرطوم" }
+  ],
+  "omdurman_locality": [
+    { value: "omdurman_central", label: "وسط أم درمان" },
+    { value: "omdurman_north", label: "شمال أم درمان" },
+    { value: "karari", label: "كرري" }
+  ],
+  "cairo_east": [
+    { value: "nasr_city", label: "مدينة نصر" },
+    { value: "heliopolis", label: "مصر الجديدة" },
+    { value: "maadi", label: "المعادي" }
+  ],
+  "riyadh_city_area": [
+    { value: "olaya_district", label: "حي العليا" },
+    { value: "malaz_district", label: "حي الملز" },
+    { value: "sulaimaniyah_district", label: "حي السليمانية" }
+  ],
+  // Additional admin units for other localities would be included here
+};
+
+// Sample neighborhoods by admin unit
+const NEIGHBORHOODS: Record<string, Option[]> = {
+  "khartoum_downtown": [
+    { value: "almogran", label: "المقرن" },
+    { value: "riyadh_khartoum", label: "الرياض" },
+    { value: "alshaheed", label: "الشهيد" }
+  ],
+  "khartoum_east": [
+    { value: "alsahafa", label: "الصحافة" },
+    { value: "burri", label: "بري" },
+    { value: "almamoura", label: "المعمورة" }
+  ],
+  "nasr_city": [
+    { value: "first_zone", label: "المنطقة الأولى" },
+    { value: "seventh_zone", label: "المنطقة السابعة" },
+    { value: "eighth_zone", label: "المنطقة الثامنة" }
+  ],
+  "olaya_district": [
+    { value: "olaya_north", label: "العليا الشمالية" },
+    { value: "olaya_center", label: "وسط العليا" },
+    { value: "olaya_south", label: "العليا الجنوبية" }
+  ],
+  // Additional neighborhoods for other admin units would be included here
+};
 
 const Location = ({
   register,
   errors,
-  setValue
+  setValue,
+  watch
 }: LocationProps) => {
-  // Current Location step state
-  const [currentLocationStep, setCurrentLocationStep] = useState<number>(1);
-  const [selectedCurrentCountry, setSelectedCurrentCountry] = useState<Item | null>(null);
-  const [selectedCurrentState, setSelectedCurrentState] = useState<Item | null>(null);
-  const [selectedCurrentLocality, setSelectedCurrentLocality] = useState<Item | null>(null);
-  const [selectedCurrentAdminUnit, setSelectedCurrentAdminUnit] = useState<Item | null>(null);
-  const [selectedCurrentNeighborhood, setSelectedCurrentNeighborhood] = useState<Item | null>(null);
-
-  // Options data for location fields
-  const countries: Item[] = [
-    { label: 'السودان', value: 'SD' },
-    { label: 'مصر', value: 'EG' },
-    { label: 'السعودية', value: 'SA' },
-    { label: 'الامارات', value: 'AE' },
+  // Define the hierarchical steps
+  const locationSteps: SelectionStep[] = [
+    {
+      id: "country",
+      title: "العنوان",
+      placeholder: "اختر الدولة",
+      emptyMessage: "لا توجد دول متاحة",
+      getOptions: () => COUNTRIES
+    },
+    {
+      id: "state",
+      title: "الولاية",
+      placeholder: "اختر الولاية",
+      emptyMessage: "لا توجد محافظات متاحة",
+      getOptions: (prev) => {
+        const countryId = prev.country?.value;
+        return countryId ? (STATES[countryId] || []) : [];
+      }
+    },
+    {
+      id: "locality",
+      title: "المنطقة",
+      placeholder: "اختر المنطقة",
+      emptyMessage: "لا توجد مناطق متاحة",
+      getOptions: (prev) => {
+        const stateId = prev.state?.value;
+        return stateId ? (LOCALITIES[stateId] || []) : [];
+      }
+    },
+    {
+      id: "admin_unit",
+      title: "الوحدة",
+      placeholder: "اختر الوحدة",
+      emptyMessage: "لا توجد وحدات متاحة",
+      getOptions: (prev) => {
+        const localityId = prev.locality?.value;
+        return localityId ? (ADMIN_UNITS[localityId] || []) : [];
+      }
+    },
+    {
+      id: "neighborhood",
+      title: "الحي",
+      placeholder: "اختر الحي",
+      emptyMessage: "لا توجد أحياء متاحة",
+      getOptions: (prev) => {
+        const adminUnitId = prev.admin_unit?.value;
+        return adminUnitId ? (NEIGHBORHOODS[adminUnitId] || []) : [];
+      }
+    }
   ];
 
-  const states: Record<string, Item[]> = {
-    SD: [
-      { label: 'الخرطوم', value: 'KH' },
-      { label: 'الجزيرة', value: 'GZ' },
-      { label: 'نهر النيل', value: 'NR' },
-    ],
-    EG: [
-      { label: 'القاهرة', value: 'CA' },
-      { label: 'الإسكندرية', value: 'AL' },
-      { label: 'أسيوط', value: 'AS' },
-    ],
-    SA: [
-      { label: 'الرياض', value: 'RI' },
-      { label: 'مكة', value: 'MK' },
-    ],
-    AE: [
-      { label: 'دبي', value: 'DU' },
-      { label: 'أبوظبي', value: 'AD' },
-    ],
+  // Register all fields required by React Hook Form
+  useEffect(() => {
+    register('currentCountry', { required: "يرجى اختيار الدولة" });
+    register('currentState', { required: "يرجى اختيار الولاية" });
+    register('currentLocality', { required: "يرجى اختيار المنطقة" });
+    register('currentAdminUnit', { required: "يرجى اختيار الوحدة" });
+    register('currentNeighborhood', { required: "يرجى اختيار الحي" });
+  }, [register]);
+
+  // Handle completion of the hierarchical selection
+  const handleComplete = (selections: Record<string, Option>) => {
+    // Map the selections to the form values
+    setValue('currentCountry', selections.country.label);
+    setValue('currentState', selections.state.label);
+    setValue('currentLocality', selections.locality.label);
+    setValue('currentAdminUnit', selections.admin_unit.label);
+    setValue('currentNeighborhood', selections.neighborhood.label);
   };
 
-  const localities: Record<string, Item[]> = {
-    KH: [
-      { label: 'أم درمان', value: 'OMD' },
-      { label: 'بحري', value: 'BH' },
-    ],
-    CA: [
-      { label: 'مدينة نصر', value: 'NS' },
-      { label: 'الزمالك', value: 'ZM' },
-    ],
-  };
-
-  const adminUnits: Record<string, Item[]> = {
-    OMD: [
-      { label: 'الخرطوم وسط', value: 'KC' },
-    ],
-    NS: [
-      { label: 'النصر', value: 'NR' },
-    ],
-  };
-
-  const neighborhoods: Record<string, Item[]> = {
-    KC: [
-      { label: 'حي القصر', value: 'GSR' },
-    ],
-    NR: [
-      { label: 'حي النصر', value: 'NSR' },
-    ],
-  };
-
-  // Function to get the appropriate location field label for display
-  const getLocationStepLabel = (step: number): string => {
-    switch (step) {
-      case 1: return "السكن";
-      case 2: return "الولاية";
-      case 3: return "المدينة";
-      case 4: return "الوحدة الإدارية";
-      case 5: return "الحي";
-      default: return "السكن";
-    }
-  };
-
-  // Handle selection for current location fields
-  const handleCurrentLocationSelect = (fieldName: string, item: Item | null) => {
-    // Update form values when an item is selected
-    if (item) {
-      setValue(fieldName as any, item.label);
-    } else {
-      setValue(fieldName as any, '');
-    }
-
-    // Update step state based on the field being updated
-    switch (fieldName) {
-      case 'currentCountry':
-        setSelectedCurrentCountry(item);
-        if (item) setCurrentLocationStep(2);
-        break;
-      case 'currentState':
-        setSelectedCurrentState(item);
-        if (item) setCurrentLocationStep(3);
-        break;
-      case 'currentLocality':
-        setSelectedCurrentLocality(item);
-        if (item) setCurrentLocationStep(4);
-        break;
-      case 'currentAdminUnit':
-        setSelectedCurrentAdminUnit(item);
-        if (item) setCurrentLocationStep(5);
-        break;
-      case 'currentNeighborhood':
-        setSelectedCurrentNeighborhood(item);
-        if (item) setCurrentLocationStep(6); // Move to a completion step
-        break;
-    }
-  };
-
-  // Function to reset location selection
-  const resetLocationSelection = () => {
-    setCurrentLocationStep(1);
-    setSelectedCurrentCountry(null);
-    setSelectedCurrentState(null);
-    setSelectedCurrentLocality(null);
-    setSelectedCurrentAdminUnit(null);
-    setSelectedCurrentNeighborhood(null);
-    setValue('currentCountry', '');
-    setValue('currentState', '');
-    setValue('currentLocality', '');
-    setValue('currentAdminUnit', '');
-    setValue('currentNeighborhood', '');
+  // Custom animation timing configurations
+  const timing = {
+    transitionDelay: 250,
+    dropdownDelay: 600
   };
 
   return (
-    <div className="">
-      {/* Hidden inputs to store values */}
-      <input type="hidden" {...register('currentCountry')} value={selectedCurrentCountry?.label || ''} />
-      <input type="hidden" {...register('currentState')} value={selectedCurrentState?.label || ''} />
-      <input type="hidden" {...register('currentLocality')} value={selectedCurrentLocality?.label || ''} />
-      <input type="hidden" {...register('currentAdminUnit')} value={selectedCurrentAdminUnit?.label || ''} />
-      <input type="hidden" {...register('currentNeighborhood')} value={selectedCurrentNeighborhood?.label || ''} />
-
-      {/* Show the current step popover */}
-      {Number(currentLocationStep) === 1 && (
-        <div className="relative">
-          <SelectPopover
-            items={countries}
-            selectedItem={selectedCurrentCountry}
-            setSelectedItem={(item) => handleCurrentLocationSelect('currentCountry', item)}
-            label={getLocationStepLabel(currentLocationStep)}
-          />
-        </div>
-      )}
-
-      {Number(currentLocationStep) === 2 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetLocationSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedCurrentCountry ? states[selectedCurrentCountry.value] || [] : []}
-            selectedItem={selectedCurrentState}
-            setSelectedItem={(item) => handleCurrentLocationSelect('currentState', item)}
-            label={getLocationStepLabel(currentLocationStep)}
-          />
-        </div>
-      )}
-
-      {Number(currentLocationStep) === 3 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetLocationSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedCurrentState ? localities[selectedCurrentState.value] || [] : []}
-            selectedItem={selectedCurrentLocality}
-            setSelectedItem={(item) => handleCurrentLocationSelect('currentLocality', item)}
-            label={getLocationStepLabel(currentLocationStep)}
-          />
-        </div>
-      )}
-
-      {Number(currentLocationStep) === 4 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetLocationSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedCurrentLocality ? adminUnits[selectedCurrentLocality.value] || [] : []}
-            selectedItem={selectedCurrentAdminUnit}
-            setSelectedItem={(item) => handleCurrentLocationSelect('currentAdminUnit', item)}
-            label={getLocationStepLabel(currentLocationStep)}
-          />
-        </div>
-      )}
-
-      {Number(currentLocationStep) === 5 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetLocationSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={selectedCurrentAdminUnit ? neighborhoods[selectedCurrentAdminUnit.value] || [] : []}
-            selectedItem={selectedCurrentNeighborhood}
-            setSelectedItem={(item) => handleCurrentLocationSelect('currentNeighborhood', item)}
-            label={getLocationStepLabel(currentLocationStep)}
-          />
-        </div>
-      )}
-
-      {Number(currentLocationStep) === 6 && (
-        <div className="relative">
-          <div className="absolute right-[8.7rem] top-[7px] z-10">
-            <button
-              type="button"
-              onClick={resetLocationSelection}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                <path d="M3 3v5h5"></path>
-              </svg>
-            </button>
-          </div>
-          <SelectPopover
-            items={[]} // Empty items as this is the final selection
-            selectedItem={selectedCurrentNeighborhood}
-            setSelectedItem={() => {}} // No action needed on selection
-            label={selectedCurrentNeighborhood?.label || "الحي"}
-          />
-        </div>
-      )}
-
-      {/* Show any validation errors */}
+    <div className="w-full">
+      {/* AnimatedHierarchicalSelect component with improved z-index and positioning */}
+      <div className="relative" style={{ 
+        zIndex: 50,
+        position: "relative",
+        isolation: "isolate" 
+      }}>
+        <AnimatedHierarchicalSelect 
+          steps={locationSteps} 
+          onComplete={handleComplete}
+          timing={timing}
+          className="w-full"
+        />
+      </div>
+      
+      {/* Display validation errors */}
       {(errors.currentCountry || errors.currentState || errors.currentLocality ||
         errors.currentAdminUnit || errors.currentNeighborhood) && (
-          <div className="text-red-500 text-sm mt-2">
-            يرجى إكمال بيانات السكن
-          </div>
-        )}
+        <div className="text-red-500 text-sm mt-1">
+          يرجى إكمال بيانات السكن
+        </div>
+      )}
     </div>
   );
 };

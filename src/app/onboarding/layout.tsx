@@ -6,13 +6,13 @@ import { FormProvider } from '@/components/onboarding/form-context';
 import { Toaster } from 'sonner';
 import { usePathname } from 'next/navigation';
 
-export default function LabLayout({
+export default function OnboardingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isReviewPage = pathname === '/lab/review';
+  const isReviewPage = pathname === '/onboarding/review';
 
   return (
     <FormProvider>
@@ -38,7 +38,7 @@ export default function LabLayout({
         )}
 
         <div className="flex flex-col gap-x-6 items-center justify-center">
-          <div className={isReviewPage ? "w-full" : "w-[50%] flex flex-col items-center justify-center py-14"}>
+          <div className="w-full flex flex-col items-center justify-center py-14">
             {children}
           </div>
           {!isReviewPage && (

@@ -1,5 +1,11 @@
-import { FC, useState, useRef, useEffect } from 'react';
-import { Check } from 'lucide-react';
+"use client";
+import { FC, useState, useMemo } from 'react';
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Check, ChevronDown } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 export interface Item {
   label: string;
@@ -21,101 +27,92 @@ const SelectPopover: FC<SelectPopoverProps> = ({
   label,
   className = '',
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const popoverRef = useRef<HTMLDivElement>(null);
 
   // Filter items based on search term
   const filteredItems = items.filter(item =>
     item.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Close popover when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+  // Calculate dynamic height based on number of items
+  const dropdownHeight = useMemo(() => {
+    const itemHeight = 36; // height of each item in pixels
+    const maxHeight = 192; // h-48 = 12rem = 192px
+    const minHeight = 80; // minimum height for the dropdown
+    const searchInputHeight = 40; // height of search input
+    const padding = 8; // padding for the container
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Toggle popover
-  const togglePopover = () => {
-    setIsOpen(!isOpen);
-    setSearchTerm('');
-  };
-
-  // Handle item selection
-  const handleSelect = (item: Item) => {
-    setSelectedItem(item);
-    setIsOpen(false);
-  };
+    const contentHeight = (filteredItems.length * itemHeight) + searchInputHeight + padding;
+    
+    if (contentHeight < minHeight) return minHeight;
+    if (contentHeight > maxHeight) return maxHeight;
+    return contentHeight;
+  }, [filteredItems.length]);
 
   return (
-    <div className={`relative w-full ${className}`} ref={popoverRef}>
-      {/* Trigger button */}
-      <button
-        type="button"
-        onClick={togglePopover}
-        className="w-full flex items-center justify-between p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <span>{selectedItem ? selectedItem.label : label}</span>
-        <svg
-          className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
+    <div className={cn("relative w-full", className)}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-full justify-between"
+            onClick={() => setOpen(!open)}
+          >
+            <span>{selectedItem ? selectedItem.label : label}</span>
+            <ChevronDown className="h-5 w-5 text-gray-400 transition-transform" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent 
+          className="p-0 z-50 w-[--radix-popover-trigger-width] min-w-[200px]" 
+          side="bottom" 
+          align="start"
+          sideOffset={5}
         >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-
-      {/* Dropdown popover */}
-      {isOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-gray-300">
-          {/* Search input */}
-          <div className="p-2">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="بحث..."
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              dir="rtl"
-            />
-          </div>
-
-          {/* Items list */}
-          <ul className="max-h-60 overflow-auto py-1">
-            {filteredItems.length > 0 ? (
-              filteredItems.map((item) => (
-                <li
-                  key={item.value}
-                  onClick={() => handleSelect(item)}
-                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 flex items-center justify-between"
-                >
-                  <span className="text-right">{item.label}</span>
-                  {selectedItem?.value === item.value && (
-                    <Check className="h-4 w-4 text-blue-500" />
-                  )}
-                </li>
-              ))
-            ) : (
-              <li className="px-4 py-2 text-gray-500 text-center">لا توجد نتائج</li>
-            )}
-          </ul>
-        </div>
-      )}
+          <Command className="overflow-visible">
+            <div className="border-b border-gray-200 [&>div]:border-0 [&>div>input]:border-0 [&>div>input]:outline-0 [&>div>input]:ring-0 [&>div>input:focus]:ring-0 [&>div>input:focus]:outline-0 [&>div>input:focus]:border-0">
+              <CommandInput 
+                placeholder="بحث..." 
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+                dir="rtl"
+              />
+            </div>
+            <div className="relative">
+              <ScrollArea 
+                className={cn("transition-height duration-200")} 
+                style={{ height: `${dropdownHeight}px` }}
+                dir="rtl"
+              >
+                <CommandList>
+                  <CommandEmpty className="p-2 text-center text-sm text-gray-500">لا توجد نتائج</CommandEmpty>
+                  <CommandGroup>
+                    {filteredItems.map((item) => (
+                      <CommandItem
+                        key={item.value}
+                        value={item.value}
+                        onSelect={(value) => {
+                          const selectedOption = items.find((item) => item.value === value);
+                          if (selectedOption) {
+                            setSelectedItem(selectedOption);
+                            setOpen(false);
+                          }
+                        }}
+                        className="flex w-full items-center justify-between py-2 px-4 cursor-pointer"
+                      >
+                        <span className="text-right">{item.label}</span>
+                        {selectedItem?.value === item.value && (
+                          <Check className="h-4 w-4 text-blue-500" />
+                        )}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </ScrollArea>
+            </div>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
