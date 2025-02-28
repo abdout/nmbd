@@ -101,119 +101,114 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen pb-20">
-
-
       <h1 className="font-heading text-5xl font-bold mb-3">{userData?.name || 'غير محدد'}</h1>
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-sm text-gray-500">
-        <div className="flex items-center gap-2">
-          <span>•</span>
-          <span>{userData?.birthDate ? new Date(userData.birthDate).toLocaleDateString('ar-EG', { year: 'numeric' }) : 'غير محدد'}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span>•</span>
-          <span>{`${userData?.currentCountry || ''} ${userData?.currentLocality ? `- ${userData.currentLocality}` : ''}`}</span>
-        </div>
+      <div className="flex flex-wrap  gap-x-6 gap-y-2 mb-8 text-sm text-gray-500">
+        
         {userData?.phone && (
           <div className="flex items-center gap-2">
-            <span>•</span>
+           الهاتف:
             <span dir="ltr">{userData.phone}</span>
           </div>
         )}
         {userData?.whatsapp && (
           <div className="flex items-center gap-2">
-            <span>•</span>
+           الواتساب:
             <span dir="ltr">{userData.whatsapp}</span>
           </div>
         )}
+        <div className="flex items-center gap-2">
+          البريد الإلكتروني:
+          <span dir="ltr">{userData?.email || 'غير محدد'}</span>
+        </div>
       </div>
+
+     
       
-        <div className="flex flex-row justify-center gap-16">
-          <div className="relative flex items-center justify-center w-40 h-40 overflow-hidden border border-neutral-500 rounded-lg">
-            {userData?.image ? (
+      <div className="flex flex-row justify-center gap-16">
+        <div className="relative flex items-center justify-center w-40 h-32 overflow-hidden border border-neutral-500 rounded-lg">
+          {userData?.image ? (
+            <Image
+              src={userData.image}
+              alt="الصورة الشخصية"
+              width={160}
+              height={128}
+              className="absolute inset-0 w-full h-full object-cover"
+              unoptimized
+            />
+          ) : (
+            <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
+              الصورة الشخصية
+            </span>
+          )}
+        </div>
+
+        <div className="relative flex items-center justify-center w-40 h-32 overflow-hidden border border-neutral-500 rounded-lg">
+          {userData?.cv ? (
+            <div className="relative w-full h-full">
               <Image
-                src={userData.image}
-                alt="الصورة الشخصية"
+                src={getPdfPreviewUrl(userData.cv)}
+                alt="السيرة الذاتية"
                 width={160}
-                height={160}
+                height={128}
                 className="absolute inset-0 w-full h-full object-cover"
                 unoptimized
               />
-            ) : (
-              <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                الصورة الشخصية
-              </span>
-            )}
-          </div>
-
-          <div className="relative flex items-center justify-center w-40 h-40 overflow-hidden border border-neutral-500 rounded-lg">
-            {userData?.cv ? (
-              <div className="relative w-full h-full">
-                <Image
-                  src={getPdfPreviewUrl(userData.cv)}
-                  alt="السيرة الذاتية"
-                  width={160}
-                  height={160}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  unoptimized
-                />
-                <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                  PDF
-                </div>
+              <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                PDF
               </div>
-            ) : (
-              <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                السيرة الذاتية
-              </span>
-            )}
-          </div>
-
-          <div className="relative flex items-center justify-center w-40 h-40 overflow-hidden border border-neutral-500 rounded-lg">
-            {userData?.portfolio ? (
-              <div className="relative w-full h-full">
-                <Image
-                  src={getPdfPreviewUrl(userData.portfolio)}
-                  alt="البورتفوليو"
-                  width={160}
-                  height={160}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  unoptimized
-                />
-                <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                  PDF
-                </div>
-              </div>
-            ) : (
-              <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                البورتفوليو
-              </span>
-            )}
-          </div>
-
-          <div className="relative flex items-center justify-center w-40 h-40 overflow-hidden border border-neutral-500 rounded-lg">
-            {userData?.additionalFile ? (
-              <div className="relative w-full h-full">
-                <Image
-                  src={getPdfPreviewUrl(userData.additionalFile)}
-                  alt="ملف إضافي"
-                  width={160}
-                  height={160}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  unoptimized
-                />
-                <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                  PDF
-                </div>
-              </div>
-            ) : (
-              <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                ملف إضافي
-              </span>
-            )}
-          </div>
+            </div>
+          ) : (
+            <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
+              السيرة الذاتية
+            </span>
+          )}
         </div>
+
+        <div className="relative flex items-center justify-center w-40 h-32 overflow-hidden border border-neutral-500 rounded-lg">
+          {userData?.portfolio ? (
+            <div className="relative w-full h-full">
+              <Image
+                src={getPdfPreviewUrl(userData.portfolio)}
+                alt="البورتفوليو"
+                width={160}
+                height={128}
+                className="absolute inset-0 w-full h-full object-cover"
+                unoptimized
+              />
+              <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                PDF
+              </div>
+            </div>
+          ) : (
+            <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
+              البورتفوليو
+            </span>
+          )}
+        </div>
+
+        <div className="relative flex items-center justify-center w-40 h-32 overflow-hidden border border-neutral-500 rounded-lg">
+          {userData?.additionalFile ? (
+            <div className="relative w-full h-full">
+              <Image
+                src={getPdfPreviewUrl(userData.additionalFile)}
+                alt="ملف إضافي"
+                width={160}
+                height={128}
+                className="absolute inset-0 w-full h-full object-cover"
+                unoptimized
+              />
+              <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                PDF
+              </div>
+            </div>
+          ) : (
+            <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
+              ملف إضافي
+            </span>
+          )}
+        </div>
+      </div>
       
-
-
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -227,8 +222,8 @@ export default function ReviewPage() {
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
                   <div className="space-y-1">
-                    <p className="text-sm text-gray-500">البريد الإلكتروني</p>
-                    <p dir="ltr">{userData?.email || 'غير محدد'}</p>
+                    <p className="text-sm text-gray-500">الاسم</p>
+                    <p>{userData?.fullname || 'غير محدد'}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">رقم الهاتف</p>
@@ -323,7 +318,7 @@ export default function ReviewPage() {
             {/* Current Address Card */}
             <Card>
               <CardHeader className="border-b">
-                <CardTitle>العنوان الحالي</CardTitle>
+                <CardTitle>العنوان</CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-4">
@@ -332,16 +327,8 @@ export default function ReviewPage() {
                     <p>{userData?.currentCountry || 'غير محدد'}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-gray-500">الولاية</p>
-                    <p>{userData?.currentState || 'غير محدد'}</p>
-                  </div>
-                  <div className="space-y-1">
                     <p className="text-sm text-gray-500">المحلية</p>
                     <p>{userData?.currentLocality || 'غير محدد'}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500">الوحدة الإدارية</p>
-                    <p>{userData?.currentAdminUnit || 'غير محدد'}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">الحي</p>
