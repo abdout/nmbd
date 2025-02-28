@@ -30,6 +30,8 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const locationSectionRef = useRef<HTMLDivElement>(null);
+  const bioSectionRef = useRef<HTMLDivElement>(null);
   
   // Try to use FormContext, but don't fail if it's not available
   let formContextValue;
@@ -54,6 +56,10 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   // Add state for local storage data
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
 
+  // Add state to track completion of location and birthdate sections
+  const [locationComplete, setLocationComplete] = useState(false);
+  const [birthdateComplete, setBirthdateComplete] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -65,6 +71,59 @@ const RefactoredForm = ({ type, data }: FormProps) => {
     resolver: zodResolver(informationSchema),
     defaultValues: data,
   });
+
+  // Watch ID section fields
+  const maritalStatus = watch('maritalStatus');
+  const gender = watch('gender');
+  const religion = watch('religion');
+  const nationalityId = watch('nationalityId');
+
+  // Watch location and birthdate fields
+  const locationFields = watch(['currentCountry', 'currentState', 'currentLocality', 'currentAdminUnit', 'currentNeighborhood']);
+  const birthdateFields = watch(['birthCountry', 'birthState', 'birthLocality', 'birthYear', 'birthMonth']);
+
+  // Check if ID section is complete and scroll to next section
+  useEffect(() => {
+    if (maritalStatus && gender && religion && nationalityId) {
+      // Small delay to ensure the user has finished typing/selecting
+      const timer = setTimeout(() => {
+        if (locationSectionRef.current) {
+          // Scroll into view with start positioning
+          locationSectionRef.current.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [maritalStatus, gender, religion, nationalityId]);
+
+  // Check if both location and birthdate are complete
+  useEffect(() => {
+    // Check if all location fields are filled
+    const isLocationComplete = locationFields.every(field => field);
+    setLocationComplete(isLocationComplete);
+
+    // Check if all birthdate fields are filled
+    const isBirthdateComplete = birthdateFields.every(field => field);
+    setBirthdateComplete(isBirthdateComplete);
+
+    // If both sections are complete, scroll to bio section
+    if (isLocationComplete && isBirthdateComplete) {
+      const timer = setTimeout(() => {
+        if (bioSectionRef.current) {
+          bioSectionRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [...locationFields, ...birthdateFields]);
 
   // Load form values when data prop changes (e.g., when data is fetched from the server)
   useEffect(() => {
@@ -274,47 +333,64 @@ const RefactoredForm = ({ type, data }: FormProps) => {
     
       ref={localFormRef}
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="h-48 flex flex-col -mt-6 mx-auto"
+      className="h-[13rem] flex flex-col -mt-2 mx-auto"
       noValidate
     >
       <ScrollArea className="">
         <div dir="rtl" className="flex flex-col gap-6 px-6 w-full ">
-          <Name register={register} errors={errors} />
-          <ID register={register} errors={errors} setValue={setValue} watch={watch} />
+          <div>
+            <Name register={register} errors={errors} />
+          </div>
+          <div>
+            <ID register={register} errors={errors} setValue={setValue} watch={watch} />
+          </div>
           
           {/* Use a grid layout with lower gap and additional container styling */}
-          <div dir="rtl" className="grid grid-cols-2 gap-6" >
-            <div className="relative" >
-              <Location 
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-              />
+          <div 
+            ref={locationSectionRef} 
+            className="flex flex-col gap-6"
+          >
+            <div dir="rtl" className="grid grid-cols-2 gap-6">
+              <div className="relative">
+                <Location 
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                />
+              </div>
+              
+              <div className="relative">
+                <Birthdate
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                />
+              </div>
             </div>
-            
-            <div className="relative">
-              <Birthdate
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-              />
+
+            <div ref={bioSectionRef}>
+              <Bio register={register} errors={errors} />
             </div>
           </div>
-          <Bio register={register} errors={errors} />
-          <DegreeSelector 
-            setValue={setValue} 
-            educationLevel={educationLevel} 
-            setEducationLevel={setEducationLevel} 
-          />      
+
+          <div>
+            <DegreeSelector 
+              setValue={setValue} 
+              educationLevel={educationLevel} 
+              setEducationLevel={setEducationLevel} 
+            />      
+          </div>
           {educationLevel && (
-            <Degree
-              register={register}
-              errors={errors}
-              setValue={setValue}
-              educationLevel={educationLevel}
-            />
+            <div>
+              <Degree
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                educationLevel={educationLevel}
+              />
+            </div>
           )}
         </div>
       </ScrollArea>
@@ -330,7 +406,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       </button>
 
       {/* Debug submit button */}
-      <div className="fixed bottom-4 right-4 z-50 flex gap-2">
+      <div className="fixed bottom-4 right-4 z-50  gap-2 hidden">
         <Button 
           type="button" 
           variant="outline" 
