@@ -1,4 +1,3 @@
-
 import { currentUser } from "@/lib/auth";
 import AttachmentForm from "@/components/onboarding/attachment/form";
 import { Suspense } from "react";
@@ -12,7 +11,13 @@ export default async function AttachmentPage() {
       <Suspense fallback={<div>Loading...</div>}>
         <AttachmentForm 
           type={userData ? "update" : "create"} 
-          data={userData || undefined} 
+          data={userData ? {
+            ...userData,
+            image: userData.image || undefined,
+            cv: userData.cv || undefined,
+            portfolio: userData.portfolio || undefined,
+            additionalFile: userData.additionalFile || undefined
+          } : undefined} 
         />
       </Suspense>
     </div>

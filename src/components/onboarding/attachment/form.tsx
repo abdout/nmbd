@@ -17,28 +17,14 @@ import { getNextRoute } from '../utils';
 
 // Helper function to convert PDF URL to preview URL
 const getPdfPreviewUrl = (url: string) => {
-  if (url.includes('cloudinary.com')) {
-    // For Cloudinary PDFs, use a more direct transformation
-    if (url.includes('/upload/')) {
-      const baseUrl = url.substring(0, url.indexOf('/upload/') + 8);
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const folder = url.substring(url.indexOf('/upload/') + 8, url.lastIndexOf('/') + 1);
-      
-      // Format: {baseUrl}/q_auto,f_jpg,pg_1/{folder}{filename}
-      return `${baseUrl}q_auto,f_jpg,pg_1/${folder}${filename}`;
-    }
-    
-    // For raw uploads
-    if (url.includes('/raw/upload/')) {
-      const baseUrl = url.substring(0, url.indexOf('/raw/upload/') + 12);
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const folder = url.substring(url.indexOf('/raw/upload/') + 12, url.lastIndexOf('/') + 1);
-      
-      // Convert PDF to image for raw uploads too
-      return `${baseUrl}q_auto,f_jpg,pg_1/${folder}${filename.replace('.pdf', '')}`;
-    }
-  }
-  return url;
+  if (!url.includes('cloudinary.com')) return url;
+  
+  // Extract the base URL and file path
+  const baseUrl = url.substring(0, url.indexOf('/upload/') + 8);
+  const filePath = url.substring(url.indexOf('/upload/') + 8);
+  
+  // Generate preview URL with transformation
+  return `${baseUrl}q_auto,f_jpg,pg_1/${filePath}`;
 };
 
 const AttachmentForm = ({
@@ -112,7 +98,10 @@ const AttachmentForm = ({
           <CldUploadWidget
             key={name}
             uploadPreset="social"
-            options={fieldType === 'raw' ? { resourceType: "raw" } : undefined}
+            options={{
+              resourceType: "auto",
+              folder: fieldType === 'raw' ? 'pdfs' : 'images'
+            }}
             onSuccess={(result: any, { widget }) => {
               if (result.info && 'secure_url' in result.info) {
                 setValue(name, result.info.secure_url);
@@ -127,8 +116,7 @@ const AttachmentForm = ({
               >
                 {formValues[name] ? (
                   // Only the profile picture (صورة شخصية) should be treated as an image
-                  // All other fields (سيرة ذاتية, معرض اعمال, ملف اضافي) should be treated as PDFs
-                  label === 'صورة شخصية' ? (
+                  fieldType === 'image' ? (
                     <Image
                       src={formValues[name] || ''}
                       alt={label}
@@ -139,7 +127,7 @@ const AttachmentForm = ({
                     />
                   ) : (
                     <>
-                      {/* Display PDF preview for all three PDF fields if they are on Cloudinary */}
+                      {/* Display PDF preview for all PDF fields */}
                       {formValues[name] && formValues[name].includes('cloudinary.com') ? (
                         <div className="relative w-full h-full">
                           <Image
@@ -147,7 +135,7 @@ const AttachmentForm = ({
                             alt={label}
                             width={96}
                             height={96}
-                            className="absolute inset-0 w-full h-full object-contain"
+                            className="absolute inset-0 w-full h-full object-cover"
                             unoptimized
                           />
                           <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
