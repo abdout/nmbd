@@ -163,20 +163,58 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
     }
   }, [])
 
-  // Remove position reference completely as we're not using it anymore
-  const handleBlur = useCallback((e: React.FocusEvent) => {
-    setTimeout(() => {
-      if (isMouseOverDropdown && !document.activeElement?.matches('input')) {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-        return;
+  // Update input value when value prop changes
+  useEffect(() => {
+    if (value) {
+      setSelected(value);
+      setInputValue(value.label);
+    }
+  }, [value]);
+
+  const handleSelect = useCallback(
+    (selectedOption: Option) => {
+      // Set the value in state first
+      setSelected(selectedOption);
+      setInputValue(selectedOption.label);
+
+      // Notify parent immediately to update the value prop
+      onValueChange?.(selectedOption);
+
+      if (isLastStep) {
+        // For last step, delay closing to ensure value is visible
+        setTimeout(() => {
+          setIsOpen(false);
+          setIsMouseOverDropdown(false);
+          setIsPositioned(false);
+          inputRef.current?.blur();
+        }, 100);
+      } else {
+        inputRef.current?.blur();
       }
-      
+    },
+    [onValueChange, isLastStep]
+  );
+
+  const handleBlur = useCallback((e: React.FocusEvent) => {
+    if (isLastStep) {
+      // Don't modify the input value on blur for last step
+      return;
+    }
+
+    const closeDropdown = () => {
       setIsOpen(false);
-      setInputValue(selected?.label || "");
-    }, 50);
-  }, [selected, isMouseOverDropdown]);
+      setIsMouseOverDropdown(false);
+    };
+
+    if (isMouseOverDropdown && !document.activeElement?.matches('input')) {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+      return;
+    }
+
+    setTimeout(closeDropdown, 50);
+  }, [isMouseOverDropdown, isLastStep]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
@@ -202,25 +240,6 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
       }
     },
     [isOpen, safeOptions, onValueChange],
-  )
-
-  const handleSelect = useCallback(
-    (selectedOption: Option) => {
-      setInputValue(selectedOption.label)
-      setSelected(selectedOption)
-      onValueChange?.(selectedOption)
-
-      // Close dropdown immediately if this is the last step
-      if (isLastStep) {
-        setIsOpen(false)
-      } else {
-        // Original behavior for non-last steps
-        setTimeout(() => {
-          inputRef?.current?.blur()
-        }, 0)
-      }
-    },
-    [onValueChange, isLastStep]
   )
 
   // Create dropdown portal content

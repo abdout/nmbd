@@ -134,15 +134,20 @@ export function AnimatedHierarchicalSelect({
       setHasInitialSelection(true);
     }
     
-    // Move to next step if available
-    if (currentStepIndex < steps.length - 1) {
-      // Add delay before transitioning
+    // Check if this is the last step
+    const isLastStep = currentStepIndex === steps.length - 1;
+    
+    if (isLastStep) {
+      // For last step, delay completion to ensure value is visible
+      setTimeout(() => {
+        onComplete?.(newSelections);
+        setShouldTriggerDropdown(false);
+      }, 150); // Slightly longer than auto-complete's delay
+    } else {
+      // For non-last steps, transition after delay
       setTimeout(() => {
         setCurrentStepIndex(currentStepIndex + 1);
       }, animationTiming.transitionDelay);
-    } else {
-      // We've reached the final step
-      onComplete?.(newSelections);
     }
   };
 
@@ -206,6 +211,7 @@ export function AnimatedHierarchicalSelect({
                     onValueChange={handleSelection}
                     value={selections[currentStep.id]}
                     ref={inputRef}
+                    isLastStep={currentStepIndex === steps.length - 1}
                   />
                 </>
               )}
