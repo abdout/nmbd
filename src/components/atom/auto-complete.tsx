@@ -26,6 +26,7 @@ type AutoCompleteProps = {
   isLoading?: boolean
   disabled?: boolean
   placeholder?: string
+  isLastStep?: boolean
 }
 
 export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
@@ -36,6 +37,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
   onValueChange,
   disabled,
   isLoading = false,
+  isLastStep = false,
 }, forwardedRef) => {
   // Ensure options is always an array
   const safeOptions = Array.isArray(options) ? options : []
@@ -53,6 +55,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
   const [width, setWidth] = useState(0)
 
   const [isOpen, setIsOpen] = useState(false)
+  const [isPositioned, setIsPositioned] = useState(false)
   const [selected, setSelected] = useState<Option | undefined>(value)
   const [inputValue, setInputValue] = useState<string>(value?.label || "")
   const [position, setPosition] = useState({ top: 0, left: 0 })
@@ -75,85 +78,105 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
 
     const rect = inputWrapperRef.current.getBoundingClientRect()
     const viewportWidth = window.innerWidth
-
-    // First time calculation - only if we don't have a position stored
-    if (!initialPositionRef.current) {
-      const inputWidth = rect.width
-      // Add 2px buffer to the width calculation for perfect matching
-      const calculatedWidth = Math.max(inputWidth, 220) + 2
-      
-      // Center the dropdown under the input
-      const inputCenterX = rect.left + (inputWidth / 2)
-      let leftPos = inputCenterX - (calculatedWidth / 2)
-      
-      // Viewport boundary checks
-      if (leftPos + calculatedWidth > viewportWidth - 20) {
-        leftPos = viewportWidth - calculatedWidth - 20
-      }
-      if (leftPos < 20) {
-        leftPos = 20
-      }
-
-      // Store initial measurements - this will now persist until component unmounts
-      initialPositionRef.current = {
-        top: rect.bottom + 8,
-        left: leftPos,
-        width: calculatedWidth,
-        inputWidth: inputWidth,
-        inputRect: rect
-      }
+    const inputWidth = rect.width
+    
+    // Add 2px buffer to the width calculation for perfect matching
+    const calculatedWidth = Math.max(inputWidth, 220) + 2
+    
+    // Center the dropdown under the input
+    const inputCenterX = rect.left + (inputWidth / 2)
+    let leftPos = inputCenterX - (calculatedWidth / 2)
+    
+    // Viewport boundary checks
+    if (leftPos + calculatedWidth > viewportWidth - 20) {
+      leftPos = viewportWidth - calculatedWidth - 20
+    }
+    if (leftPos < 20) {
+      leftPos = 20
     }
 
-    // Always use the stored position, just update the top position based on current input position
-    setWidth(initialPositionRef.current?.width || rect.width)
+    const DROPDOWN_OFFSET = 8 // Fixed offset for all steps
+
+    setWidth(calculatedWidth)
     setPosition({
-      top: rect.bottom + 8,
-      left: initialPositionRef.current?.left || rect.left
+      top: Math.round(rect.bottom + DROPDOWN_OFFSET),
+      left: Math.round(leftPos)
     })
   }, [])
 
-  // Remove the reset of initialPositionRef when dropdown closes
-  useEffect(() => {
+  // Update position when dropdown opens or options change
+  useLayoutEffect(() => {
     if (!isOpen) {
-      // Don't reset the position reference anymore
-      // initialPositionRef.current = null
+      setIsPositioned(false)
+      return
     }
-  }, [isOpen])
 
-  // Add cleanup when component unmounts
+    // Initial position calculation
+    updatePosition()
+
+    // Wait for DOM to settle and calculate again
+    const timer = setTimeout(() => {
+      updatePosition()
+      setIsPositioned(true)
+    }, 100) // Increased from 50ms to 100ms for better stability
+
+    return () => {
+      clearTimeout(timer)
+      setIsPositioned(false)
+    }
+  }, [isOpen, safeOptions, updatePosition])
+
+  // Handle resize
+  useLayoutEffect(() => {
+    if (!isOpen) return
+    
+    const handleResize = () => {
+      setIsPositioned(false)
+      updatePosition()
+      requestAnimationFrame(() => {
+        setIsPositioned(true)
+      })
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [isOpen, updatePosition])
+
+  // Handle scroll
+  useLayoutEffect(() => {
+    if (!isOpen) return
+    
+    const handleScroll = () => {
+      setIsPositioned(false)
+      updatePosition()
+      requestAnimationFrame(() => {
+        setIsPositioned(true)
+      })
+    }
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [isOpen, updatePosition])
+
+  // Reset position reference when component unmounts
   useEffect(() => {
     return () => {
       initialPositionRef.current = null
     }
   }, [])
 
-  // Update position when dropdown opens or options change
-  useEffect(() => {
-    if (!isOpen) return
-
-    updatePosition()
-    // Increase the delay slightly to ensure stable positioning
-    const timer = setTimeout(updatePosition, 100)
-    return () => clearTimeout(timer)
-  }, [isOpen, safeOptions, updatePosition])
-
-  // Handle resize
-  useEffect(() => {
-    if (!isOpen) return
-    
-    const handleResize = () => updatePosition()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [isOpen, updatePosition])
-
-  // Handle scroll
-  useEffect(() => {
-    if (!isOpen) return
-    
-    const handleScroll = () => updatePosition()
-    window.addEventListener('scroll', handleScroll, true)
-    return () => window.removeEventListener('scroll', handleScroll, true)
-  }, [isOpen, updatePosition])
+  // Remove position reference completely as we're not using it anymore
+  const handleBlur = useCallback((e: React.FocusEvent) => {
+    setTimeout(() => {
+      if (isMouseOverDropdown && !document.activeElement?.matches('input')) {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+        return;
+      }
+      
+      setIsOpen(false);
+      setInputValue(selected?.label || "");
+    }, 50);
+  }, [selected, isMouseOverDropdown]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
@@ -181,43 +204,27 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
     [isOpen, safeOptions, onValueChange],
   )
 
-  const handleBlur = useCallback((e: React.FocusEvent) => {
-    // If the blur event is being triggered but mouse is over dropdown, don't close it
-    if (isMouseOverDropdown) {
-      // Refocus the input to prevent closing
-      setTimeout(() => {
-        if (inputRef.current && isMouseOverDropdown) {
-          inputRef.current.focus();
-        }
-      }, 0);
-      return;
-    }
-    
-    // Only close if we're not clicking inside the dropdown
-    if (!dropdownRef.current?.contains(e.relatedTarget as Node)) {
-      setIsOpen(false);
-      setInputValue(selected?.label || "");
-    }
-  }, [selected, isMouseOverDropdown]);
-
   const handleSelect = useCallback(
     (selectedOption: Option) => {
       setInputValue(selectedOption.label)
-
       setSelected(selectedOption)
       onValueChange?.(selectedOption)
 
-      // This is a hack to prevent the input from being focused after the user selects an option
-      // We can call this hack: "The next tick"
-      setTimeout(() => {
-        inputRef?.current?.blur()
-      }, 0)
+      // Close dropdown immediately if this is the last step
+      if (isLastStep) {
+        setIsOpen(false)
+      } else {
+        // Original behavior for non-last steps
+        setTimeout(() => {
+          inputRef?.current?.blur()
+        }, 0)
+      }
     },
-    [onValueChange],
+    [onValueChange, isLastStep]
   )
 
   // Create dropdown portal content
-  const dropdownContent = isOpen ? (
+  const dropdownContent = (isOpen && isPositioned) ? (
     <div
       ref={dropdownRef}
       style={{
@@ -228,9 +235,10 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
         zIndex: 9999,
         maxWidth: 'calc(100vw - 40px)',
         transform: 'translateZ(0)',
-        willChange: 'transform' // Optimize animations
+        willChange: 'transform',
+        opacity: 1,
       }}
-      className="bg-white rounded-md border shadow-md isolate py-2" // Increased padding
+      className="bg-white rounded-md border shadow-md isolate py-2"
       onMouseEnter={() => setIsMouseOverDropdown(true)}
       onMouseLeave={() => setIsMouseOverDropdown(false)}
     >
