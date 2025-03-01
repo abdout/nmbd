@@ -5,14 +5,15 @@ import { notFound } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { articles } from '@/components/template/article/constant';
+import { Metadata } from 'next';
 
-type Props = {
+type PageProps = {
   params: {
     id: string;
   };
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const id = parseInt(params.id) - 1;
   
   if (id < 0 || id >= articles.length) {
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default function ArticlePage({ params }: Props) {
+export default function ArticlePage({ params }: PageProps) {
   const id = parseInt(params.id) - 1;
   
   if (isNaN(id) || id < 0 || id >= articles.length) {
