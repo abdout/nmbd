@@ -4,7 +4,8 @@ export const articles: ArticleItem[] = [
   {
     title: "لماذا تحارب الإمارات السودان ؟",
     description: "التدابير السياسية وحدها لا تكفي ليخرج السودان من هذه الحفرة، ولكن السودان يحتاج ايضا إلى إصلاح ثقافي",
-    link: "L0SdBSe_ofc",
+    link: "/article/1",
+    videoId: "L0SdBSe_ofc",
     image: "/article/20.jpg",
     date: "18 ابريل 2024",
     author: "ابو بكر جيكوني"
@@ -12,7 +13,8 @@ export const articles: ArticleItem[] = [
   {
     title: "قراءة في كتاب لماذا يكذب القادة؟",
     description: "القبيلة والجهة مخزن قسم كريمة ومساحة تربية فاضلة, يحثان على التراحم والتعارف بين الناس",
-    link: "c4LI934B_-M",
+    link: "/article/2",
+    videoId: "c4LI934B_-M",
     image: "/article/22.jpg",
     date: "14 ابريل 2024",
     author: "الفاضل فرح"
@@ -20,7 +22,8 @@ export const articles: ArticleItem[] = [
   {
     title: "من قورباتشوف إلى ترامب: قراءة في نهاية الإمبراطوريات",
     description: "القبيلة والجهة مخزن قسم كريمة ومساحة تربية فاضلة, يحثان على التراحم والتعارف بين الناس",
-    link: "c4LI934B_-M",
+    link: "/article/3",
+    videoId: "c4LI934B_-M",
     image: "/article/21.jpg",
     date: "08 فبراير 2025",
     author: "محمد ابو بكر"
@@ -28,7 +31,8 @@ export const articles: ArticleItem[] = [
   {
     title: "الثناء لله تعالى على النصر المؤزر",
     description: "في السودان، يوجد قيمة التضامن ولكن بدلاً من التضامن في الاستهلاك فقط، دعونا نتضامن في الإنتاج أيضًا",
-    link: "yjSIrCLQL9U",
+    link: "/article/4",
+    videoId: "yjSIrCLQL9U",
     image: "/article/23.jpg",
     date: "14 ابريل 2024",
     author: "قاسم الظافر"

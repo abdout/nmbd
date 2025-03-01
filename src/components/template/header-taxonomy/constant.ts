@@ -155,19 +155,19 @@ export const marketingConfig: MarketingConfig = {
   mainNav: [
     {
       title: "الأوراق",
-      href: "/papers",
+      href: "/paper",
     },
 
     {
       title: "المقالات",
-      href: "/articles",
+      href: "/article",
     },
 
 
 
     {
       title: "الوثائقات",
-      href: "/videos",
+      href: "/video",
     },
 
 

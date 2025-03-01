@@ -5,6 +5,7 @@ export interface ArticleItem {
   image: string;
   date: string;
   author: string;
+  videoId?: string;
 }
 
 export type author = {
