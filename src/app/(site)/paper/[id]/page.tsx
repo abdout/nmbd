@@ -77,7 +77,7 @@ export default function PaperPage({ params }: Props) {
   const paper = testimonials[id];
   
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 md:px-4 px-0">
       <Link 
         href="/paper"
         className={cn(
@@ -88,8 +88,8 @@ export default function PaperPage({ params }: Props) {
         → الرجوع
       </Link>
       
-      <article className="max-w-3xl mx-auto">
-        <div className="relative h-80 w-full mb-8 rounded-xl overflow-hidden">
+      <article className="max-w-3xl">
+        <div className="relative md:h-80 h-48 w-full md:mb-8 mb-4 rounded-xl overflow-hidden">
           <Image
             src={paper.src}
             alt={paper.name}
@@ -104,7 +104,7 @@ export default function PaperPage({ params }: Props) {
           <p className="text-gray-600">{paper.designation}</p>
         </header>
         
-        <div className="bg-gray-100 p-6 rounded-lg mb-6 rtl">
+        <div className="bg-gray-100 dark:bg-neutral-900 md:p-6 p-4 rounded-lg md:mb-6 mb-4 rtl">
           <p className="text-lg leading-relaxed text-right">{paper.quote}</p>
         </div>
         

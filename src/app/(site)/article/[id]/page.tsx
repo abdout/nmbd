@@ -40,7 +40,7 @@ export default function ArticlePage({ params }: Props) {
   const article = articles[id];
   
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto md:py-10 py-4 md:px-4 px-0">
       <Link 
         href="/article"
         className={cn(
@@ -51,8 +51,8 @@ export default function ArticlePage({ params }: Props) {
         → الرجوع
       </Link>
       
-      <article className="max-w-3xl mx-auto">
-        <div className="relative h-80 w-full mb-8 rounded-xl overflow-hidden">
+      <article className="max-w-3xl ">
+        <div className="relative md:h-80 h-48 w-full md:mb-8 mb-4 rounded-xl overflow-hidden">
           <Image
             src={article.image}
             alt={article.title}
@@ -63,7 +63,7 @@ export default function ArticlePage({ params }: Props) {
         </div>
         
         <header className="mb-8 text-right">
-          <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
+          <h1 className="md:text-3xl text-xl font-bold md:mb-2 mb-1">{article.title}</h1>
           <div className="flex items-center text-sm text-gray-600  gap-2">
             <span> {article.author}</span>
             <span className="mx-2">•</span>
@@ -71,7 +71,7 @@ export default function ArticlePage({ params }: Props) {
           </div>
         </header>
         
-        <div className="bg-gray-100 p-6 rounded-lg mb-6 rtl">
+        <div className="bg-gray-100 dark:bg-neutral-900 md:p-6 p-4 rounded-lg md:mb-6 mb-4 rtl">
           <p className="text-lg leading-relaxed text-right">{article.description}</p>
         </div>
         

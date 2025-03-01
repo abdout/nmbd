@@ -35,7 +35,7 @@ export default function VideoPage({ params }: Props) {
   }
   
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto md:py-10 py-4 md:px-4 px-0">
       <Link 
         href="/video"
         className={cn(
@@ -46,9 +46,9 @@ export default function VideoPage({ params }: Props) {
         → الرجوع
       </Link>
       
-      <article className="max-w-3xl mx-auto">
+      <article className="max-w-3xl ">
         <header className="mb-8 text-right">
-          <h1 className="text-3xl font-bold mb-2">{video.title}</h1>
+          <h1 className="md:text-3xl text-xl font-bold md:mb-2 mb-1">{video.title}</h1>
           <div className="flex items-center text-sm text-gray-600 gap-2">
             <span>{video.author}</span>
             <span className="mx-1">•</span>
@@ -56,18 +56,18 @@ export default function VideoPage({ params }: Props) {
           </div>
         </header>
         
-        <div className="aspect-w-16 aspect-h-9 mb-8">
+        <div className="md:aspect-w-16 md:aspect-h-9 md:mb-8 mb-4">
           <iframe
             src={`https://www.youtube.com/embed/${video.link}`}
             title={video.title}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="w-full h-[400px] rounded-lg"
+            className="w-full md:h-[400px] h-[260px] rounded-lg"
           ></iframe>
         </div>
         
-        <div className="bg-gray-100 p-6 rounded-lg mb-6 rtl">
+        <div className="bg-gray-100 dark:bg-neutral-900 md:p-6 p-4 rounded-lg md:mb-6 mb-4 rtl">
           <p className="text-lg leading-relaxed text-right">{video.description}</p>
         </div>
         

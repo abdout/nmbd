@@ -3,6 +3,7 @@
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Testimonial = {
@@ -44,7 +45,7 @@ export const AnimatedTestimonials = ({
   };
   return (
     <div className="max-w-sm md:max-w-4xl mx-auto antialiased font-sans px-4 md:px-8 lg:px-12 ">
-      <div className="relative grid grid-cols-1 md:grid-cols-2  gap-20">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-20">
         <div>
           <div className="relative h-80 w-full">
             <AnimatePresence>
@@ -79,14 +80,16 @@ export const AnimatedTestimonials = ({
                   }}
                   className="absolute inset-0 origin-bottom"
                 >
-                  <Image
-                    src={testimonial.src}
-                    alt={testimonial.name}
-                    width={500}
-                    height={500}
-                    draggable={false}
-                    className="h-full w-full rounded-3xl object-cover object-center"
-                  />
+                  <Link href={`/paper/${index + 1}`} className="cursor-pointer">
+                    <Image
+                      src={testimonial.src}
+                      alt={testimonial.name}
+                      width={500}
+                      height={500}
+                      draggable={false}
+                      className="h-full w-full rounded-3xl object-cover object-center"
+                    />
+                  </Link>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -112,11 +115,12 @@ export const AnimatedTestimonials = ({
               ease: "easeInOut",
             }}
           >
-            <h3 className="text-2xl font-bold  -mt-10 md:mt-0">
-              {testimonials[active].name}
-            </h3>
+            <Link href={`/paper/${active + 1}`} className="cursor-pointer">
+              <h3 className="text-2xl font-bold -mt-10 md:mt-0 hover:text-blue-600 transition-colors">
+                {testimonials[active].name}
+              </h3>
+            </Link>
             <p className="text-sm text-gray-700 dark:text-neutral-500">
-
               {testimonials[active].designation}
             </p>
             <motion.p className="hidden md:block text-lg text-gray-700 mt-8 dark:text-neutral-300">

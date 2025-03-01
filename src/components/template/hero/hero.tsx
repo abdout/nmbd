@@ -19,7 +19,7 @@ const Hero = () => {
         <h1 className="font-heading text-4xl w-72 md:w-auto leading-normal md:text-7xl">
           الحركة الوطنية للبناء والتنمية
         </h1>
-        <p className="max-w-[53rem] leading-normal text-muted-foreground sm:text-lg px-4 md:px-0 sm:leading-8">
+        <p className="max-w-[55rem] leading-normal text-muted-foreground sm:text-lg md:px-4 px-2 sm:leading-8">
           هي حركة إصلاح اجتماعي وسياسي شامل، تقيم رؤاها وتستقي قيمها من هدي الدين
           وكريم شيم السودانيين، وتقوم على إرث المسلمين في السودان خاصة، وإرث شعب السودان
           عامة، وتجربة الأمة المسلمة والأحرار في العالم،
@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="flex gap-4">
           <Link
             href="/onboarding"
-            className={cn(buttonVariants({ size: "lg" }), "text-white") }
+            className={cn(buttonVariants({ size: "lg" }), "text-white px-4 md:px-7") }
 
           >
             يديك معانا
@@ -36,7 +36,7 @@ const Hero = () => {
             href='/#'
             target="_blank"
             rel="noreferrer"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "px-4 md:px-7")}
           >
             اعرف أكثر
           </Link>

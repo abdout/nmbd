@@ -26,9 +26,9 @@ const MapSection = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Map Image Container */}
 
-              <div className=" bg-muted rounded-lg overflow-hidden relative">
+              <div className="flex flex-col h-full rounded-lg overflow-hidden ">
                 {/* Placeholder Map Image */}
-                <Image src="/map.avif" alt="Map" width={500} height={2200} className="" />
+                <Image src="/map.avif" alt="Map" width={500} height={2800} className="" />
                 <Button
                   className="w-full h-20 text-[16px] font-semibold rounded-tl-none rounded-tr-none"
                   onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`)}
@@ -42,7 +42,7 @@ const MapSection = () => {
               </div>
 
               {/* Info Section */}
-              <div className="space-y-6 bg-neutral-100 p-6 rounded-lg">
+              <div className="space-y-4 bg-neutral-100 px-6 py-4 rounded-lg">
                 <div className="flex items-start space-x-4">
                   {/* <MapPin className="h-6 w-6 mt-1 flex-shrink-0" /> */}
                   <div>

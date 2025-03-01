@@ -58,7 +58,7 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                     </AnimatePresence>
                     <ArticleCard>
                         <div className="flex gap-6">
-                            <div className="w-1/3 relative h-[140px] overflow-hidden rounded-lg">
+                            <div className="md:w-1/3 w-[30%] relative md:h-[140px] h-[80px] overflow-hidden rounded-lg">
                                 <Image
                                     src={item.image}
                                     alt={item.title}
@@ -68,14 +68,14 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     loading="lazy"
                                 />
                             </div>
-                            <div className="w-2/3 flex flex-col justify-between py-2">
-                                <div className="space-y-3">
+                            <div className="w-2/3 flex flex-col justify-between md:py-2 py-0">
+                                <div className="md:space-y-3 space-y-1">
                                     <ArticleTitle>{item.title}</ArticleTitle>
                                     <ArticleDescription>{item.description}</ArticleDescription>
                                 </div>
-                                <p className="flex items-center gap-2 text-sm ">
+                                <p className="flex  md:items-center items-start md:gap-2 gap-1 md:text-sm text-xs pt-2 md:pt-0 ">
                                     <span>{item.author}</span>
-                                    <span>·</span>
+                                    <span className="">·</span>
                                     <span>{item.date}</span>
                                 </p>
                             </div>
