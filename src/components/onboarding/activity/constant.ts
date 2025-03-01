@@ -7,11 +7,59 @@ export const CLUB_TYPES = [
   'أخرى'
 ] as const;
 
+export const SKILLS = [
+  'برمجة',
+  'تصميم جرافيك',
+  'تصوير',
+  'كتابة محتوى',
+  'ترجمة',
+  'تحرير فيديو',
+  'إدارة مشاريع',
+  'تسويق رقمي',
+  'تحليل بيانات',
+  'تصميم مواقع',
+  'إدارة وسائل التواصل',
+  'تنظيم فعاليات',
+  'خدمة عملاء',
+  'تدريب وتعليم',
+  'تصميم UX/UI',
+  'تطوير تطبيقات',
+  'إدارة قواعد بيانات',
+  'تحليل نظم',
+  'أمن سيبراني',
+  'ذكاء اصطناعي'
+] as const;
+
+export const INTERESTS = [
+  'تكنولوجيا',
+  'فنون',
+  'رياضة',
+  'موسيقى',
+  'قراءة',
+  'كتابة',
+  'سفر',
+  'تصوير',
+  'طبخ',
+  'تعلم لغات',
+  'عمل تطوعي',
+  'حماية البيئة',
+  'تنمية بشرية',
+  'ريادة أعمال',
+  'علوم',
+  'سياسة',
+  'تاريخ',
+  'ثقافة',
+  'تعليم',
+  'صحة ولياقة'
+] as const;
+
 export type ActivityFieldName = 
   | 'partyMember' | 'partyName' | 'partyStartDate' | 'partyEndDate'
   | 'unionMember' | 'unionName' | 'unionStartDate' | 'unionEndDate'
   | 'ngoMember' | 'ngoName' | 'ngoActivity'
-  | 'clubMember' | 'clubName' | 'clubType';
+  | 'clubMember' | 'clubName' | 'clubType'
+  | 'voluntaryMember' | 'voluntaryName' | 'voluntaryRole' | 'voluntaryStartDate' | 'voluntaryEndDate'
+  | 'skills' | 'interests';
 
 type ActivityField = {
   name: ActivityFieldName;

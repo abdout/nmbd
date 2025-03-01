@@ -18,7 +18,7 @@ const TermsPage = () => {
     };
 
     return (
-        <div className='flex flex-col items-center justify-center py-4'>
+        <div className='w-[50%] flex flex-col items-center justify-center py-4'>
             <p className='text-center justify-center'>
                 لا تستثني الحركة احداَ من عامة السودانين الصالحين في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى، ومن يتقي معوج المسلك وفاسد العمل.
             </p>

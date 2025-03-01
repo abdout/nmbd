@@ -135,6 +135,10 @@ model User {
   clubName String?
   clubType String?      
   
+  // Skills and Interests
+  skills String[] @default([])
+  interests String[] @default([])
+  
   // Emergency Contacts
   emergencyName1       String?
   emergencyRelation1   String?

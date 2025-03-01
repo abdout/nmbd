@@ -44,7 +44,7 @@ export default async function ActivityPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-full flex items-center justify-center">
       <Suspense fallback={<div>Loading...</div>}>
         <ActivityForm user={userData} />
       </Suspense>

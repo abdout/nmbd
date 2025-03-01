@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const activitySchema = z.object({
+  selectedActivities: z.array(z.string()),
+  
   partyMember: z.boolean().default(false),
   partyName: z.string().optional(),
   partyStartDate: z.string().optional(),
@@ -18,6 +20,15 @@ export const activitySchema = z.object({
   clubMember: z.boolean().default(false),
   clubName: z.string().optional(),
   clubType: z.string().optional(),
+
+  voluntaryMember: z.boolean().default(false),
+  voluntaryName: z.string().optional(),
+  voluntaryRole: z.string().optional(),
+  voluntaryStartDate: z.string().optional(),
+  voluntaryEndDate: z.string().optional(),
+
+  skills: z.array(z.string()),
+  interests: z.array(z.string()),
 });
 
 export type ActivitySchema = z.infer<typeof activitySchema>; 

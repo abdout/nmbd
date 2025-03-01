@@ -42,6 +42,16 @@ export async function submitActivityForm(formData: ActivitySchema) {
       clubName: formData.clubMember ? formData.clubName : null,
       clubType: formData.clubMember ? formData.clubType : null,
       
+      voluntaryMember: formData.voluntaryMember,
+      voluntaryName: formData.voluntaryMember ? formData.voluntaryName : null,
+      voluntaryRole: formData.voluntaryMember ? formData.voluntaryRole : null,
+      voluntaryStartDate: formData.voluntaryMember && formData.voluntaryStartDate
+        ? new Date(formData.voluntaryStartDate)
+        : null,
+      voluntaryEndDate: formData.voluntaryMember && formData.voluntaryEndDate
+        ? new Date(formData.voluntaryEndDate)
+        : null,
+      
       onboardingStep: 3
     };
 
