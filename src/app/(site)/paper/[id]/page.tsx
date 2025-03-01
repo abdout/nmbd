@@ -1,15 +1,11 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-
-type Props = {
-  params: {
-    id: string;
-  };
-};
 
 // Get the testimonials data - in a real app, this would be in a shared data file
 const testimonials = [
@@ -49,32 +45,27 @@ const testimonials = [
   },
 ];
 
-export async function generateMetadata({ params }: Props) {
-  const id = parseInt(params.id) - 1;
+export default function PaperPage() {
+  const params = useParams();
+  const [paper, setPaper] = useState<typeof testimonials[0] | null>(null);
   
-  if (id < 0 || id >= testimonials.length) {
-    return {
-      title: 'Paper Not Found',
-      description: 'The requested paper could not be found',
-    };
+  useEffect(() => {
+    if (!params.id) return;
+    
+    const idString = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+    const id = parseInt(idString) - 1;
+    
+    if (isNaN(id) || id < 0 || id >= testimonials.length) {
+      notFound();
+      return;
+    }
+    
+    setPaper(testimonials[id]);
+  }, [params.id]);
+  
+  if (!paper) {
+    return <div className="container mx-auto py-10 px-4">Loading...</div>;
   }
-  
-  const paper = testimonials[id];
-  
-  return {
-    title: `${paper.name} | Public Party`,
-    description: paper.quote.substring(0, 160),
-  };
-}
-
-export default function PaperPage({ params }: Props) {
-  const id = parseInt(params.id) - 1;
-  
-  if (id < 0 || id >= testimonials.length) {
-    notFound();
-  }
-  
-  const paper = testimonials[id];
   
   return (
     <div className="container mx-auto py-10 md:px-4 px-0">
