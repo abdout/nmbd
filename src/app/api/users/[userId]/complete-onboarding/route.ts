@@ -3,21 +3,22 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 
 export async function POST(
-  req: NextRequest,
-  context: { params: { userId: string } }
+  request: Request | NextRequest,
+  { params }: { params: { userId: string } }
 ) {
   try {
     const user = await currentUser();
     
-    if (!user?.id || user.id !== context.params.userId) {
+    if (!user?.id || user.id !== params.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
+    const req = request as NextRequest;
     const body = await req.json();
     
     const updatedUser = await db.user.update({
       where: {
-        id: context.params.userId,
+        id: params.userId,
       },
       data: {
         onboardingStatus: body.onboardingStatus || "COMPLETED",
