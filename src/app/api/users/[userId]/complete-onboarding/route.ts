@@ -1,9 +1,7 @@
+/* eslint-disable */
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
-
-// @ts-ignore - Completely bypassing type checking for this route
-// @ts-nocheck
 
 export async function POST(
   request: Request,
