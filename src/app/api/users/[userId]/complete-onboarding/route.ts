@@ -4,12 +4,12 @@ import { currentUser } from "@/lib/auth";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
   try {
     const user = await currentUser();
     
-    if (!user?.id || user.id !== params.userId) {
+    if (!user?.id || user.id !== context.params.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
@@ -17,7 +17,7 @@ export async function POST(
     
     const updatedUser = await db.user.update({
       where: {
-        id: params.userId,
+        id: context.params.userId,
       },
       data: {
         onboardingStatus: body.onboardingStatus || "COMPLETED",
