@@ -1,19 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { articles } from '@/components/template/article/constant';
+import { ArticleItem } from '@/components/template/article/type';
 import { Metadata } from 'next';
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }) {
   const id = parseInt(params.id) - 1;
   
   if (id < 0 || id >= articles.length) {
@@ -31,14 +28,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function ArticlePage({ params }: PageProps) {
-  const id = parseInt(params.id) - 1;
+export default function ArticlePage() {
+  const params = useParams();
+  const [article, setArticle] = useState<ArticleItem | null>(null);
   
-  if (isNaN(id) || id < 0 || id >= articles.length) {
-    notFound();
+  useEffect(() => {
+    if (!params.id) return;
+    
+    const idString = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+    const id = parseInt(idString) - 1;
+    
+    if (isNaN(id) || id < 0 || id >= articles.length) {
+      notFound();
+      return;
+    }
+    
+    setArticle(articles[id]);
+  }, [params.id]);
+  
+  if (!article) {
+    return <div className="container mx-auto py-10 px-4">Loading...</div>;
   }
-  
-  const article = articles[id];
   
   return (
     <div className="container mx-auto md:py-10 py-4 md:px-4 px-0">
@@ -65,8 +75,8 @@ export default function ArticlePage({ params }: PageProps) {
         
         <header className="mb-8 text-right">
           <h1 className="md:text-3xl text-xl font-bold md:mb-2 mb-1">{article.title}</h1>
-          <div className="flex items-center text-sm text-gray-600  gap-2">
-            <span> {article.author}</span>
+          <div className="flex items-center text-sm text-gray-600 gap-2">
+            <span>{article.author}</span>
             <span className="mx-2">•</span>
             <span>{article.date}</span>
           </div>
