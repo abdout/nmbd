@@ -1,37 +1,33 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { videos } from '@/components/template/video/constant';
+import { VideoItem } from '@/components/template/video/type';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export async function generateMetadata({ params }: Props) {
-  const video = videos.find(v => v.link === params.id);
+export default function VideoPage() {
+  const params = useParams();
+  const [video, setVideo] = useState<VideoItem | null>(null);
+  
+  useEffect(() => {
+    if (!params.id) return;
+    
+    const videoId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+    const foundVideo = videos.find(v => v.link === videoId);
+    
+    if (!foundVideo) {
+      notFound();
+      return;
+    }
+    
+    setVideo(foundVideo);
+  }, [params.id]);
   
   if (!video) {
-    return {
-      title: 'Video Not Found',
-      description: 'The requested video could not be found',
-    };
-  }
-  
-  return {
-    title: `${video.title} | Public Party`,
-    description: video.description,
-  };
-}
-
-export default function VideoPage({ params }: Props) {
-  const video = videos.find(v => v.link === params.id);
-  
-  if (!video) {
-    notFound();
+    return <div className="container mx-auto py-10 px-4">Loading...</div>;
   }
   
   return (
