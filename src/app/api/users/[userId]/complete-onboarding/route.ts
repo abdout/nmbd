@@ -3,16 +3,14 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 
-export async function POST(
-  request: Request,
-) {
+// This is a simpler approach to allow for deployment
+export async function POST(request: Request) {
   try {
     const user = await currentUser();
     
     // Extract userId from the URL path
-    const url = new URL(request.url);
-    const pathParts = url.pathname.split('/');
-    const userId = pathParts[pathParts.indexOf('users') + 1];
+    const path = request.url.split('/');
+    const userId = path[path.length - 2]; // Get second-to-last segment of the URL
     
     if (!user?.id || user.id !== userId) {
       return new NextResponse("Unauthorized", { status: 401 });
