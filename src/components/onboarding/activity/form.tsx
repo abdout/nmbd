@@ -4,10 +4,6 @@ import { useForm } from "react-hook-form";
 import { activitySchema, ActivitySchema } from "./validation";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { useTransition, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { ACTIVITY_FIELDS } from "./constant";
 import { submitActivityForm } from "./action";
 import { ActivityFieldName } from "./constant";
 import { toast } from "sonner";
@@ -49,8 +45,8 @@ interface ActivityFormProps {
 
 export default function ActivityForm({ user }: ActivityFormProps) {
   const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
-  const [_, startTransition] = useTransition();
-  const [state, _formAction] = useActionState(
+  const [_unused, startTransition] = useTransition();
+  const [state, _unusedFormAction] = useActionState(
     (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
       submitActivityForm(formData),
     {
@@ -71,10 +67,8 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   const localFormRef = useRef<HTMLFormElement>(null);
 
   const {
-    register,
     watch,
     setValue,
-    formState: { errors },
     handleSubmit,
   } = useForm<ActivitySchema>({
     resolver: zodResolver(activitySchema),
@@ -145,38 +139,6 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     }
     setCurrentFormId('activity');
   }, [formRef, setCurrentFormId]);
-
-  const handleSwitchChange = (name: ActivityFieldName) => (checked: boolean) => {
-    setValue(name, checked);
-    if (!checked) {
-      switch (name) {
-        case 'partyMember':
-          setValue('partyName', '');
-          setValue('partyStartDate', '');
-          setValue('partyEndDate', '');
-          break;
-        case 'unionMember':
-          setValue('unionName', '');
-          setValue('unionStartDate', '');
-          setValue('unionEndDate', '');
-          break;
-        case 'ngoMember':
-          setValue('ngoName', '');
-          setValue('ngoActivity', '');
-          break;
-        case 'clubMember':
-          setValue('clubName', '');
-          setValue('clubType', '');
-          break;
-        case 'voluntaryMember':
-          setValue('voluntaryName', '');
-          setValue('voluntaryRole', '');
-          setValue('voluntaryStartDate', '');
-          setValue('voluntaryEndDate', '');
-          break;
-      }
-    }
-  };
 
   const onSubmit = (data: ActivitySchema) => {
     startTransition(() => {

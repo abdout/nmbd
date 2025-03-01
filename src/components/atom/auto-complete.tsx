@@ -6,7 +6,7 @@ import {
   CommandList,
   CommandInput,
 } from "@/components/ui/command"
-import { useState, useRef, useCallback, type KeyboardEvent, forwardRef, useEffect, useLayoutEffect, useMemo } from "react"
+import { useState, useRef, useCallback, forwardRef, useEffect, useLayoutEffect, useMemo } from "react"
 import { createPortal } from "react-dom"
 
 export type Option = Record<"value" | "label", string> & Record<string, string>
