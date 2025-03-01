@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 
+type RouteParams = {
+  params: {
+    userId: string;
+  }
+};
+
 export async function POST(
-  request: Request | NextRequest,
-  { params }: { params: { userId: string } }
+  request: NextRequest,
+  { params }: RouteParams
 ) {
   try {
     const user = await currentUser();
@@ -13,8 +19,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
-    const req = request as NextRequest;
-    const body = await req.json();
+    const body = await request.json();
     
     const updatedUser = await db.user.update({
       where: {
