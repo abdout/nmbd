@@ -83,7 +83,7 @@ export async function updateAttachment(_state: ActionState, data: AttachmentSche
 }
 
 // Delete
-export async function deleteAttachment(_state: ActionState) {
+export async function deleteAttachment() {
   try {
     const user = await currentUser();
     if (!user?.id) return { success: false, error: true };

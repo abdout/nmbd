@@ -6,7 +6,7 @@ import {
   CommandList,
   CommandInput,
 } from "@/components/ui/command"
-import { useState, useRef, useCallback, type KeyboardEvent, forwardRef, useEffect, useLayoutEffect } from "react"
+import { useState, useRef, useCallback, type KeyboardEvent, forwardRef, useEffect, useLayoutEffect, useMemo } from "react"
 import { createPortal } from "react-dom"
 
 export type Option = Record<"value" | "label", string> & Record<string, string>
@@ -32,8 +32,8 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
   isLoading = false,
   isLastStep = false,
 }, forwardedRef) => {
-  // Ensure options is always an array
-  const safeOptions = Array.isArray(options) ? options : []
+  // Ensure options is always an array, wrapped in useMemo to avoid dependency changes
+  const safeOptions = useMemo(() => Array.isArray(options) ? options : [], [options]);
   
   const inputRef = useRef<HTMLInputElement>(null)
   const inputWrapperRef = useRef<HTMLDivElement>(null)
@@ -157,7 +157,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
   }, [])
 
   // Remove position reference completely as we're not using it anymore
-  const handleBlur = useCallback((e: React.FocusEvent) => {
+  const handleBlur = useCallback(() => {
     setTimeout(() => {
       if (isMouseOverDropdown && !document.activeElement?.matches('input')) {
         if (inputRef.current) {
@@ -169,8 +169,11 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
       setIsOpen(false);
       setInputValue(selected?.label || "");
     }, 50);
-  }, [selected, isMouseOverDropdown]);
+  }, [selected, isMouseOverDropdown, setInputValue]);
 
+  // NOTE: This function is currently unused, but we're keeping it for future reference
+  // or potential future functionality. Consider using this for keyboard navigation.
+  /* 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       const input = inputRef.current
@@ -184,9 +187,11 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
         const optionToSelect = safeOptions.find(
           (option) => option.label === input.value,
         )
+
         if (optionToSelect) {
-          setSelected(optionToSelect)
+          setInputValue(optionToSelect.label)
           onValueChange?.(optionToSelect)
+          input.blur()
         }
       }
 
@@ -196,6 +201,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
     },
     [isOpen, safeOptions, onValueChange],
   )
+  */
 
   const handleSelect = useCallback(
     (selectedOption: Option) => {

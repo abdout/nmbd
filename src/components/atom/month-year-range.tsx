@@ -40,7 +40,6 @@ export function MonthYearRangePicker({
   const currentMonth = currentDate.getMonth();
   
   const [range, setRange] = React.useState<MonthYearRange>(value || {})
-  const [activeSelection, setActiveSelection] = React.useState<'from' | 'to'>('from')
   const [fromYear, setFromYear] = React.useState<number>(
     range.from?.getFullYear() || currentYear - 4
   )
@@ -121,11 +120,6 @@ export function MonthYearRangePicker({
     }
     
     updateRange(type, newDate)
-    
-    // Auto-switch to 'to' after selecting 'from' if 'to' is not set
-    if (type === 'from' && !range.to) {
-      setActiveSelection('to')
-    }
   }
 
   const updateRange = (key: 'from' | 'to', value: Date) => {

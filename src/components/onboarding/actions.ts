@@ -1,7 +1,6 @@
 // serverActions.ts
 
 "use server";
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
@@ -164,7 +163,13 @@ import type { ContactFormData } from "./schemas";
 //   }
 // };
 
-export async function updateProfile(formData: any) {
+// Create a specific type for the profile update data
+interface ProfileUpdateData {
+  // Common fields across different profile update operations
+  [key: string]: string | number | boolean | Date | { increment: number } | undefined;
+}
+
+export async function updateProfile(formData: ProfileUpdateData) {
   try {
     const user = await currentUser();
     if (!user?.id) throw new Error("Unauthorized");

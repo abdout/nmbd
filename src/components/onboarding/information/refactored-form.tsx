@@ -80,9 +80,6 @@ const RefactoredForm = ({ type, data }: FormProps) => {
 
   // Calculate if each section is complete
   const isIdComplete = [maritalStatus, gender, religion, nationalityId].every(field => field);
-  const isEducationComplete = locationFields.every(field => field) && birthdateFields.every(field => field);
-  const isWorkComplete = true; // Assuming work section is always complete
-  const isSkillsComplete = true; // Assuming skills section is always complete
 
   // Check if ID section is complete and scroll to next section
   useEffect(() => {

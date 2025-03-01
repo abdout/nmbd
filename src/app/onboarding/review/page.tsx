@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCurrentUser } from '@/components/auth/hooks/use-current-user';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { fetchUserForReview, completeOnboarding, type UserReviewData } from './action';
@@ -26,7 +25,6 @@ const getPdfPreviewUrl = (url: string) => {
 };
 
 export default function ReviewPage() {
-  const user = useCurrentUser();
   const router = useRouter();
   const [userData, setUserData] = useState<UserReviewData | null>(null);
   const [isLoading, setIsLoading] = useState(true);

@@ -6,10 +6,8 @@ import { useFormContext } from '@/components/onboarding/form-context';
 import { useTransition, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ACTIVITY_FIELDS, CLUB_TYPES } from "./constant";
+import { ACTIVITY_FIELDS } from "./constant";
 import { submitActivityForm } from "./action";
 import { ActivityFieldName } from "./constant";
 import { toast } from "sonner";
@@ -51,8 +49,8 @@ interface ActivityFormProps {
 
 export default function ActivityForm({ user }: ActivityFormProps) {
   const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
-  const [isPending, startTransition] = useTransition();
-  const [state, formAction] = useActionState(
+  const [_, startTransition] = useTransition();
+  const [state, _formAction] = useActionState(
     (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
       submitActivityForm(formData),
     {
@@ -178,37 +176,6 @@ export default function ActivityForm({ user }: ActivityFormProps) {
           break;
       }
     }
-  };
-
-  const renderField = (field: typeof ACTIVITY_FIELDS.political[0]) => {
-    if (field.type === 'toggle') {
-      return (
-        <div className="flex items-center justify-between flex-row-reverse">
-          <Switch
-            id={field.name}
-            checked={!!watch(field.name)}
-            onCheckedChange={handleSwitchChange(field.name)}
-            {...register(field.name)}
-          />
-          <Label htmlFor={field.name}>{field.label}</Label>
-        </div>
-      );
-    }
-    return (
-      <>
-        <Label htmlFor={field.name}>{field.label}</Label>
-        <Input
-          id={field.name}
-          type={field.type}
-          {...register(field.name)}
-        />
-        {errors[field.name] && (
-          <span className="text-sm text-red-500">
-            {errors[field.name]?.message}
-          </span>
-        )}
-      </>
-    );
   };
 
   const onSubmit = (data: ActivitySchema) => {
