@@ -5,7 +5,6 @@ import { activitySchema, ActivitySchema } from "./validation";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { useTransition, useEffect, useRef } from "react";
 import { submitActivityForm } from "./action";
-import { ActivityFieldName } from "./constant";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { getNextRoute } from '../utils';
@@ -45,8 +44,8 @@ interface ActivityFormProps {
 
 export default function ActivityForm({ user }: ActivityFormProps) {
   const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
-  const [_unused, startTransition] = useTransition();
-  const [state, _unusedFormAction] = useActionState(
+  const startTransition = useTransition()[1];
+  const [state] = useActionState(
     (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
       submitActivityForm(formData),
     {
