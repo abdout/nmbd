@@ -2,15 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 
-type RouteParams = {
-  params: {
-    userId: string;
-  }
-};
+// Remove or comment out the custom RouteParams type
+// type RouteParams = {
+//   userId: string;
+// };
 
 export async function POST(
-  request: NextRequest,
-  { params }: RouteParams
+  request: Request,
+  { params }: { params: { userId: string } }
 ) {
   try {
     const user = await currentUser();
