@@ -8,7 +8,6 @@ import { informationSchema } from "./validation";
 import { createInformation, updateInformation } from "./action";
 import type { InformationSchema } from "./validation";
 import { Button } from "@/components/ui/button";
-import { FormWrapper } from "./form-wrapper";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
@@ -20,6 +19,13 @@ import Birthdate from "./birthdate";
 import Bio from "./bio";
 import DegreeSelector from "./degree-selector";
 import Degree from "./degree";
+
+// Add this at the top of the file, after the imports
+declare global {
+  interface Window {
+    submitInformationForm?: () => boolean;
+  }
+}
 
 interface FormProps {
   type: "create" | "update";
@@ -56,10 +62,6 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   // Add state for local storage data
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
 
-  // Add state to track completion of location and birthdate sections
-  const [locationComplete, setLocationComplete] = useState(false);
-  const [birthdateComplete, setBirthdateComplete] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -82,6 +84,10 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   const locationFields = watch(['currentCountry', 'currentState', 'currentLocality', 'currentAdminUnit', 'currentNeighborhood']);
   const birthdateFields = watch(['birthCountry', 'birthState', 'birthLocality', 'birthYear', 'birthMonth']);
 
+  // Calculate completion status based on watched fields
+  const isLocationComplete = locationFields.every(field => field);
+  const isBirthdateComplete = birthdateFields.every(field => field);
+
   // Check if ID section is complete and scroll to next section
   useEffect(() => {
     if (maritalStatus && gender && religion && nationalityId) {
@@ -100,15 +106,13 @@ const RefactoredForm = ({ type, data }: FormProps) => {
     }
   }, [maritalStatus, gender, religion, nationalityId]);
 
-  // Check if both location and birthdate are complete
+  // Fix useEffect dependencies and avoid spread in dependency array
   useEffect(() => {
     // Check if all location fields are filled
     const isLocationComplete = locationFields.every(field => field);
-    setLocationComplete(isLocationComplete);
-
+    
     // Check if all birthdate fields are filled
     const isBirthdateComplete = birthdateFields.every(field => field);
-    setBirthdateComplete(isBirthdateComplete);
 
     // If both sections are complete, scroll to bio section
     if (isLocationComplete && isBirthdateComplete) {
@@ -123,7 +127,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
 
       return () => clearTimeout(timer);
     }
-  }, [...locationFields, ...birthdateFields]);
+  }, [locationFields, birthdateFields, bioSectionRef]);
 
   // Load form values when data prop changes (e.g., when data is fetched from the server)
   useEffect(() => {
@@ -176,7 +180,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   // Register form in global window for debug access
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as any).submitInformationForm = () => {
+      window.submitInformationForm = () => {
         console.log('Global submit function called');
         if (localFormRef.current) {
           console.log('Submitting form via global function');
@@ -188,14 +192,12 @@ const RefactoredForm = ({ type, data }: FormProps) => {
         }
         return false;
       };
+      
+      return () => {
+        delete window.submitInformationForm;
+      };
     }
-    
-    return () => {
-      if (typeof window !== 'undefined') {
-        delete (window as any).submitInformationForm;
-      }
-    };
-  }, []);
+  }, [localFormRef]);
 
   useEffect(() => {
     // Set form reference for ButtonNavigation if context is available
@@ -203,14 +205,14 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       try {
         formRef.current = localFormRef.current;
         console.log('Form reference set successfully', formRef.current);
-      } catch (e) {
-        console.error('Error setting form reference:', e);
+      } catch (_) {
+        console.error('Error setting form reference:');
       }
     }
     
     try {
       setCurrentFormId?.('information');
-    } catch (e) {
+    } catch (_) {
       console.log('Unable to set current form ID');
     }
     
@@ -277,7 +279,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
             console.log('Calling createInformation with:', minimalData);
             
             // Call the server action directly with the data object
-            const result = await createInformation(null, minimalData);
+            const result = await createInformation({ success: false, error: false }, minimalData);
             console.log('Create information result:', result);
 
             if (result.success) {
@@ -299,7 +301,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
             console.log('Calling updateInformation with:', minimalData);
             
             // Call the server action directly with the data object
-            const result = await updateInformation(null, minimalData);
+            const result = await updateInformation({ success: false, error: false }, minimalData);
             console.log('Update information result:', result);
 
             if (result.success) {
@@ -328,6 +330,23 @@ const RefactoredForm = ({ type, data }: FormProps) => {
     });
   };
 
+  // For testing
+  const fillWithTestData = () => {
+    const testData = {
+      name: "John",
+      fullname: "John Doe",
+      bio: "Software engineer with 5+ years of experience",
+      studentYear: "Second",
+      maritalStatus: "Single",
+      gender: "Male"
+    };
+
+    // Set all values in the form
+    Object.entries(testData).forEach(([key, value]) => {
+      setValue(key as keyof InformationSchema, value as string);
+    });
+  };
+
   return (
     <form
     
@@ -352,11 +371,10 @@ const RefactoredForm = ({ type, data }: FormProps) => {
           >
             <div dir="rtl" className="grid grid-cols-2 gap-6">
               <div className="relative">
-                <Location 
+                <Location
                   register={register}
                   errors={errors}
                   setValue={setValue}
-                  watch={watch}
                 />
               </div>
               
@@ -365,7 +383,6 @@ const RefactoredForm = ({ type, data }: FormProps) => {
                   register={register}
                   errors={errors}
                   setValue={setValue}
-                  watch={watch}
                 />
               </div>
             </div>
@@ -464,7 +481,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
             
             // Set all values in the form
             Object.entries(testData).forEach(([key, value]) => {
-              setValue(key as any, value);
+              setValue(key as keyof InformationSchema, value as string);
             });
             
             // Update education level state

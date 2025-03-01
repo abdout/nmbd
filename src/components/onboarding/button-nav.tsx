@@ -3,7 +3,6 @@ import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
-import { onboardingRoutes } from './types'
 import { useTransition } from "react";
 import { useFormContext } from './form-context';
 import { getNextRoute, getPreviousRoute } from './utils';
@@ -17,9 +16,9 @@ export const triggerFormSubmit = () => {
     
     // Try the global function approach as well
     try {
-        if ((window as any).submitInformationForm) {
+        if (typeof window !== 'undefined' && typeof (window as Window & { submitInformationForm?: () => boolean }).submitInformationForm === 'function') {
             console.log('Using global submit function');
-            (window as any).submitInformationForm();
+            (window as Window & { submitInformationForm?: () => boolean }).submitInformationForm?.();
             return true;
         }
     } catch (e) {
@@ -32,17 +31,19 @@ export const triggerFormSubmit = () => {
 const ButtonNavigation = () => {
     const router = useRouter()
     const pathname = usePathname()
-    const [isPending, startTransition] = useTransition()
+    const [isPending] = useTransition()
     
-    // Try to use form context, but don't fail if it's not available
-    let formContextValue = null;
+    // Always initialize formContextValue as an object with null properties
+    const formContextValue = { formRef: null, currentFormId: null };
+    
+    // Then try to use the form context
     try {
-        formContextValue = useFormContext();
-    } catch (error) {
+        Object.assign(formContextValue, useFormContext() || {});
+    } catch {
         console.log('Form context not available, continuing without it');
     }
     
-    const { formRef, currentFormId } = formContextValue || { formRef: null, currentFormId: null };
+    const { formRef, currentFormId } = formContextValue;
 
     const handleNext = async () => {
         console.log('Next button clicked, formRef:', formRef?.current);
@@ -62,9 +63,11 @@ const ButtonNavigation = () => {
                 }
                 
                 // Use global function if available
-                if (currentFormId === 'information' && (window as any).submitInformationForm) {
+                if (currentFormId === 'information' && 
+                    typeof window !== 'undefined' && 
+                    typeof (window as Window & { submitInformationForm?: () => boolean }).submitInformationForm === 'function') {
                     console.log('Using global submit function for information form');
-                    if ((window as any).submitInformationForm()) {
+                    if ((window as Window & { submitInformationForm?: () => boolean }).submitInformationForm?.()) {
                         return;
                     }
                 }

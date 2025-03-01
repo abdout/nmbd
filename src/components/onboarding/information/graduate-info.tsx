@@ -26,7 +26,6 @@ interface GraduateInfoProps {
 const GraduateInfo = ({
   register,
   errors,
-  setValue,
   educationLevel,
   completionYearItems,
   bachelorCompletionYearItems,

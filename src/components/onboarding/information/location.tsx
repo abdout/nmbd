@@ -4,13 +4,11 @@ import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "rea
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";
-import { Label } from "@/components/ui/label";
 
 interface LocationProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
-  watch?: UseFormWatch<InformationSchema>;
 }
 
 // Sample location data in the same format as auto-location.tsx
@@ -147,8 +145,7 @@ const NEIGHBORHOODS: Record<string, Option[]> = {
 const Location = ({
   register,
   errors,
-  setValue,
-  watch
+  setValue
 }: LocationProps) => {
   // Define the hierarchical steps
   const locationSteps: SelectionStep[] = [

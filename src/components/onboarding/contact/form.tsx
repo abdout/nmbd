@@ -39,7 +39,7 @@ const ContactForm = ({
   type: "create" | "update";
   data?: ContactSchema;
 }) => {
-  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
+  const { formRef, setCurrentFormId } = useFormContext();
   
   const {
     register,
@@ -87,11 +87,12 @@ const ContactForm = ({
 
   useEffect(() => {
     if (state.success) {
+      toast.success("Contact information saved successfully");
       onSubmitSuccess();
     } else if (state.error) {
       toast.error("Failed to save contact information");
     }
-  }, [state]);
+  }, [state, onSubmitSuccess]);
 
   useEffect(() => {
     setCurrentFormId('contact');
@@ -134,7 +135,7 @@ const ContactForm = ({
         ))}
         <div className="flex items-center justify-between mb-6">
           <TabsList className="flex gap-2 bg-background">
-            {tabsData.slice().reverse().map(({ icon, name, label }) => (
+            {tabsData.slice().reverse().map(({ icon, name }) => (
               <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
                 {icon}
               </TabsTrigger>

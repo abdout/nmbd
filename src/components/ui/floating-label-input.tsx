@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { FieldError, UseFormRegister } from "react-hook-form";
 
 export interface FloatingLabelInputProps {
   id: string;
   label: string;
   name: string;
-  register: any;
-  error?: any;
+  register: UseFormRegister<Record<string, unknown>>;
+  error?: FieldError;
   type?: string;
 }
 
@@ -57,8 +58,8 @@ export interface FloatingLabelTextareaProps {
   id: string;
   label: string;
   name: string;
-  register: any;
-  error?: any;
+  register: UseFormRegister<Record<string, unknown>>;
+  error?: FieldError;
 }
 
 export const FloatingLabelTextarea = ({ 

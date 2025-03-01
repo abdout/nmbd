@@ -3,7 +3,6 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { onboardingRoutes } from "../types";
 import { ContactSchema } from "./validation";
 
 export type ActionState = {
@@ -96,7 +95,7 @@ export async function updateContact(state: ActionState, data: ContactSchema) {
 }
 
 // Delete (Clear contact info)
-export async function deleteContact(state: ActionState) {
+export async function deleteContact() {
   try {
     const user = await currentUser();
     if (!user?.id) return { success: false, error: true };

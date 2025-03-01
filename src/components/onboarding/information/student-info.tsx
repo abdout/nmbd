@@ -1,5 +1,5 @@
 import React from 'react';
-import { UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,6 @@ interface StudentInfoProps {
 const StudentInfo = ({
   register,
   errors,
-  setValue,
   educationLevel,
   studentYearItems,
   onStudentYearSelect,
