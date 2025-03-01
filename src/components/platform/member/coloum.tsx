@@ -29,7 +29,7 @@ const ActionsCell: React.FC<ActionsProps> = ({ row }) => {
   useEffect(() => {
     refreshMembers();
     console.log(members);
-  }, []);
+  }, [refreshMembers, members]);
 
   const user = row.original;
 

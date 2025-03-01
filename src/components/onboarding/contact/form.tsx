@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { contactSchema, ContactSchema } from "./validation";
 import { createContact, updateContact } from "./action";
 import { useActionState } from "react";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -80,10 +80,10 @@ const ContactForm = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  const onSubmitSuccess = () => {
+  const onSubmitSuccess = useCallback(() => {
     toast.success(`Contact has been ${type === "create" ? "created" : "updated"}!`);
     router.push(getNextRoute(pathname));
-  };
+  }, [router, pathname, type]);
 
   useEffect(() => {
     if (state.success) {

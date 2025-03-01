@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from "react";
-import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";

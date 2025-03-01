@@ -33,17 +33,12 @@ const ButtonNavigation = () => {
     const pathname = usePathname()
     const [isPending] = useTransition()
     
-    // Always initialize formContextValue as an object with null properties
-    const formContextValue = { formRef: null, currentFormId: null };
+    // Always use the hook unconditionally at the top level
+    const formContextValue = useFormContext();
     
-    // Then try to use the form context
-    try {
-        Object.assign(formContextValue, useFormContext() || {});
-    } catch {
-        console.log('Form context not available, continuing without it');
-    }
-    
-    const { formRef, currentFormId } = formContextValue;
+    // Then safely handle the potential null case
+    const formRef = formContextValue?.formRef || null;
+    const currentFormId = formContextValue?.currentFormId || null;
 
     const handleNext = async () => {
         console.log('Next button clicked, formRef:', formRef?.current);

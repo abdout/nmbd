@@ -59,7 +59,7 @@ export async function getAttachment() {
 }
 
 // Update
-export async function updateAttachment(state: ActionState, data: AttachmentSchema) {
+export async function updateAttachment(_state: ActionState, data: AttachmentSchema) {
   try {
     const user = await currentUser();
     if (!user?.id) return { success: false, error: true };
@@ -83,7 +83,7 @@ export async function updateAttachment(state: ActionState, data: AttachmentSchem
 }
 
 // Delete
-export async function deleteAttachment(state: ActionState) {
+export async function deleteAttachment(_state: ActionState) {
   try {
     const user = await currentUser();
     if (!user?.id) return { success: false, error: true };

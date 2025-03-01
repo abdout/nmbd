@@ -14,6 +14,7 @@ import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
+import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 
 // Helper function to convert PDF URL to preview URL
 const getPdfPreviewUrl = (url: string) => {
@@ -102,9 +103,9 @@ const AttachmentForm = ({
               resourceType: "auto",
               folder: fieldType === 'raw' ? 'pdfs' : 'images'
             }}
-            onSuccess={(result: any, { widget }) => {
-              if (result.info && 'secure_url' in result.info) {
-                setValue(name, result.info.secure_url);
+            onSuccess={(result: CloudinaryUploadWidgetResults, { widget }) => {
+              if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
+                setValue(name, result.info.secure_url as string);
               }
               widget.close();
             }}
