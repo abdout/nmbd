@@ -8,25 +8,6 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { articles } from '@/components/template/article/constant';
 import { ArticleItem } from '@/components/template/article/type';
-import { Metadata } from 'next';
-
-export async function generateMetadata({ params }) {
-  const id = parseInt(params.id) - 1;
-  
-  if (id < 0 || id >= articles.length) {
-    return {
-      title: 'Article Not Found',
-      description: 'The requested article could not be found',
-    };
-  }
-  
-  const article = articles[id];
-  
-  return {
-    title: `${article.title} | Public Party`,
-    description: article.description,
-  };
-}
 
 export default function ArticlePage() {
   const params = useParams();
