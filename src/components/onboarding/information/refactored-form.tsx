@@ -39,19 +39,13 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   const locationSectionRef = useRef<HTMLDivElement>(null);
   const bioSectionRef = useRef<HTMLDivElement>(null);
   
-  // Try to use FormContext, but don't fail if it's not available
-  let formContextValue;
-  try {
-    formContextValue = useFormContext();
-  } catch (error) {
-    console.log('FormContext not available, continuing without it');
-  }
+  // Always use the hook unconditionally at the top level
+  const formContextValue = useFormContext();
   
-  const { formRef, setIsSubmitting, setCurrentFormId } = formContextValue || { 
-    formRef: { current: null }, 
-    setIsSubmitting: () => {}, 
-    setCurrentFormId: () => {} 
-  };
+  // Then safely handle the potential null case
+  const formRef = formContextValue?.formRef;
+  const setIsSubmitting = formContextValue?.setIsSubmitting;
+  const setCurrentFormId = formContextValue?.setCurrentFormId;
   
   // Set up local form ref that we'll sync with context
   const localFormRef = useRef<HTMLFormElement>(null);
@@ -84,13 +78,15 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   const locationFields = watch(['currentCountry', 'currentState', 'currentLocality', 'currentAdminUnit', 'currentNeighborhood']);
   const birthdateFields = watch(['birthCountry', 'birthState', 'birthLocality', 'birthYear', 'birthMonth']);
 
-  // Calculate completion status based on watched fields
-  const isLocationComplete = locationFields.every(field => field);
-  const isBirthdateComplete = birthdateFields.every(field => field);
+  // Calculate if each section is complete
+  const isIdComplete = [maritalStatus, gender, religion, nationalityId].every(field => field);
+  const isEducationComplete = locationFields.every(field => field) && birthdateFields.every(field => field);
+  const isWorkComplete = true; // Assuming work section is always complete
+  const isSkillsComplete = true; // Assuming skills section is always complete
 
   // Check if ID section is complete and scroll to next section
   useEffect(() => {
-    if (maritalStatus && gender && religion && nationalityId) {
+    if (isIdComplete) {
       // Small delay to ensure the user has finished typing/selecting
       const timer = setTimeout(() => {
         if (locationSectionRef.current) {
@@ -104,7 +100,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       
       return () => clearTimeout(timer);
     }
-  }, [maritalStatus, gender, religion, nationalityId]);
+  }, [isIdComplete, locationSectionRef]);
 
   // Fix useEffect dependencies and avoid spread in dependency array
   useEffect(() => {
@@ -205,14 +201,14 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       try {
         formRef.current = localFormRef.current;
         console.log('Form reference set successfully', formRef.current);
-      } catch (_) {
+      } catch {
         console.error('Error setting form reference:');
       }
     }
     
     try {
       setCurrentFormId?.('information');
-    } catch (_) {
+    } catch {
       console.log('Unable to set current form ID');
     }
     
@@ -331,21 +327,18 @@ const RefactoredForm = ({ type, data }: FormProps) => {
   };
 
   // For testing
-  const fillWithTestData = () => {
-    const testData = {
-      name: "John",
-      fullname: "John Doe",
-      bio: "Software engineer with 5+ years of experience",
-      studentYear: "Second",
-      maritalStatus: "Single",
-      gender: "Male"
-    };
-
-    // Set all values in the form
-    Object.entries(testData).forEach(([key, value]) => {
-      setValue(key as keyof InformationSchema, value as string);
-    });
-  };
+  // Commented out unused test function
+  // const fillWithTestData = () => {
+  //   const testData = {
+  //     name: "John",
+  //     fullname: "John Doe",
+  //     bio: "Software engineer with 5+ years of experience",
+  //     studentYear: "Second",
+  //     maritalStatus: "Single",
+  //     gender: "Male"
+  //   };
+  //   // Set all values in the form
+  // }
 
   return (
     <form

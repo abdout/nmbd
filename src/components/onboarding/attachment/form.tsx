@@ -36,13 +36,12 @@ const AttachmentForm = ({
   data?: AttachmentSchema;
 }) => {
   // Get form context separately
-  const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
+  const { formRef, setCurrentFormId } = useFormContext();
 
   const {
     setValue,
     handleSubmit,
     watch,
-    formState: { errors },
   } = useForm<AttachmentSchema>({
     resolver: zodResolver(attachmentSchema),
     defaultValues: data,
@@ -82,7 +81,7 @@ const AttachmentForm = ({
     } else if (state.error) {
       toast.error("Something went wrong!");
     }
-  }, [state]);
+  }, [state, onSubmitSuccess]);
 
   return (
     <form 
