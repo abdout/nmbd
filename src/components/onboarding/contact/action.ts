@@ -31,7 +31,7 @@ export async function createContact(state: ActionState, data: ContactSchema) {
       }
     });
 
-    revalidatePath("/lab");
+    revalidatePath("/onboarding");
     return { success: true, error: false };
   } catch (error) {
     console.error(error);
@@ -86,7 +86,7 @@ export async function updateContact(state: ActionState, data: ContactSchema) {
       }
     });
 
-    revalidatePath("/lab");
+    revalidatePath("/onboarding");
     return { success: true, error: false };
   } catch (error) {
     console.error(error);
@@ -114,7 +114,7 @@ export async function deleteContact() {
       }
     });
 
-    revalidatePath("/lab");
+    revalidatePath("/onboarding");
     return { success: true, error: false };
   } catch (error) {
     console.error(error);
