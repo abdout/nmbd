@@ -1,7 +1,4 @@
 import React, { ReactNode } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { UseFormReturn } from "react-hook-form";
-import { InformationSchema } from "./validation";
 
 interface FormWrapperProps {
   children: ReactNode;

@@ -4,13 +4,11 @@ import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "rea
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";
-import { Label } from "@/components/ui/label";
 
 interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
-  watch?: UseFormWatch<InformationSchema>; // Make watch optional to fix type error
 }
 
 // Reuse the same country data structure as in location component
@@ -122,7 +120,6 @@ const Birthdate = ({
   register,
   errors,
   setValue,
-  watch
 }: BirthdateProps) => {
   // Define the hierarchical steps
   const birthdateSteps: SelectionStep[] = [

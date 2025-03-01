@@ -3,7 +3,7 @@ import { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
-import { institutions, bachelorMajors, bachelorOccupations, generateCompletionYears } from "./constants";
+import { institutions, bachelorMajors, generateCompletionYears } from "./constants";
 
 interface BachelorProps {
   register: UseFormRegister<InformationSchema>;

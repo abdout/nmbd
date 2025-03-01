@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import type { InformationSchema } from './validation';
@@ -24,7 +23,7 @@ export type ActionState = {
  * Create new information record
  */
 export async function createInformation(
-  prevState: any,
+  prevState: ActionState,
   formData: InformationSchema | FormData
 ): Promise<ActionResult> {
   try {
@@ -43,7 +42,7 @@ export async function createInformation(
     
     if (formData instanceof FormData) {
       // If it's FormData, extract the values
-      const formObject: Record<string, any> = {};
+      const formObject: Record<string, string | File> = {};
       formData.forEach((value, key) => {
         formObject[key] = value;
       });
@@ -76,7 +75,7 @@ export async function createInformation(
     await db.user.update({
       where: { id: user.id },
       data: {
-        ...(data as any),
+        ...data,
         // Add hasCompletedInformation to schema.prisma for a proper fix
       }
     });
@@ -141,7 +140,7 @@ export async function getInformation() {
  * Update existing information record
  */
 export async function updateInformation(
-  prevState: any,
+  prevState: ActionState,
   formData: InformationSchema | FormData
 ): Promise<ActionResult> {
   try {
@@ -160,7 +159,7 @@ export async function updateInformation(
     
     if (formData instanceof FormData) {
       // If it's FormData, extract the values
-      const formObject: Record<string, any> = {};
+      const formObject: Record<string, string | File> = {};
       formData.forEach((value, key) => {
         formObject[key] = value;
       });
@@ -192,7 +191,7 @@ export async function updateInformation(
     // Update information
     await db.user.update({
       where: { id: user.id },
-      data: data as any
+      data: data
     });
 
     // Revalidate paths
@@ -207,7 +206,7 @@ export async function updateInformation(
 }
 
 // Delete
-export async function deleteInformation(state: ActionState) {
+export async function deleteInformation() {
   try {
     const user = await currentUser();
     if (!user?.id) return { success: false, error: true };
