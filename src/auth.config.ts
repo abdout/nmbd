@@ -5,6 +5,135 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import Facebook from "next-auth/providers/facebook";
 
+// Define a proper type for the user profile
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  emailVerified: Date;
+  onboardingStatus: string;
+  onboardingStep: number;
+  role: string;
+  isTwoFactorEnabled: boolean;
+  oathAcknowledged: boolean;
+  
+  // Basic info
+  fullname: string | null;
+  description: string | null;
+  bio: string | null;
+  cv: string | null;
+  portfolio: string | null;
+  additionalFile: string | null;
+  
+  // Contact
+  phone: string | null;
+  whatsapp: string | null;
+  twitter: string | null;
+  facebook: string | null;
+  linkedin: string | null;
+  telegram: string | null;
+  instagram: string | null;
+  tiktok: string | null;
+  
+  // Birth details
+  birthDate: Date | null;
+  birthCountry: string | null;
+  birthState: string | null;
+  birthLocality: string | null;
+  birthAdminUnit: string | null;
+  birthNeighborhood: string | null;
+  birthMonth: string | null;
+  birthYear: string | null;
+  
+  // Current location
+  currentCountry: string | null;
+  currentState: string | null;
+  currentLocality: string | null;
+  currentAdminUnit: string | null;
+  currentNeighborhood: string | null;
+  
+  // Original location
+  originalCountry: string | null;
+  originalState: string | null;
+  originalLocality: string | null;
+  originalAdminUnit: string | null;
+  originalNeighborhood: string | null;
+  
+  // Personal details
+  nationalityId: string | null;
+  maritalStatus: string | null;
+  gender: string | null;
+  religion: string | null;
+  
+  // Education & work
+  educationLevel: string | null;
+  institution: string | null;
+  yearOfCompletion: string | null;
+  major: string | null;
+  studentYear: string | null;
+  
+  // Bachelor's info
+  bachelorInstitution: string | null;
+  bachelorMajor: string | null;
+  bachelorCompletionYear: string | null;
+  
+  // Master's info
+  masterInstitution: string | null;
+  masterMajor: string | null;
+  masterCompletionYear: string | null;
+  
+  // PhD info
+  phdInstitution: string | null;
+  phdMajor: string | null;
+  phdCompletionYear: string | null;
+  
+  // Professor info
+  professorInstitution: string | null;
+  professorMajor: string | null;
+  professorCompletionYear: string | null;
+  
+  // Occupation
+  currentOccupation: string | null;
+  employmentSector: string | null;
+  workplaceAddress: string | null;
+  companyName: string | null;
+  
+  // Student details
+  studentInstitution: string | null;
+  studentFaculty: string | null;
+  
+  // Activities
+  partyMember: boolean;
+  unionMember: boolean;
+  ngoMember: boolean;
+  clubMember: boolean;
+  partyName: string | null;
+  partyStartDate: Date | null;
+  partyEndDate: Date | null;
+  unionName: string | null;
+  unionStartDate: Date | null;
+  unionEndDate: Date | null;
+  ngoName: string | null;
+  ngoActivity: string | null;
+  clubName: string | null;
+  clubType: string | null;
+  
+  // Emergency contacts
+  emergencyName1: string | null;
+  emergencyRelation1: string | null;
+  emergencyPhone1: string | null;
+  emergencyName2: string | null;
+  emergencyRelation2: string | null;
+  emergencyPhone2: string | null;
+  
+  // Other
+  referralSource: string | null;
+  acquaintanceName: string | null;
+  donationAmount: string | null;
+  donationDate: Date | null;
+}
+
 export default {
   providers: [
     Google({
@@ -138,7 +267,7 @@ export default {
           acquaintanceName: null,
           donationAmount: null,
           donationDate: null
-        } as any // Type assertion to bypass TypeScript checks
+        } as UserProfile // Use proper type instead of any
       }
     }),
     Facebook({
@@ -272,7 +401,7 @@ export default {
           acquaintanceName: null,
           donationAmount: null,
           donationDate: null
-        } as any // Type assertion to bypass TypeScript checks
+        } as UserProfile // Use proper type instead of any
       }
     }),
     Credentials({

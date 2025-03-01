@@ -6,15 +6,8 @@ import {
   CommandList,
   CommandInput,
 } from "@/components/ui/command"
-import { Command as CommandPrimitive } from "cmdk"
 import { useState, useRef, useCallback, type KeyboardEvent, forwardRef, useEffect, useLayoutEffect } from "react"
 import { createPortal } from "react-dom"
-import { ScrollArea } from "@/components/ui/scroll-area"
-
-import { Skeleton } from "@/components/ui/skeleton"
-
-import { Check } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 export type Option = Record<"value" | "label", string> & Record<string, string>
 

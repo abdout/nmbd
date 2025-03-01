@@ -1,4 +1,4 @@
-import { currentUser } from "@/lib/auth";
+
 import AttachmentForm from "@/components/onboarding/attachment/form";
 import { Suspense } from "react";
 import { getAttachment } from "@/components/onboarding/attachment/action";

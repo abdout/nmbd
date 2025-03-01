@@ -1,5 +1,5 @@
 import NextAuth from "next-auth"
-import { UserRole } from "@prisma/client"
+import { UserRole, User } from "@prisma/client"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import type { DefaultSession } from "next-auth"
 import { db } from "@/lib/db"
@@ -225,7 +225,7 @@ export const {
           donationAmount: null,
           donationDate: null,
           oathAcknowledged: false
-        } as any
+        } as Partial<Omit<User, "id" | "createdAt" | "updatedAt">>
       });
       return true;
     },
