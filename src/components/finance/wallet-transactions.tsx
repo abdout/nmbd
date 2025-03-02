@@ -15,6 +15,7 @@ import {
   Briefcase,
   Camera,
   Landmark,
+  Megaphone,
 } from "lucide-react";
 
 const transactions = [
