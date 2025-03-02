@@ -2,14 +2,17 @@ import { Suspense } from "react";
 // import InformationForm from "@/components/onboarding/information/form";
 import RefactoredForm from "@/components/onboarding/information/refactored-form";
 import { getInformation } from "@/components/onboarding/information/action";
+import type { InformationSchema } from "@/components/onboarding/information/validation";
 
 export default async function InformationPage() {
   const userData = await getInformation();
   
-  // Transform userData to replace null values with undefined
-  const transformedData = userData ? Object.fromEntries(
-    Object.entries(userData).map(([key, value]) => [key, value === null ? undefined : value])
-  ) : undefined;
+  // Transform userData to replace null values with undefined and ensure type safety
+  const transformedData: InformationSchema | undefined = userData ? {
+    ...Object.fromEntries(
+      Object.entries(userData).map(([key, value]) => [key, value === null ? undefined : value])
+    )
+  } as InformationSchema : undefined;
   
   return (
     <div className="w-[55%] mx-auto">
