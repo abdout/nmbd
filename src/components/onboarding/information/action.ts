@@ -69,6 +69,7 @@ export async function createInformation(
       bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
       masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
       phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
+      professorCompletionYear: validatedData.data.professorCompletionYear ? parseInt(validatedData.data.professorCompletionYear) : null,
     };
 
     // Create information record
@@ -186,6 +187,7 @@ export async function updateInformation(
       bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
       masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
       phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
+      professorCompletionYear: validatedData.data.professorCompletionYear ? parseInt(validatedData.data.professorCompletionYear) : null,
     };
 
     // Update information
