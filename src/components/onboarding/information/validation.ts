@@ -2,8 +2,18 @@ import { z } from "zod";
 
 export const informationSchema = z.object({
   id: z.string().optional(),
-  name: z.string().optional(),
-  fullname: z.string().optional(),
+  name: z.string()
+    .min(2, { message: "الاسم يجب أن يحتوي على حرفين على الأقل" })
+    .regex(/^[\u0600-\u06FFa-zA-Z0-9\s._-]*$/, { 
+      message: "الاسم يمكن أن يحتوي على حروف عربية، إنجليزية، أرقام وبعض الرموز" 
+    })
+    .optional(),
+  fullname: z.string()
+    .min(3, { message: "الاسم الكامل يجب أن يحتوي على ثلاثة أحرف على الأقل" })
+    .regex(/^[\u0600-\u06FFa-zA-Z\s._-]*$/, { 
+      message: "الاسم الكامل يمكن أن يحتوي على حروف عربية، إنجليزية وبعض الرموز" 
+    })
+    .optional(),
   description: z.string().optional(),
   bio: z.string().optional(),
   birthMonth: z.string().optional(),

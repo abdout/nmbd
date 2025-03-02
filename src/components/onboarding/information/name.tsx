@@ -11,9 +11,14 @@ const Name = ({ register, errors }: NameProps) => {
   return (
     <div className="grid grid-cols-2 gap-6">
       <div>
+        <label htmlFor="name" className="block mb-2 text-sm font-medium">
+          اسم المستخدم
+        </label>
         <Input
           id="name"
           placeholder="اسم المستخدم"
+          dir="rtl"
+          className="text-right"
           {...register('name')}
         />
         {errors.name && (
@@ -22,9 +27,14 @@ const Name = ({ register, errors }: NameProps) => {
       </div>
 
       <div>
+        <label htmlFor="fullname" className="block mb-2 text-sm font-medium">
+          الاسم الكامل
+        </label>
         <Input
           id="fullname"
           placeholder="الاسم الكامل"
+          dir="rtl"
+          className="text-right"
           {...register('fullname')}
         />
         {errors.fullname && (
