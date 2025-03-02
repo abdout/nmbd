@@ -80,12 +80,12 @@ export const createUser = async (
         studentYear: data.studentYear,
 
         // Activities & Skills
-        politicalParty: data.politicalParty,
-        politicalMembership: data.politicalMembership,
-        socialActivityType: data.socialActivityType,
-        socialDescription: data.socialDescription,
+        // politicalParty: data.politicalParty,
+        // politicalMembership: data.politicalMembership,
+        // socialActivityType: data.socialActivityType,
+        // socialDescription: data.socialDescription,
         skills: data.skills,
-        languageSkills: data.languageSkills,
+        // languageSkills: data.languageSkills,
 
         // Emergency Contacts
         emergencyName1: data.emergencyName1,
@@ -191,12 +191,12 @@ export const updateUser = async (
         studentYear: data.studentYear,
 
         // Activities & Skills
-        politicalParty: data.politicalParty,
-        politicalMembership: data.politicalMembership,
-        socialActivityType: data.socialActivityType,
-        socialDescription: data.socialDescription,
+        // politicalParty: data.politicalParty,
+        // politicalMembership: data.politicalMembership,
+        // socialActivityType: data.socialActivityType,
+        // socialDescription: data.socialDescription,
         skills: data.skills,
-        languageSkills: data.languageSkills,
+        // languageSkills: data.languageSkills,
 
         // Emergency Contacts
         emergencyName1: data.emergencyName1,
