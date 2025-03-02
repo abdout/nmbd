@@ -28,10 +28,10 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
             <SelectValue placeholder="الحالة" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
-            <SelectItem value="single">أعزب</SelectItem>
-            <SelectItem value="married">متزوج</SelectItem>
-            <SelectItem value="divorced">مطلق</SelectItem>
-            <SelectItem value="widowed">أرمل</SelectItem>
+            <SelectItem value="أعزب">أعزب</SelectItem>
+            <SelectItem value="متزوج">متزوج</SelectItem>
+            <SelectItem value="مطلق">مطلق</SelectItem>
+            <SelectItem value="أرمل">أرمل</SelectItem>
           </SelectContent>
         </Select>
         {errors.maritalStatus && (
@@ -49,8 +49,8 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
             <SelectValue placeholder="الجنس" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
-            <SelectItem value="male">ذكر</SelectItem>
-            <SelectItem value="female">أنثى</SelectItem>
+            <SelectItem value="ذكر">ذكر</SelectItem>
+            <SelectItem value="أنثى">أنثى</SelectItem>
           </SelectContent>
         </Select>
         {errors.gender && (
@@ -68,9 +68,9 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
             <SelectValue placeholder="الديانة" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
-            <SelectItem value="islam">الإسلام</SelectItem>
-            <SelectItem value="christianity">المسيحية</SelectItem>
-            <SelectItem value="other">أخرى</SelectItem>
+            <SelectItem value="الإسلام">الإسلام</SelectItem>
+            <SelectItem value="المسيحية">المسيحية</SelectItem>
+            <SelectItem value="أخرى">أخرى</SelectItem>
           </SelectContent>
         </Select>
         {errors.religion && (

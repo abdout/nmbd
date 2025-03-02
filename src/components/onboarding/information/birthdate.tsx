@@ -181,8 +181,8 @@ const Birthdate = ({
     setValue('birthCountry', selections.country.label);
     setValue('birthState', selections.state.label);
     setValue('birthLocality', selections.locality.label);
-    setValue('birthYear', selections.year.label);
-    setValue('birthMonth', selections.month.label);
+    setValue('birthYear', selections.year.value);
+    setValue('birthMonth', selections.month.value);
   };
 
   // Custom animation timing configurations

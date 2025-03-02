@@ -443,6 +443,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
           onClick={() => {
             console.log('Server data prop:', data);
             console.log('Current form values:', watch());
+            console.log('Form errors:', errors);
             toast.success('Data info logged to console');
           }}
         >
@@ -453,20 +454,24 @@ const RefactoredForm = ({ type, data }: FormProps) => {
           variant="outline" 
           size="sm" 
           onClick={() => {
-            // Sample test data
+            // Sample test data with Arabic values
             const testData = {
-              name: 'Test User',
-              fullname: 'Test Full User Name',
-              bio: 'This is a test bio for debugging purposes',
+              name: 'أحمد محمد',
+              fullname: 'أحمد محمد علي',
+              bio: 'هذا النص تجريبي لاختبار النموذج',
               birthMonth: '5',
               birthYear: '1990',
-              birthCountry: 'Test Country',
+              birthCountry: 'السودان',
+              birthState: 'ولاية الخرطوم',
+              birthLocality: 'محلية الخرطوم',
               educationLevel: 'student',
-              studentInstitution: 'Test University',
-              studentFaculty: 'Test Faculty',
+              studentInstitution: 'جامعة الخرطوم',
+              studentFaculty: 'كلية الهندسة',
               studentYear: '3',
-              maritalStatus: 'single',
-              gender: 'male'
+              maritalStatus: 'أعزب',
+              gender: 'ذكر',
+              religion: 'الإسلام',
+              nationalityId: '1234567890'
             };
             
             // Set all values in the form
@@ -479,7 +484,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
               setEducationLevel(testData.educationLevel);
             }
             
-            toast.success('Form filled with test data');
+            toast.success('تم ملء النموذج ببيانات تجريبية');
           }}
         >
           Fill Test Data
