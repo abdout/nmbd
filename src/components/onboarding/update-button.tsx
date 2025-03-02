@@ -9,9 +9,9 @@ const steps = [
   onboardingRoutes.TERMS,
   onboardingRoutes.ATTACHMENT,
   onboardingRoutes.CONTACT,
-  onboardingRoutes.BASIC_INFO,
-  // onboardingRoutes.LOCATION,
-  // onboardingRoutes.REVIEW,
+  onboardingRoutes.INFORMATION,
+  onboardingRoutes.ACTIVITY,
+  onboardingRoutes.REVIEW,
 ];
 
 const UpdateButton = ({ pending }: { pending: boolean }) => {
