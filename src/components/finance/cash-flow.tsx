@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 import React from "react";
 import {

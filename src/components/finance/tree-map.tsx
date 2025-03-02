@@ -8,10 +8,9 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 import { 
-  Label, 
   ResponsiveContainer, 
+  Tooltip,
   Treemap,
-  Tooltip as RechartsTooltip 
 } from "recharts";
 
 const assetAllocationData = [
@@ -49,11 +48,18 @@ const assetAllocationData = [
 ];
 
 // Custom content for properly positioning RTL text with multi-line support
-const CustomTreemapContent = (props: any) => {
-  const { x, y, width, height, depth, name, root, index } = props;
+const CustomTreemapContent = (props: {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  name?: string;
+  value?: number;
+}): React.ReactElement => {
+  const { x = 0, y = 0, width = 0, height = 0, name } = props;
   
   // Function to render text with multi-line support
-  const renderText = () => {
+  const renderText = (text: string, x: number, y: number, width: number, height: number): React.ReactNode => {
     // Check if name exists to prevent errors
     if (!name) return null;
     
@@ -109,15 +115,13 @@ const CustomTreemapContent = (props: any) => {
           strokeWidth: 2,
         }}
       />
-      {width > 30 && height > 30 && name && renderText()}
+      {width > 30 && height > 30 && name && renderText(name, x, y, width, height)}
     </g>
   );
 };
 
 // Custom tooltip component
-const CustomTooltip = (props: any) => {
-  const { active, payload } = props;
-  
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name?: string; value?: number }> }) => {
   if (active && payload && payload.length && payload[0]?.name) {
     return (
       <div className="bg-white p-2 border border-gray-300 rounded shadow" dir="rtl">
@@ -145,7 +149,7 @@ const TreeMap = () => {
             aspectRatio={4 / 3}
             content={<CustomTreemapContent />}
           >
-            <RechartsTooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip />} />
           </Treemap>
         </ResponsiveContainer>
       </CardContent>

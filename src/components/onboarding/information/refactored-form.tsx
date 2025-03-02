@@ -413,7 +413,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       </button>
 
       {/* Debug submit button */}
-      <div className="fixed bottom-4 right-4 z-50  gap-2 hidden">
+      <div className="fixed bottom-4 right-4 z-50  gap-2 ">
         <Button 
           type="button" 
           variant="outline" 

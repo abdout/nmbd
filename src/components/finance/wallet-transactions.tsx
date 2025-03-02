@@ -11,8 +11,6 @@ import {
   Calendar,
   Users,
   DollarSign,
-  Home,
-  Megaphone,
   Heart,
   Briefcase,
   Camera,

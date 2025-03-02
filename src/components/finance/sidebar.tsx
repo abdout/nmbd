@@ -1,5 +1,4 @@
 import {
-  DollarSign,
   Settings,
   TrendingUp,
   Wallet,
