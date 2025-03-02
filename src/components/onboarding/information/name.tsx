@@ -11,9 +11,9 @@ const Name = ({ register, errors }: NameProps) => {
   return (
     <div className="grid grid-cols-2 gap-6">
       <div>
-        <label htmlFor="name" className="block mb-2 text-sm font-medium">
+        {/* <label htmlFor="name" className="block mb-2 text-sm font-medium">
           اسم المستخدم
-        </label>
+        </label> */}
         <Input
           id="name"
           placeholder="اسم المستخدم"
