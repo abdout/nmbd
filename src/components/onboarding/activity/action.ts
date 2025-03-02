@@ -62,8 +62,8 @@ export async function submitActivityForm(formData: ActivitySchema) {
       data
     });
 
-    revalidatePath("/lab");
-    return { success: true, nextUrl: onboardingRoutes.NEXT_STEP };
+    revalidatePath("/onboarding");
+    return { success: true, nextUrl: onboardingRoutes.REVIEW };
   } catch (error) {
     console.error("Activity update error:", error);
     return { success: false, nextUrl: onboardingRoutes.ACTIVITY };
