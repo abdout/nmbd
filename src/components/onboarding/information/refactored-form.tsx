@@ -135,7 +135,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
         setEducationLevel(data.educationLevel);
       }
       
-      toast.success('Loaded data from server');
+      // toast.success('Loaded data from server');
       
       // Also save to localStorage to ensure consistency
       try {
@@ -432,7 +432,7 @@ const RefactoredForm = ({ type, data }: FormProps) => {
       </button>
 
       {/* Debug submit button */}
-      <div className="fixed bottom-4 right-4 z-50  gap-2 ">
+      <div className="fixed bottom-4 right-4 z-50  gap-2 hidden">
         <Button 
           type="button" 
           variant="outline" 

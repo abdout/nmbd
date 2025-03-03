@@ -48,13 +48,16 @@ export type AnimatedHierarchicalSelectProps = {
   onComplete?: (selections: Record<string, Option>) => void;
   // Optional class name for the container
   className?: string;
+  // Whether this is the last step in the form
+  isLastStep?: boolean;
 }
 
 export function AnimatedHierarchicalSelect({
   steps,
   timing = {},
   onComplete,
-  className = ""
+  className = "",
+  isLastStep = false
 }: AnimatedHierarchicalSelectProps) {
   // Combine default timing with any overrides
   const animationTiming: AnimationTiming = {
@@ -143,6 +146,11 @@ export function AnimatedHierarchicalSelect({
     } else {
       // We've reached the final step
       onComplete?.(newSelections);
+      // Close the dropdown immediately
+      setShouldTriggerDropdown(false);
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
     }
   };
 
@@ -206,6 +214,7 @@ export function AnimatedHierarchicalSelect({
                     onValueChange={handleSelection}
                     value={selections[currentStep.id]}
                     ref={inputRef}
+                    isLastStep={isLastStep && currentStepIndex === steps.length - 1}
                   />
                 </>
               )}

@@ -1,9 +1,10 @@
 'use client';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";
+import { toast } from "sonner";
 
 interface LocationProps {
   register: UseFormRegister<InformationSchema>;
@@ -147,6 +148,27 @@ const Location = ({
   errors,
   setValue
 }: LocationProps) => {
+  // Add ref for the location section
+  const locationRef = useRef<HTMLDivElement>(null);
+
+  // Watch for validation errors
+  useEffect(() => {
+    if (errors.currentCountry || errors.currentState || errors.currentLocality ||
+        errors.currentAdminUnit || errors.currentNeighborhood) {
+      // Show error in toast
+      toast.error("يرجى إكمال بيانات السكن");
+      
+      // Scroll to location section
+      if (locationRef.current) {
+        locationRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+  }, [errors.currentCountry, errors.currentState, errors.currentLocality,
+      errors.currentAdminUnit, errors.currentNeighborhood]);
+
   // Define the hierarchical steps
   const locationSteps: SelectionStep[] = [
     {
@@ -224,7 +246,7 @@ const Location = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={locationRef}>
       {/* AnimatedHierarchicalSelect component with improved z-index and positioning */}
       <div className="relative" style={{ 
         zIndex: 50,
@@ -236,16 +258,9 @@ const Location = ({
           onComplete={handleComplete}
           timing={timing}
           className="w-full"
+          isLastStep={true}
         />
       </div>
-      
-      {/* Display validation errors */}
-      {(errors.currentCountry || errors.currentState || errors.currentLocality ||
-        errors.currentAdminUnit || errors.currentNeighborhood) && (
-        <div className="text-red-500 text-sm mt-1">
-          يرجى إكمال بيانات السكن
-        </div>
-      )}
     </div>
   );
 };

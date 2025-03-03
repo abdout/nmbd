@@ -1,9 +1,10 @@
 'use client';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";
+import { toast } from "sonner";
 
 interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
@@ -121,6 +122,27 @@ const Birthdate = ({
   errors,
   setValue,
 }: BirthdateProps) => {
+  // Add ref for the birthdate section
+  const birthdateRef = useRef<HTMLDivElement>(null);
+
+  // Watch for validation errors
+  useEffect(() => {
+    if (errors.birthCountry || errors.birthState || errors.birthLocality ||
+        errors.birthYear || errors.birthMonth) {
+      // Show error in toast
+      toast.error("يرجى إكمال بيانات تاريخ الميلاد");
+      
+      // Scroll to birthdate section
+      if (birthdateRef.current) {
+        birthdateRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+  }, [errors.birthCountry, errors.birthState, errors.birthLocality,
+      errors.birthYear, errors.birthMonth]);
+
   // Define the hierarchical steps
   const birthdateSteps: SelectionStep[] = [
     {
@@ -192,7 +214,7 @@ const Birthdate = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={birthdateRef}>
       {/* AnimatedHierarchicalSelect component with improved z-index and positioning */}
       <div className="relative" style={{ 
         zIndex: 50,
