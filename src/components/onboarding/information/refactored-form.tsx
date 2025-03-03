@@ -213,6 +213,22 @@ const RefactoredForm = ({ type, data }: FormProps) => {
     setValue('educationLevel', 'student');
   }, [formRef, setCurrentFormId, setValue]);
 
+  // Add this function before onSubmitHandler
+  const scrollToFirstError = () => {
+    // Get the first error field
+    const firstErrorField = Object.keys(errors)[0];
+    if (!firstErrorField) return;
+
+    // Find the element with the error
+    const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+    if (errorElement) {
+      errorElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  };
+
   // Handle the actual form submission logic
   const onSubmitHandler = (formData: InformationSchema) => {
     console.log('Form submission triggered with data:', formData);
@@ -230,6 +246,9 @@ const RefactoredForm = ({ type, data }: FormProps) => {
           console.error(`Field ${field} error:`, fieldError.message);
         }
       });
+      
+      // Scroll to the first error
+      scrollToFirstError();
       
       return;
     }
