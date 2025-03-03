@@ -2,12 +2,13 @@
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { toast } from 'sonner';
 
 const TermsPage = () => {
     const [accepted, setAccepted] = useState(false);
     const router = useRouter();
+    const formRef = useRef<HTMLFormElement>(null);
 
     const handleCheckboxChange = (checked: boolean) => {
         setAccepted(checked);
@@ -17,8 +18,25 @@ const TermsPage = () => {
         }
     };
 
+    // Export the form submission handler for the navigation system
+    if (typeof window !== 'undefined') {
+        (window as any).submitTermsForm = () => {
+            if (!accepted) {
+                toast.error("يجب قبول الشروط للمتابعة", {
+                    style: {
+                        background: 'rgb(239 68 68)',
+                        color: 'white',
+                        border: 'none'
+                    }
+                });
+                return false;
+            }
+            return true;
+        };
+    }
+
     return (
-        <div className='w-[50%] flex flex-col items-center justify-center py-4'>
+        <form ref={formRef} className='w-[50%] flex flex-col items-center justify-center py-4'>
             <p className='text-center justify-center'>
                 لا تستثني الحركة احداَ من عامة السودانين الصالحين في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى، ومن يتقي معوج المسلك وفاسد العمل.
             </p>
@@ -32,10 +50,11 @@ const TermsPage = () => {
                     htmlFor="terms"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                    اقرأ <Link href="#" className='text-blue-800'>ارشادات</Link> و <Link href="#" className='text-blue-800'>اوراق</Link> الحركة قبل البدء
+                    اقرأ <Link href="#" className='text-blue-600'>ارشادات</Link> و <Link href="#" className='text-blue-600'>اوراق</Link> الحركة قبل البدء
                 </label>
             </div>
-        </div>
+            <button id="submit-terms" type="submit" className="hidden" />
+        </form>
     )
 }
 

@@ -44,6 +44,20 @@ const ButtonNavigation = () => {
         console.log('Next button clicked, formRef:', formRef?.current);
         console.log('Current form ID:', currentFormId);
         
+        // Handle terms form submission first
+        if (pathname === '/onboarding/terms') {
+            if (typeof window !== 'undefined' && 
+                typeof (window as Window & { submitTermsForm?: () => boolean }).submitTermsForm === 'function') {
+                console.log('Using terms form submission handler');
+                const success = (window as Window & { submitTermsForm?: () => boolean }).submitTermsForm?.();
+                if (!success) {
+                    console.log('Terms form submission failed');
+                    return; // Exit early if terms not accepted
+                }
+            }
+            return; // Always return after handling terms
+        }
+        
         // Try to submit the form if it exists
         if (formRef?.current) {
             console.log('Form exists, attempting to submit');

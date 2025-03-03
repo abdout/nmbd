@@ -21,14 +21,13 @@ export default function OnboardingLayout({
           position="bottom-right"
           toastOptions={{
             style: {
-              maxWidth: '400px',
-              minWidth: '300px',
+              maxWidth: '300px',
+              minWidth: '200px',
               padding: '16px',
-              fontSize: '16px'
+              fontSize: '14px'
             },
-            duration: 5000
+            duration: 3000
           }}
-          closeButton
         />
         {!isReviewPage && (
           <PageHeading
