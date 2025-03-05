@@ -81,16 +81,16 @@ const ContactForm = ({
   const pathname = usePathname();
 
   const onSubmitSuccess = useCallback(() => {
-    toast.success(`Contact has been ${type === "create" ? "created" : "updated"}!`);
+    toast.success(`تم ${type === "create" ? "إنشاء" : "تحديث"} الاتصال بنجاح!`);
     router.push(getNextRoute(pathname));
   }, [router, pathname, type]);
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Contact information saved successfully");
+      toast.success("تم حفظ البيانات بنجاح");
       onSubmitSuccess();
     } else if (state.error) {
-      toast.error("Failed to save contact information");
+      toast.error("فشل حفظ البيانات");
     }
   }, [state, onSubmitSuccess]);
 

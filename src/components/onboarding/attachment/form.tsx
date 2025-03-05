@@ -61,7 +61,7 @@ const AttachmentForm = ({
   const pathname = usePathname();
 
   const onSubmitSuccess = () => {
-    toast.success(`Files have been ${type === "create" ? "uploaded" : "updated"}!`);
+    toast.success(`تم ${type === "create" ? "رفع" : "تحديث"} الملفات بنجاح!`);
     router.push(getNextRoute(pathname));
   };
 
@@ -79,7 +79,7 @@ const AttachmentForm = ({
     if (state.success) {
       onSubmitSuccess();
     } else if (state.error) {
-      toast.error("Something went wrong!");
+      toast.error("حدث خطأ ما!");
     }
   }, [state, onSubmitSuccess]);
 
