@@ -10,6 +10,8 @@ interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  watch?: (fields: string | string[]) => any;
+  defaultValues?: Partial<InformationSchema>;
 }
 
 // Reuse the same country data structure as in location component
@@ -27,7 +29,7 @@ const COUNTRIES: Option[] = [
 // Reuse the same states data structure
 const STATES: Record<string, Option[]> = {
   "sudan": [
-    { value: "khartoum_state", label: "ولاية الخرطوم" },
+    { value: "khartoum_state", label: " الخرطوم" },
     { value: "river_nile", label: "نهر النيل" },
     { value: "kassala", label: "كسلا" }
   ],
@@ -71,14 +73,14 @@ const STATES: Record<string, Option[]> = {
 // Reuse the same localities data structure
 const LOCALITIES: Record<string, Option[]> = {
   "khartoum_state": [
-    { value: "khartoum_locality", label: "محلية الخرطوم" },
-    { value: "omdurman_locality", label: "محلية أم درمان" },
-    { value: "bahri_locality", label: "محلية بحري" }
+    { value: "khartoum_locality", label: "الخرطوم" },
+    { value: "omdurman_locality", label: " أم درمان" },
+    { value: "bahri_locality", label: "بحري" }
   ],
   "river_nile": [
-    { value: "atbara_locality", label: "محلية عطبرة" },
-    { value: "damar_locality", label: "محلية الدامر" },
-    { value: "shendi_locality", label: "محلية شندي" }
+    { value: "atbara_locality", label: "عطبرة" },
+    { value: "damar_locality", label: "الدامر" },
+    { value: "shendi_locality", label: "شندي" }
   ],
   "cairo_gov": [
     { value: "cairo_east", label: "القاهرة الشرقية" },
@@ -121,6 +123,8 @@ const Birthdate = ({
   register,
   errors,
   setValue,
+  watch,
+  defaultValues,
 }: BirthdateProps) => {
   // Add ref for the birthdate section
   const birthdateRef = useRef<HTMLDivElement>(null);
@@ -129,19 +133,57 @@ const Birthdate = ({
   useEffect(() => {
     if (errors.birthCountry || errors.birthState || errors.birthLocality ||
         errors.birthYear || errors.birthMonth) {
-      // Show error in toast
-      toast.error("يرجى إكمال بيانات تاريخ الميلاد");
       
-      // Scroll to birthdate section
-      if (birthdateRef.current) {
-        birthdateRef.current.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'center'
+      // Check if any previous birthdate data exists
+      const hasExistingData = 
+        // Check for country, state, locality (string fields)
+        (defaultValues?.birthCountry && defaultValues.birthCountry.length > 0) ||
+        (defaultValues?.birthState && defaultValues.birthState.length > 0) ||
+        (defaultValues?.birthLocality && defaultValues.birthLocality.length > 0) ||
+        
+        // Check for year and month which could be numbers or strings
+        (defaultValues?.birthYear != null && defaultValues?.birthYear !== '') ||
+        (defaultValues?.birthMonth != null && defaultValues?.birthMonth !== '');
+      
+      // Watch current values if watch function is provided
+      const currentCountry = watch ? watch('birthCountry') : '';
+      const currentState = watch ? watch('birthState') : '';
+      const currentLocality = watch ? watch('birthLocality') : '';
+      
+      // Safely get year and month as strings (could be numbers or strings)
+      const currentYear = watch ? (watch('birthYear') != null ? watch('birthYear').toString() : '') : '';
+      const currentMonth = watch ? (watch('birthMonth') != null ? watch('birthMonth').toString() : '') : '';
+      
+      // Check if user has entered any data in the current session
+      const hasCurrentData = 
+        (currentCountry && currentCountry.length > 0) ||
+        (currentState && currentState.length > 0) ||
+        (currentLocality && currentLocality.length > 0) ||
+        (currentYear && currentYear.length > 0) ||
+        (currentMonth && currentMonth.length > 0);
+      
+      // Only show error toast if no previous or current data exists
+      if (!hasExistingData && !hasCurrentData) {
+        // Show error in toast
+        toast.error("يرجى إكمال بيانات تاريخ الميلاد", {
+          style: {
+            background: 'rgb(239 68 68)',
+            color: 'white',
+            border: 'none'
+          }
         });
+        
+        // Scroll to birthdate section
+        if (birthdateRef.current) {
+          birthdateRef.current.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
       }
     }
   }, [errors.birthCountry, errors.birthState, errors.birthLocality,
-      errors.birthYear, errors.birthMonth]);
+      errors.birthYear, errors.birthMonth, defaultValues, watch]);
 
   // Define the hierarchical steps
   const birthdateSteps: SelectionStep[] = [
@@ -190,21 +232,69 @@ const Birthdate = ({
 
   // Register all fields required by React Hook Form
   useEffect(() => {
-    register('birthCountry', { required: "يرجى اختيار دولة الميلاد" });
-    register('birthState', { required: "يرجى اختيار ولاية الميلاد" });
-    register('birthLocality', { required: "يرجى اختيار محلية الميلاد" });
-    register('birthYear', { required: "يرجى اختيار سنة الميلاد" });
-    register('birthMonth', { required: "يرجى اختيار شهر الميلاد" });
-  }, [register]);
+    // Check if any previous data exists to determine if fields should be required
+    const hasExistingData = 
+      (defaultValues?.birthCountry && defaultValues.birthCountry.length > 0) ||
+      (defaultValues?.birthState && defaultValues.birthState.length > 0) ||
+      (defaultValues?.birthLocality && defaultValues.birthLocality.length > 0) ||
+      // Check for year and month which could be numbers or strings
+      (defaultValues?.birthYear != null && defaultValues?.birthYear !== '') ||
+      (defaultValues?.birthMonth != null && defaultValues?.birthMonth !== '');
+    
+    // Debug output to help troubleshoot
+    console.log('Birthdate existing data:', {
+      hasExistingData,
+      birthYear: defaultValues?.birthYear,
+      birthYearType: defaultValues?.birthYear ? typeof defaultValues.birthYear : 'undefined',
+      birthMonth: defaultValues?.birthMonth,
+      birthMonthType: defaultValues?.birthMonth ? typeof defaultValues.birthMonth : 'undefined'
+    });
+    
+    if (!hasExistingData) {
+      // Only make fields required if there's no existing data
+      register('birthCountry', { required: "يرجى اختيار دولة الميلاد" });
+      register('birthState', { required: "يرجى اختيار ولاية الميلاد" });
+      register('birthLocality', { required: "يرجى اختيار محلية الميلاد" });
+      register('birthYear', { required: "يرجى اختيار سنة الميلاد" });
+      register('birthMonth', { required: "يرجى اختيار شهر الميلاد" });
+    } else {
+      // Register fields as optional if there's existing data
+      register('birthCountry');
+      register('birthState');
+      register('birthLocality');
+      register('birthYear');
+      register('birthMonth');
+    }
+  }, [register, defaultValues]);
 
   // Handle completion of the hierarchical selection
   const handleComplete = (selections: Record<string, Option>) => {
-    // Map the selections to the form values
-    setValue('birthCountry', selections.country.label);
-    setValue('birthState', selections.state.label);
-    setValue('birthLocality', selections.locality.label);
-    setValue('birthYear', selections.year.value);
-    setValue('birthMonth', selections.month.value);
+    try {
+      // Map the selections to the form values
+      setValue('birthCountry', selections.country.label);
+      setValue('birthState', selections.state.label);
+      setValue('birthLocality', selections.locality.label);
+      
+      // Make sure year and month are stored with consistent types
+      // Using string for consistency with form validation
+      if (selections.year && selections.year.value) {
+        setValue('birthYear', selections.year.value.toString());
+      }
+      
+      if (selections.month && selections.month.value) {
+        setValue('birthMonth', selections.month.value.toString());
+      }
+      
+      console.log('Set birthdate values:', {
+        country: selections.country.label,
+        state: selections.state.label,
+        locality: selections.locality.label,
+        year: selections.year.value.toString(),
+        month: selections.month.value.toString()
+      });
+    } catch (error) {
+      console.error('Error in handleComplete:', error);
+    }
   };
 
   // Custom animation timing configurations
@@ -226,16 +316,9 @@ const Birthdate = ({
           onComplete={handleComplete}
           timing={timing}
           className="w-full"
+          isLastStep={true}
         />
       </div>
-      
-      {/* Display validation errors */}
-      {(errors.birthCountry || errors.birthState || errors.birthLocality ||
-        errors.birthYear || errors.birthMonth) && (
-        <div className="text-red-500 text-sm mt-1">
-          يرجى إكمال بيانات الميلاد
-        </div>
-      )}
     </div>
   );
 };

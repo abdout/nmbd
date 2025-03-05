@@ -19,6 +19,19 @@ export default function ClubSelector({ setValue, selectedTypes, setSelectedTypes
     
     setSelectedTypes(newTypes);
     setValue("selectedActivities", newTypes);
+    
+    // Set specific booleans based on type selection
+    if (type === "سياسي") {
+      setValue("partyMember", newTypes.includes("سياسي"));
+    } else if (type === "نقابي") {
+      setValue("unionMember", newTypes.includes("نقابي"));
+    } else if (type === "اجتماعي") {
+      setValue("ngoMember", newTypes.includes("اجتماعي"));
+    } else if (type === "شبابي") {
+      setValue("clubMember", newTypes.includes("شبابي"));
+    } else if (type === "تطوعي") {
+      setValue("voluntaryMember", newTypes.includes("تطوعي"));
+    }
   };
 
   return (

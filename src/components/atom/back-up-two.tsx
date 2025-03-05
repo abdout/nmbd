@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from "react"
-import { AutoComplete, Option, AnimationTiming, AutoCompleteProps } from "./auto-complete"
+import { AutoComplete, Option } from "./auto-complete"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 
@@ -18,6 +18,26 @@ export type SelectionStep = {
   getOptions: (prevSelections: Record<string, Option>) => Option[];
 }
 
+// Type for animation timing configuration
+export type AnimationTiming = {
+  // Delay before starting transition after selection
+  transitionDelay: number;
+  // Duration of the animation
+  animationDuration: number;
+  // Delay before triggering dropdown after animation
+  dropdownDelay: number;
+  // Delay before focusing the input
+  focusDelay: number;
+}
+
+// Default animation timings
+const DEFAULT_TIMING: AnimationTiming = {
+  transitionDelay: 300,
+  animationDuration: 0.4,
+  dropdownDelay: 800,
+  focusDelay: 50
+}
+
 // Type for the component props
 export type AnimatedHierarchicalSelectProps = {
   // Array of selection steps configuration
@@ -30,16 +50,6 @@ export type AnimatedHierarchicalSelectProps = {
   className?: string;
   // Whether this is the last step in the form
   isLastStep?: boolean;
-  // Optional max height for dropdown menus (defaults to 200px)
-  maxDropdownHeight?: number;
-}
-
-// Default animation timings
-const DEFAULT_TIMING: AnimationTiming = {
-  transitionDelay: 300,
-  animationDuration: 0.4,
-  dropdownDelay: 800,
-  focusDelay: 50
 }
 
 export function AnimatedHierarchicalSelect({
@@ -47,8 +57,7 @@ export function AnimatedHierarchicalSelect({
   timing = {},
   onComplete,
   className = "",
-  isLastStep = false,
-  maxDropdownHeight = 200
+  isLastStep = false
 }: AnimatedHierarchicalSelectProps) {
   // Combine default timing with any overrides
   const animationTiming: AnimationTiming = {
@@ -70,24 +79,9 @@ export function AnimatedHierarchicalSelect({
   const [hasInitialSelection, setHasInitialSelection] = useState(false);
   // Flag to track if we are in the initial step (first step, no selections yet)
   const isInitialStep = currentStepIndex === 0 && Object.keys(selections).length === 0;
-  // State to track if this is the first render (to disable initial animation)
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  // Keep track of the previous step index to prevent unnecessary triggers
-  const prevStepIndexRef = useRef(currentStepIndex);
 
   // Get the current step configuration
   const currentStep = steps[currentStepIndex];
-
-  // Set isFirstRender to false after component mounts
-  useEffect(() => {
-    // Use requestAnimationFrame to ensure we're past the first render
-    // before updating the state to avoid any flash of content
-    const animationFrame = requestAnimationFrame(() => {
-      setIsFirstRender(false);
-    });
-    
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
 
   // Update options when step changes or previous selections change
   useEffect(() => {
@@ -97,28 +91,16 @@ export function AnimatedHierarchicalSelect({
     }
   }, [currentStep, selections]);
 
-  // Improved animation and dropdown trigger management
+  // Handle animation and transition when step changes
   useEffect(() => {
-    // Get previous step index
-    const prevStepIndex = prevStepIndexRef.current;
-    prevStepIndexRef.current = currentStepIndex;
+    // Reset dropdown trigger state
+    setShouldTriggerDropdown(false);
     
-    // Only proceed if the step actually changed and we're not in initial step
-    if (prevStepIndex !== currentStepIndex && !isInitialStep) {
-      // First, ensure dropdown is OFF
-      setShouldTriggerDropdown(false);
-      
-      // After the step transition animation, trigger the dropdown
+    // Only set timer to trigger dropdown if not in initial step
+    if (!isInitialStep) {
+      // Set a timer to trigger the dropdown after animation
       const dropdownTimer = setTimeout(() => {
-        // Toggle the dropdown trigger ON
         setShouldTriggerDropdown(true);
-        
-        // Then schedule turning it OFF again after a delay
-        const resetTimer = setTimeout(() => {
-          setShouldTriggerDropdown(false);
-        }, 500); // Short delay is enough, just to ensure the toggle is detected
-        
-        return () => clearTimeout(resetTimer);
       }, animationTiming.dropdownDelay);
       
       return () => clearTimeout(dropdownTimer);
@@ -164,7 +146,7 @@ export function AnimatedHierarchicalSelect({
     } else {
       // We've reached the final step
       onComplete?.(newSelections);
-      // Clear the dropdown trigger to ensure it's off
+      // Close the dropdown immediately
       setShouldTriggerDropdown(false);
       
       // Ensure input is blurred to prevent keyboard from staying open on mobile
@@ -183,16 +165,26 @@ export function AnimatedHierarchicalSelect({
 
   return (
     <div className={`flex flex-col items-center justify-center gap-4 ${className}`}>
-      <div className="relative w-full h-14">
+      <div className="relative w-full h-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={`step-${currentStepIndex}`}
-            // Disable animation for first render, enable for subsequent renders
-            initial={isFirstRender ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={hasInitialSelection ? { 
+              opacity: 0,
+              scale: 0.01,
+              transformOrigin: "center center"
+            } : { opacity: 1, scale: 1 }}
+            animate={{ 
+              opacity: 1,
+              scale: 1
+            }}
+            exit={hasInitialSelection ? { 
+              opacity: 0,
+              scale: 0.01,
+              transformOrigin: "center center"
+            } : { opacity: 0 }}
             transition={{ 
-              duration: animationTiming.animationDuration, 
+              duration: animationTiming.animationDuration,
               ease: "easeInOut"
             }}
             className="absolute inset-0 w-full"
@@ -226,9 +218,6 @@ export function AnimatedHierarchicalSelect({
                     value={selections[currentStep.id]}
                     ref={inputRef}
                     isLastStep={isLastStep && currentStepIndex === steps.length - 1}
-                    animationTiming={animationTiming}
-                    shouldTriggerDropdown={shouldTriggerDropdown}
-                    maxDropdownHeight={maxDropdownHeight}
                   />
                 </>
               )}

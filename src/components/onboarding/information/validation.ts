@@ -2,22 +2,22 @@ import { z } from "zod";
 
 export const informationSchema = z.object({
   id: z.string().optional(),
-  name: z.string()
-    .min(2, { message: "الاسم يجب أن يحتوي على حرفين على الأقل" })
-    .regex(/^[\u0600-\u06FFa-zA-Z0-9\s._-]*$/, { 
-      message: "الاسم يمكن أن يحتوي على حروف عربية، إنجليزية، أرقام وبعض الرموز" 
-    })
-    .optional(),
+  // name: z.string()
+  //   .min(2, { message: "الاسم يجب أن يحتوي على حرفين على الأقل" })
+  //   .regex(/^[\u0600-\u06FFa-zA-Z0-9\s._-]*$/, { 
+  //     message: "الاسم يمكن أن يحتوي على حروف عربية، إنجليزية، أرقام وبعض الرموز" 
+  //   })
+  //   .optional(),
   fullname: z.string()
-    .min(3, { message: "الاسم الكامل يجب أن يحتوي على ثلاثة أحرف على الأقل" })
+    .min(2, { message: "حرفين على الأقل  للاسم الكامل" })
     .regex(/^[\u0600-\u06FFa-zA-Z\s._-]*$/, { 
       message: "الاسم الكامل يمكن أن يحتوي على حروف عربية، إنجليزية وبعض الرموز" 
     })
     .optional(),
-  description: z.string().optional(),
-  bio: z.string().optional(),
-  birthMonth: z.string().optional(),
-  birthYear: z.string().optional(),
+  // description: z.string().optional(),
+  // bio: z.string().optional(),
+  birthMonth: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
+  birthYear: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
   birthCountry: z.string().optional(),
   birthState: z.string().optional(),
   birthLocality: z.string().optional(),
@@ -79,10 +79,10 @@ export const informationSchema = z.object({
   workplaceAddress: z.string().optional(),
   
   // Other fields
-  maritalStatus: z.string().optional(),
-  gender: z.string().optional(),
-  religion: z.string().optional(),
-  nationalityId: z.string().optional(),
+  // maritalStatus: z.string().optional(),
+  // gender: z.string().optional(),
+  // religion: z.string().optional(),
+  // nationalityId: z.string().optional(),
 });
 
 export type InformationSchema = z.infer<typeof informationSchema>; 

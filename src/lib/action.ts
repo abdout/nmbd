@@ -85,6 +85,7 @@ export const createUser = async (
         // socialActivityType: data.socialActivityType,
         // socialDescription: data.socialDescription,
         skills: data.skills,
+        interests: data.interests,
         // languageSkills: data.languageSkills,
 
         // Emergency Contacts
@@ -196,6 +197,7 @@ export const updateUser = async (
         // socialActivityType: data.socialActivityType,
         // socialDescription: data.socialDescription,
         skills: data.skills,
+        interests: data.interests,
         // languageSkills: data.languageSkills,
 
         // Emergency Contacts

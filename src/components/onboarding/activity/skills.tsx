@@ -43,7 +43,7 @@ export function Skills({ value, onChange }: SkillsProps) {
         options={SKILL_OPTIONS}
         selected={selectedOptions}
         onChange={(selected) => onChange(selected.map(s => s.value))}
-        placeholder="اختر واحدة أو اكثر..."
+        placeholder=" واحدة أو اكثر"
       />
     </div>
   );

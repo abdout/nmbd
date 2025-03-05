@@ -10,6 +10,7 @@ interface LocationProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  defaultValues?: Partial<InformationSchema>;
 }
 
 // Sample location data in the same format as auto-location.tsx
@@ -146,7 +147,8 @@ const NEIGHBORHOODS: Record<string, Option[]> = {
 const Location = ({
   register,
   errors,
-  setValue
+  setValue,
+  defaultValues
 }: LocationProps) => {
   // Add ref for the location section
   const locationRef = useRef<HTMLDivElement>(null);
@@ -222,12 +224,30 @@ const Location = ({
 
   // Register all fields required by React Hook Form
   useEffect(() => {
-    register('currentCountry', { required: "يرجى اختيار الدولة" });
-    register('currentState', { required: "يرجى اختيار الولاية" });
-    register('currentLocality', { required: "يرجى اختيار المنطقة" });
-    register('currentAdminUnit', { required: "يرجى اختيار الوحدة" });
-    register('currentNeighborhood', { required: "يرجى اختيار الحي" });
-  }, [register]);
+    // Check if any previous data exists to determine if fields should be required
+    const hasExistingData = 
+      (defaultValues?.currentCountry && defaultValues.currentCountry.length > 0) ||
+      (defaultValues?.currentState && defaultValues.currentState.length > 0) ||
+      (defaultValues?.currentLocality && defaultValues.currentLocality.length > 0) ||
+      (defaultValues?.currentAdminUnit && defaultValues.currentAdminUnit.length > 0) ||
+      (defaultValues?.currentNeighborhood && defaultValues.currentNeighborhood.length > 0);
+    
+    if (!hasExistingData) {
+      // Only make fields required if there's no existing data
+      register('currentCountry', { required: "يرجى اختيار الدولة" });
+      register('currentState', { required: "يرجى اختيار الولاية" });
+      register('currentLocality', { required: "يرجى اختيار المنطقة" });
+      register('currentAdminUnit', { required: "يرجى اختيار الوحدة" });
+      register('currentNeighborhood', { required: "يرجى اختيار الحي" });
+    } else {
+      // Register fields as optional if there's existing data
+      register('currentCountry');
+      register('currentState');
+      register('currentLocality');
+      register('currentAdminUnit');
+      register('currentNeighborhood');
+    }
+  }, [register, defaultValues]);
 
   // Handle completion of the hierarchical selection
   const handleComplete = (selections: Record<string, Option>) => {

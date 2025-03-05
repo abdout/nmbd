@@ -101,10 +101,10 @@ export async function getInformation() {
     const userData = await db.user.findUnique({
       where: { id: user.id },
       select: {
-        name: true,
+        // name: true,
         fullname: true,
         description: true,
-        bio: true,
+        // bio: true,
         birthCountry: true,
         birthState: true,
         birthLocality: true,
@@ -123,10 +123,11 @@ export async function getInformation() {
         currentOccupation: true,
         employmentSector: true,
         workplaceAddress: true,
-        maritalStatus: true,
-        gender: true,
-        religion: true,
-        nationalityId: true,
+        companyName: true,
+        // maritalStatus: true,
+        // gender: true,
+        // religion: true,
+        // nationalityId: true,
       }
     });
 

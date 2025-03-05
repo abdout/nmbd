@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { InformationSchema } from "./validation";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 interface NameProps {
   register: UseFormRegister<InformationSchema>;
@@ -8,25 +10,52 @@ interface NameProps {
 }
 
 const Name = ({ register, errors }: NameProps) => {
-  return (
-    <div className="grid grid-cols-2 gap-6">
-      <div>
-        <label htmlFor="name" className="block mb-2 text-sm font-medium">
-          اسم المستخدم
-        </label>
-        <Input
-          id="name"
-          placeholder="اسم المستخدم"
-          dir="rtl"
-          className="text-right"
-          {...register('name')}
-        />
-        {errors.name && (
-          <span className="text-red-500 text-sm">{errors.name.message}</span>
-        )}
-      </div>
+  // Add ref for scrolling to the name section
+  const nameRef = useRef<HTMLDivElement>(null);
 
-      <div>
+  // Watch for validation errors
+  useEffect(() => {
+    if (errors.fullname) {
+      // Show error in toast
+      toast.error(errors.fullname.message?.toString() || "يرجى إدخال الاسم الكامل", {
+        style: {
+          background: 'rgb(239 68 68)',
+          color: 'white',
+          border: 'none',
+          textAlign: 'right',
+          direction: 'rtl'
+        }
+      });
+      
+      // Scroll to name section
+      if (nameRef.current) {
+        nameRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+  }, [errors.fullname]);
+
+  return (
+    // <div className="grid grid-cols-2 gap-6">
+    //   <div>
+    //     <label htmlFor="name" className="block mb-2 text-sm font-medium">
+    //       اسم المستخدم
+    //     </label>
+    //     <Input
+    //       id="name"
+    //       placeholder="اسم المستخدم"
+    //       dir="rtl"
+    //       className="text-right"
+    //       {...register('name')}
+    //     />
+    //     {errors.name && (
+    //       <span className="text-red-500 text-sm">{errors.name.message}</span>
+    //     )}
+    //   </div>
+
+      <div className="flex flex-col w-full" ref={nameRef}>
         <label htmlFor="fullname" className="block mb-2 text-sm font-medium">
           الاسم الكامل
         </label>
@@ -37,11 +66,9 @@ const Name = ({ register, errors }: NameProps) => {
           className="text-right"
           {...register('fullname')}
         />
-        {errors.fullname && (
-          <span className="text-red-500 text-sm">{errors.fullname.message}</span>
-        )}
+        {/* Removed inline error display */}
       </div>
-    </div>
+    // </div>
   );
 };
 

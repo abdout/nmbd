@@ -2,20 +2,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { activitySchema, ActivitySchema } from "./validation";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from '@/components/onboarding/form-context';
-import { useTransition, useEffect, useRef } from "react";
-import { submitActivityForm } from "./action";
+import { useTransition } from "react";
+import { submitActivityForm, ActionState } from "./action";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { getNextRoute } from '../utils';
 import { useActionState } from "react";
-import ClubSelector from "./club-selector";
-import { Skills } from "./skills";
-import { Interests } from "./interests";
-import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MonthYearRangePicker } from "@/components/atom/month-year-range";
 import { AutoComplete, Option } from "@/components/atom/auto-complete";
+import ClubSelector from "./club-selector";
+import { Skills } from "./skills";
+import { Interests } from "./interests";
 
 interface ActivityFormProps {
   user: {
@@ -39,32 +39,18 @@ interface ActivityFormProps {
     voluntaryRole?: string | null;
     voluntaryStartDate?: Date | null;
     voluntaryEndDate?: Date | null;
+    skills?: string[];
+    interests?: string[];
   };
 }
 
 export default function ActivityForm({ user }: ActivityFormProps) {
   const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
-  const startTransition = useTransition()[1];
-  const [state] = useActionState(
-    (_state: { success: boolean; nextUrl: string }, formData: ActivitySchema) => 
-      submitActivityForm(formData),
-    {
-      success: false,
-      nextUrl: '/onboarding/activity'
-    }
-  );
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   
-  // Refs for scroll sections
-  const skillsSectionRef = useRef<HTMLDivElement>(null);
-  const activitySectionRef = useRef<HTMLDivElement>(null);
-  const detailsSectionRef = useRef<HTMLDivElement>(null);
-
-  // Local form ref that we'll sync with context
-  const localFormRef = useRef<HTMLFormElement>(null);
-
+  // Initialize selectedActivities state from the default values
   const {
     watch,
     setValue,
@@ -72,7 +58,15 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   } = useForm<ActivitySchema>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
-      selectedActivities: [],
+      selectedActivities: (() => {
+        const activities: string[] = [];
+        if (user.partyMember) activities.push("سياسي");
+        if (user.unionMember) activities.push("نقابي");
+        if (user.ngoMember) activities.push("اجتماعي");
+        if (user.clubMember) activities.push("شبابي");
+        if (user.voluntaryMember) activities.push("تطوعي");
+        return activities;
+      })(),
       partyMember: user.partyMember || false,
       partyName: user.partyName || '',
       partyStartDate: user.partyStartDate?.toISOString().split('T')[0] || '',
@@ -87,21 +81,56 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       clubMember: user.clubMember || false,
       clubName: user.clubName || '',
       clubType: user.clubType || '',
-      voluntaryMember: false,
-      voluntaryName: '',
-      voluntaryRole: '',
-      voluntaryStartDate: '',
-      voluntaryEndDate: '',
-      skills: [],
-      interests: [],
+      voluntaryMember: user.voluntaryMember || false,
+      voluntaryName: user.voluntaryName || '',
+      voluntaryRole: user.voluntaryRole || '',
+      voluntaryStartDate: user.voluntaryStartDate?.toISOString().split('T')[0] || '',
+      voluntaryEndDate: user.voluntaryEndDate?.toISOString().split('T')[0] || '',
+      skills: Array.isArray(user.skills) ? [...user.skills] : [],
+      interests: Array.isArray(user.interests) ? [...user.interests] : [],
     }
   });
+
+  // Set up useActionState like other working forms
+  const [state, formAction] = useActionState(
+    submitActivityForm,
+    {
+      success: false,
+      error: false
+    }
+  );
+
+  // Use the form's watched selectedActivities
+  const watchedSelectedActivities = watch("selectedActivities");
+  
+  // Sync the watched value with our state
+  const [selectedActivities, setSelectedActivities] = useState<string[]>(() => {
+    const activities: string[] = [];
+    if (user.partyMember) activities.push("سياسي");
+    if (user.unionMember) activities.push("نقابي");
+    if (user.ngoMember) activities.push("اجتماعي");
+    if (user.clubMember) activities.push("شبابي");
+    if (user.voluntaryMember) activities.push("تطوعي");
+    return activities;
+  });
+
+  useEffect(() => {
+    setSelectedActivities(watchedSelectedActivities);
+  }, [watchedSelectedActivities]);
+
+  // Refs for scroll sections
+  const skillsSectionRef = useRef<HTMLDivElement>(null);
+  const activitySectionRef = useRef<HTMLDivElement>(null);
+  const detailsSectionRef = useRef<HTMLDivElement>(null);
+
+  // Local form ref that we'll sync with context
+  const localFormRef = useRef<HTMLFormElement>(null);
 
   // Watch skills and interests for auto-scroll
   const skills = watch("skills");
   const interests = watch("interests");
 
-  // Auto-scroll effect when skills and interests are filled
+  // Auto-scroll effects
   useEffect(() => {
     if (skills.length > 0 && interests.length > 0) {
       const timer = setTimeout(() => {
@@ -139,30 +168,44 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     setCurrentFormId('activity');
   }, [formRef, setCurrentFormId]);
 
-  const onSubmit = (data: ActivitySchema) => {
+  // Handle form submission following the pattern from other forms
+  const onSubmit = handleSubmit((data) => {
+    console.log("Form submission started with valid data:", JSON.stringify(data, null, 2));
+    setIsSubmitting(true);
+    
+    // Ensure the data is properly formatted
+    const formattedData = {
+      ...data,
+      skills: Array.isArray(data.skills) ? data.skills : [],
+      interests: Array.isArray(data.interests) ? data.interests : [],
+      // Only use boolean for fields that exist in schema
+      partyMember: data.partyMember === true,
+      unionMember: data.unionMember === true,
+      ngoMember: data.ngoMember === true,
+      clubMember: data.clubMember === true,
+      // voluntaryMember is handled specially in the server action since it's not in the schema
+    };
+    
+    // Use startTransition to call the server action
     startTransition(() => {
-      try {
-        setIsSubmitting(true);
-        console.log('Form data:', data);
-        toast.success("تم حفظ معلومات النشاطات بنجاح");
-        router.push(getNextRoute(pathname));
-      } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("حدث خطأ أثناء حفظ المعلومات");
-      } finally {
-        setIsSubmitting(false);
-      }
+      formAction(formattedData);
     });
-  };
+  });
 
+  // Handle form state changes
   useEffect(() => {
+    console.log("Action state changed:", state);
+    
     if (state.success) {
+      console.log("Form submission successful");
       toast.success("تم حفظ معلومات النشاطات بنجاح");
       router.push(getNextRoute(pathname));
-    } else if (!state.success) {
-      toast.error("حدث خطأ أثناء حفظ المعلومات");
+    } else if (state.error) {
+      console.error("Form submission failed with error state", state.message || "Unknown error");
+      toast.error(state.message ? `خطأ: ${state.message}` : "حدث خطأ أثناء حفظ المعلومات");
+      setIsSubmitting(false);
     }
-  }, [state, router, pathname]);
+  }, [state, router, pathname, setIsSubmitting]);
 
   const parseISODateToDate = (isoDate: string | null | undefined): Date | undefined => {
     if (!isoDate) return undefined;
@@ -278,10 +321,25 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     });
   }, [selectedActivities]);
 
+  // Add this function to the ActivityForm component
+  const renderSchemaWarning = (field: string) => {
+    if (field === 'voluntary') {
+      return (
+        <div className="text-xs text-amber-600 mt-1 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          ملاحظة: سيتم حفظ بيانات النشاط التطوعي كوصف عام في الملف الشخصي.
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <form
       ref={localFormRef}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={onSubmit}
       className="w-[55%] h-[13rem] flex flex-col -mt-2"
       noValidate
     >
@@ -480,6 +538,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
                     />
                   </div>
                 </div>
+                {renderSchemaWarning('voluntary')}
               </div>
             )}
           </div>

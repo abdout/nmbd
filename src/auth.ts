@@ -211,6 +211,10 @@ export const {
           clubName: null,
           clubType: null,
           
+          // Skills and Interests
+          skills: [],
+          interests: [],
+          
           // Emergency contacts
           emergencyName1: null,
           emergencyRelation1: null,

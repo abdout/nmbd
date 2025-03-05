@@ -119,6 +119,10 @@ interface UserProfile {
   clubName: string | null;
   clubType: string | null;
   
+  // Skills and Interests
+  skills: string[];
+  interests: string[];
+  
   // Emergency contacts
   emergencyName1: string | null;
   emergencyRelation1: string | null;
@@ -254,6 +258,10 @@ export default {
           clubName: null,
           clubType: null,
           
+          // Skills and Interests
+          skills: [],
+          interests: [],
+          
           // Emergency contacts
           emergencyName1: null,
           emergencyRelation1: null,
@@ -387,6 +395,10 @@ export default {
           ngoActivity: null,
           clubName: null,
           clubType: null,
+          
+          // Skills and Interests
+          skills: [],
+          interests: [],
           
           // Emergency contacts
           emergencyName1: null,

@@ -73,6 +73,7 @@ export const userSchema = z.object({
   socialActivityType: z.string().optional().nullable(),
   socialDescription: z.string().optional().nullable(),
   skills: z.array(z.string()).optional().default([]),
+  interests: z.array(z.string()).optional().default([]),
   languageSkills: z.array(z.string()).optional().default([]),
 
   // Emergency Contacts

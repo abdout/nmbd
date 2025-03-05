@@ -53,6 +53,10 @@ export const register = async (
         emailVerified: null,
         onboardingStatus: "PENDING",
         onboardingStep: 1,
+        
+        // Initialize empty arrays for skills and interests
+        skills: [],
+        interests: [],
       },
     });
 

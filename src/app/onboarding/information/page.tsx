@@ -1,6 +1,5 @@
 import { Suspense } from "react";
-// import InformationForm from "@/components/onboarding/information/form";
-import RefactoredForm from "@/components/onboarding/information/refactored-form";
+import Form from "@/components/onboarding/information/form";
 import { getInformation } from "@/components/onboarding/information/action";
 import type { InformationSchema } from "@/components/onboarding/information/validation";
 
@@ -23,7 +22,7 @@ export default async function InformationPage() {
           data={transformedData} 
         /> 
         */}
-        <RefactoredForm 
+        <Form 
           type={userData ? "update" : "create"} 
           data={transformedData} 
         />

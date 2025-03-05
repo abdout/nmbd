@@ -23,6 +23,10 @@ export type UserReviewData = {
   description?: string;
   bio?: string;
   
+  // Skills and Interests
+  skills?: string[];
+  interests?: string[];
+  
   // Social Media
   twitter?: string;
   facebook?: string;
@@ -234,6 +238,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         currentOccupation: true,
         employmentSector: true,
         workplaceAddress: true,
+        companyName: true,
         
         // Student Details
         studentInstitution: true,
@@ -278,6 +283,10 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         cv: true,
         portfolio: true,
         additionalFile: true,
+        
+        // Skills and Interests
+        skills: true,
+        interests: true,
       },
     });
     
@@ -285,10 +294,18 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
       return { error: "User not found", data: null };
     }
     
+    console.log("Raw user data from DB:", userData);
+    console.log("Skills in raw data:", userData.skills);
+    console.log("Interests in raw data:", userData.interests);
+    
     // Convert null values to undefined to match the UserReviewData type
     const cleanedData: UserReviewData = Object.fromEntries(
       Object.entries(userData).map(([key, value]) => [key, value === null ? undefined : value])
     ) as UserReviewData;
+    
+    console.log("Cleaned user data:", cleanedData);
+    console.log("Skills in cleaned data:", cleanedData.skills);
+    console.log("Interests in cleaned data:", cleanedData.interests);
     
     return { error: null, data: cleanedData };
   } catch (error) {
