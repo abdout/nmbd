@@ -82,7 +82,7 @@ export const informationSchema = z.object({
   maritalStatus: z.string().optional(),
   gender: z.string().optional(),
   religion: z.string().optional(),
-  // nationalityId: z.string().optional(),
+  nationalityId: z.string().optional(),
 });
 
 export type InformationSchema = z.infer<typeof informationSchema>; 
