@@ -79,9 +79,9 @@ export const informationSchema = z.object({
   workplaceAddress: z.string().optional(),
   
   // Other fields
-  // maritalStatus: z.string().optional(),
-  // gender: z.string().optional(),
-  // religion: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  gender: z.string().optional(),
+  religion: z.string().optional(),
   // nationalityId: z.string().optional(),
 });
 
