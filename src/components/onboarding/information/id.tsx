@@ -7,14 +7,14 @@ interface IDProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
-  watch: UseFormWatch<InformationSchema>;
+  watch: (field: keyof InformationSchema) => string | undefined;
 }
 
 const ID = ({ register, errors, setValue, watch }: IDProps) => {
   // Get current values using watch
-  const maritalStatus = watch('maritalStatus');
-  const gender = watch('gender');
-  const religion = watch('religion');
+  const maritalStatus = watch("maritalStatus");
+  const gender = watch("gender");
+  const religion = watch("religion");
 
   return (
     <div className="flex items-center justify-between gap-4">
