@@ -12,7 +12,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { assignRole } from './actions';
 import { toast } from 'sonner';
 
@@ -29,7 +28,6 @@ type RoleFormValues = z.infer<typeof roleFormSchema>;
 
 export default function AssignRolePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
   
   // Initialize form
   const form = useForm<RoleFormValues>({

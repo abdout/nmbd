@@ -2,7 +2,7 @@
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { toast } from 'sonner';
 
 const TermsPage = () => {
@@ -19,8 +19,14 @@ const TermsPage = () => {
     };
 
     // Export the form submission handler for the navigation system
-    if (typeof window !== 'undefined') {
-        (window as any).submitTermsForm = () => {
+    useEffect(() => {
+        // Define a type for the window with our custom property
+        interface CustomWindow extends Window {
+            submitTermsForm?: () => void;
+        }
+        
+        // Assign the function to the window object
+        (window as CustomWindow).submitTermsForm = () => {
             if (!accepted) {
                 toast.error("يجب قبول الشروط للمتابعة", {
                     style: {
@@ -33,7 +39,12 @@ const TermsPage = () => {
             }
             return true;
         };
-    }
+        
+        // Cleanup function
+        return () => {
+            delete (window as CustomWindow).submitTermsForm;
+        };
+    }, [accepted]);
 
     return (
         <form ref={formRef} className='w-[50%] flex flex-col items-center justify-center py-4'>

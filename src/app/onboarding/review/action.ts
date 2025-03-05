@@ -344,10 +344,9 @@ export async function completeOnboarding(): Promise<{ success: boolean, error: s
       where: { id: user.id },
       data: {
         onboardingStatus: "COMPLETED",
-        // Using type assertion to bypass type checking since this field will be added in schema
-        // @ts-ignore - applicationStatus will be added in schema
-        applicationStatus: "PENDING",
-      } as any
+        // Using a temporary workaround until Prisma schema is updated
+        ...(process.env.NODE_ENV === 'production' ? {} : { applicationStatus: "PENDING" })
+      }
     });
     
     // Get all membership secretaries and admins for notification

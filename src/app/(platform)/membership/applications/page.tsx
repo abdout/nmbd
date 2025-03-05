@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, CheckCircle, XCircle, Clock, Calendar, User, Mail, Phone } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Calendar, Mail, Phone } from "lucide-react";
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { fetchPendingApplications, approveApplication, rejectApplication } from './actions';
@@ -37,19 +37,20 @@ type RawApplication = {
   createdAt: Date;
   onboardingStatus: string | null;
   applicationStatus?: string | null;
-  [key: string]: any; // Allow for additional fields
+  [key: string]: unknown;
 };
 
 export default function ApplicationsPage() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('pending');
+  const [notes, setNotes] = useState('');
   const [applications, setApplications] = useState<Application[]>([]);
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('pending');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const [reviewNotes, setReviewNotes] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -95,14 +96,14 @@ export default function ApplicationsPage() {
   };
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
+    setSelectedTab(value);
     filterApplications(applications, value);
   };
 
   const handleViewApplication = (application: Application) => {
     setSelectedApplication(application);
-    setReviewNotes('');
-    setShowDialog(true);
+    setNotes('');
+    setDialogOpen(true);
   };
 
   const handleApprove = async () => {
@@ -110,7 +111,7 @@ export default function ApplicationsPage() {
     
     setIsProcessing(true);
     try {
-      await approveApplication(selectedApplication.id, reviewNotes);
+      await approveApplication(selectedApplication.id, notes);
       
       // Update local state
       const updatedApplications = applications.map(app => 
@@ -120,8 +121,8 @@ export default function ApplicationsPage() {
       );
       
       setApplications(updatedApplications);
-      filterApplications(updatedApplications, activeTab);
-      setShowDialog(false);
+      filterApplications(updatedApplications, selectedTab);
+      setDialogOpen(false);
       setSelectedApplication(null);
     } catch (error) {
       console.error('Error approving application:', error);
@@ -135,7 +136,7 @@ export default function ApplicationsPage() {
     
     setIsProcessing(true);
     try {
-      await rejectApplication(selectedApplication.id, reviewNotes);
+      await rejectApplication(selectedApplication.id, notes);
       
       // Update local state
       const updatedApplications = applications.map(app => 
@@ -145,8 +146,8 @@ export default function ApplicationsPage() {
       );
       
       setApplications(updatedApplications);
-      filterApplications(updatedApplications, activeTab);
-      setShowDialog(false);
+      filterApplications(updatedApplications, selectedTab);
+      setDialogOpen(false);
       setSelectedApplication(null);
     } catch (error) {
       console.error('Error rejecting application:', error);
@@ -166,23 +167,19 @@ export default function ApplicationsPage() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">طلبات العضوية</h1>
-          <p className="text-muted-foreground">مراجعة واعتماد طلبات العضوية الجديدة</p>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">طلبات العضوية</h1>
       </div>
-
-      <Tabs defaultValue="pending" onValueChange={handleTabChange}>
+      
+      <Tabs defaultValue="pending" value={selectedTab} onValueChange={handleTabChange}>
         <TabsList className="mb-4">
           <TabsTrigger value="pending">قيد المراجعة</TabsTrigger>
           <TabsTrigger value="approved">تمت الموافقة</TabsTrigger>
-          <TabsTrigger value="rejected">مرفوض</TabsTrigger>
-          <TabsTrigger value="all">الكل</TabsTrigger>
+          <TabsTrigger value="rejected">مرفوضة</TabsTrigger>
         </TabsList>
 
-        <TabsContent value={activeTab}>
+        <TabsContent value={selectedTab}>
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-neutral-500" />
@@ -190,7 +187,7 @@ export default function ApplicationsPage() {
           ) : filteredApplications.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center h-64">
-                <p className="text-muted-foreground text-center">لا توجد طلبات {activeTab === 'pending' ? 'قيد المراجعة' : activeTab === 'approved' ? 'تمت الموافقة عليها' : 'مرفوضة'}</p>
+                <p className="text-muted-foreground text-center">لا توجد طلبات {selectedTab === 'pending' ? 'قيد المراجعة' : selectedTab === 'approved' ? 'تمت الموافقة عليها' : 'مرفوضة'}</p>
               </CardContent>
             </Card>
           ) : (
@@ -236,7 +233,7 @@ export default function ApplicationsPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl">مراجعة طلب العضوية</DialogTitle>
@@ -269,12 +266,11 @@ export default function ApplicationsPage() {
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm font-medium mb-1">ملاحظات المراجعة</p>
+            <div className="mt-4 flex flex-row border-t pt-4">
               <Textarea
                 placeholder="أضف ملاحظات عن هذا الطلب (اختياري)"
-                value={reviewNotes}
-                onChange={(e) => setReviewNotes(e.target.value)}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
                 rows={3}
               />
             </div>

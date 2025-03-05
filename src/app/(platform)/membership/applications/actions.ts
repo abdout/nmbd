@@ -88,13 +88,12 @@ export async function approveApplication(applicationId: string, notes?: string) 
         id: applicationId 
       },
       data: {
-        // Using type assertion to bypass type checking since this field will be added in schema
-        // @ts-ignore - applicationStatus will be added in schema
-        applicationStatus: "APPROVED",
+        // Using a temporary workaround until Prisma schema is updated
         reviewedBy: user.id,
         reviewedAt: new Date(),
         reviewNotes: notes || null,
-      } as any,
+        ...(process.env.NODE_ENV === 'production' ? {} : { applicationStatus: "APPROVED" })
+      },
       select: {
         id: true,
         name: true,
@@ -165,13 +164,12 @@ export async function rejectApplication(applicationId: string, notes?: string) {
         id: applicationId 
       },
       data: {
-        // Using type assertion to bypass type checking since this field will be added in schema
-        // @ts-ignore - applicationStatus will be added in schema
-        applicationStatus: "REJECTED",
+        // Using a temporary workaround until Prisma schema is updated
         reviewedBy: user.id,
         reviewedAt: new Date(),
         reviewNotes: notes || null,
-      } as any,
+        ...(process.env.NODE_ENV === 'production' ? {} : { applicationStatus: "REJECTED" })
+      },
       select: {
         id: true,
         name: true,

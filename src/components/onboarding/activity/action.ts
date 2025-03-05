@@ -21,13 +21,12 @@ export async function submitActivityForm(prevState: ActionState, formData: Activ
       console.log("Testing database connection...");
       const count = await db.user.count();
       console.log("Database connection successful, user count:", count);
-    } catch (dbConnError: any) {
-      console.error("Database connection error:", dbConnError?.message);
-      return { 
-        success: false, 
-        error: true, 
-        message: "Database connection error: " + (dbConnError?.message || "Unknown error") 
-      };
+    } catch (dbConnError: unknown) {
+      console.error("Database connection error:", dbConnError);
+      const errorMessage = dbConnError instanceof Error 
+        ? dbConnError.message 
+        : "Unknown database connection error";
+      return { success: false, error: true, message: errorMessage };
     }
     
     // Basic validation
@@ -61,13 +60,12 @@ export async function submitActivityForm(prevState: ActionState, formData: Activ
           select: { id: true }
         });
         console.log("Minimal update test successful");
-      } catch (schemaError: any) {
-        console.error("Schema compatibility test failed:", schemaError?.message);
-        return { 
-          success: false, 
-          error: true, 
-          message: "Database schema mismatch: " + (schemaError?.message || "Unknown schema error") 
-        };
+      } catch (schemaError: unknown) {
+        console.error("Schema validation error:", schemaError);
+        const errorMessage = schemaError instanceof Error 
+          ? schemaError.message 
+          : "Unknown schema validation error";
+        return { success: false, error: true, message: errorMessage };
       }
 
       // Only include fields that exist in the database schema
@@ -143,35 +141,22 @@ export async function submitActivityForm(prevState: ActionState, formData: Activ
       console.log("Update successful:", result.id);
       revalidatePath("/onboarding");
       return { success: true, error: false };
-    } catch (dbError: any) {
-      // Detailed error logging
-      console.error("Database error:", dbError?.message || "Unknown database error");
-      if (dbError?.code) console.error("Error code:", dbError.code);
-      if (dbError?.meta) console.error("Error metadata:", dbError.meta);
-      
-      // Try to identify the problematic field from the error message
-      let errorMessage = dbError?.message || "Database error occurred";
-      
-      // Check for "Unknown argument" error pattern
-      const unknownArgMatch = errorMessage.match(/Unknown argument `([^`]+)`/);
-      if (unknownArgMatch && unknownArgMatch[1]) {
-        const fieldName = unknownArgMatch[1];
-        console.error(`Field not in schema: ${fieldName}`);
-        errorMessage = `Field "${fieldName}" is not in the database schema`;
-      }
-      
-      return { 
-        success: false, 
-        error: true, 
-        message: errorMessage
-      };
+    } catch (dbError: unknown) {
+      console.error("Database error:", dbError);
+      const errorMessage = dbError instanceof Error 
+        ? dbError.message 
+        : "Unknown database error";
+      return { success: false, error: true, message: errorMessage };
     }
-  } catch (error: any) {
-    console.error("Unexpected error:", error?.message || "Unknown error");
+  } catch (error: unknown) {
+    console.error("Error:", error);
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : "Unknown error";
     return { 
       success: false, 
       error: true, 
-      message: error?.message || "Unexpected error occurred" 
+      message: errorMessage 
     };
   }
 } 
