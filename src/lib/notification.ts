@@ -30,6 +30,7 @@ export async function notifyNewApplication(
   applicantName: string,
   applicantEmail: string | null,
   applicantPhone: string | null,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   applicantWhatsapp: string | null
 ) {
   if (!notificationEmails.length) return;
@@ -44,6 +45,7 @@ export async function notifyNewApplication(
           <li>الاسم: ${applicantName}</li>
           <li>البريد الإلكتروني: ${applicantEmail || 'غير متوفر'}</li>
           <li>رقم الهاتف: ${applicantPhone || 'غير متوفر'}</li>
+          <li>رقم الواتساب: ${applicantWhatsapp || 'غير متوفر'}</li>
         </ul>
         <p>يرجى مراجعة الطلب في لوحة التحكم.</p>
       </div>

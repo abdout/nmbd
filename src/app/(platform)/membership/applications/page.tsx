@@ -12,6 +12,7 @@ import { Loader2, CheckCircle, XCircle, Calendar, Mail, Phone } from "lucide-rea
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { fetchPendingApplications, approveApplication, rejectApplication } from './actions';
+import { toast } from 'react-hot-toast';
 
 // Define Application type
 type Application = {
@@ -50,7 +51,6 @@ export default function ApplicationsPage() {
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -126,6 +126,7 @@ export default function ApplicationsPage() {
       setSelectedApplication(null);
     } catch (error) {
       console.error('Error approving application:', error);
+      toast.error('حدث خطأ أثناء الموافقة على الطلب');
     } finally {
       setIsProcessing(false);
     }
@@ -151,6 +152,7 @@ export default function ApplicationsPage() {
       setSelectedApplication(null);
     } catch (error) {
       console.error('Error rejecting application:', error);
+      toast.error('حدث خطأ أثناء رفض الطلب');
     } finally {
       setIsProcessing(false);
     }
