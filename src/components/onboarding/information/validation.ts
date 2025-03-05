@@ -15,7 +15,7 @@ export const informationSchema = z.object({
     })
     .optional(),
   // description: z.string().optional(),
-  // bio: z.string().optional(),
+  bio: z.string().optional(),
   birthMonth: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
   birthYear: z.union([z.string(), z.number()]).transform(val => val.toString()).optional(),
   birthCountry: z.string().optional(),
