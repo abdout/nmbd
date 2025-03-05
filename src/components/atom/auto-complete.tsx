@@ -75,6 +75,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
   disabled,
   isLoading = false,
   isLastStep = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   animationTiming,
   shouldTriggerDropdown = false,
   maxDropdownHeight = 200, // Default max height of 200px

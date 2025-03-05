@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
 
 // Helper function to convert PDF URL to preview URL
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getPdfPreviewUrl = (url: string) => {
   if (!url.includes('cloudinary.com')) return url;
 

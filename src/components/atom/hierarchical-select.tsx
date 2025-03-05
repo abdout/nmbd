@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from "react"
-import { AutoComplete, Option, AnimationTiming, AutoCompleteProps } from "./auto-complete"
+import { AutoComplete, Option, AnimationTiming } from "./auto-complete"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 

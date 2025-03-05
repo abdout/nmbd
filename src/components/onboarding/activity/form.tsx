@@ -5,7 +5,7 @@ import { activitySchema, ActivitySchema } from "./validation";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { useTransition } from "react";
-import { submitActivityForm, ActionState } from "./action";
+import { submitActivityForm } from "./action";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { getNextRoute } from '../utils';
@@ -46,6 +46,7 @@ interface ActivityFormProps {
 
 export default function ActivityForm({ user }: ActivityFormProps) {
   const { formRef, setIsSubmitting, setCurrentFormId } = useFormContext();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
