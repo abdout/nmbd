@@ -11,6 +11,29 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
 
+// Arabic month names
+const arabicMonths: Record<string, string> = {
+  "1": "يناير",
+  "2": "فبراير",
+  "3": "مارس",
+  "4": "أبريل",
+  "5": "مايو",
+  "6": "يونيو",
+  "7": "يوليو",
+  "8": "أغسطس",
+  "9": "سبتمبر",
+  "10": "أكتوبر",
+  "11": "نوفمبر",
+  "12": "ديسمبر"
+};
+
+// Format date to display Arabic month name and year
+const formatDateWithArabicMonth = (date: Date): string => {
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${arabicMonths[month.toString()]} ${year}`;
+};
+
 // Helper function to convert PDF URL to preview URL
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getPdfPreviewUrl = (url: string) => {
@@ -255,7 +278,7 @@ export default function ReviewPage() {
                     <p className="text-sm text-gray-500">تاريخ الميلاد</p>
                     <p>
                       {userData?.birthMonth && userData?.birthYear 
-                        ? `${userData.birthMonth}/${userData.birthYear}` 
+                        ? `${arabicMonths[userData.birthMonth] || userData.birthMonth} ${userData.birthYear}` 
                         : 'غير محدد'}
                     </p>
                   </div>
@@ -391,8 +414,8 @@ export default function ReviewPage() {
                       <p className="text-md">
                         عضو في {userData.partyName ? `حزب ${userData.partyName}` : 'حزب سياسي'}
                         {(userData?.partyStartDate || userData?.partyEndDate) && ' في الفترة من '}
-                        {userData.partyStartDate ? new Date(userData.partyStartDate).toLocaleDateString('ar') : ''}
-                        {userData.partyEndDate ? ` إلى ${new Date(userData.partyEndDate).toLocaleDateString('ar')}` : userData.partyStartDate ? ' حتى الآن' : ''}
+                        {userData.partyStartDate ? formatDateWithArabicMonth(new Date(userData.partyStartDate)) : ''}
+                        {userData.partyEndDate ? ` إلى ${formatDateWithArabicMonth(new Date(userData.partyEndDate))}` : userData.partyStartDate ? ' حتى الآن' : ''}
                       </p>
                     </div>
                   )}
@@ -403,8 +426,8 @@ export default function ReviewPage() {
                       <p className="text-md">
                         عضو في {userData.unionName ? `نقابة ${userData.unionName}` : 'نقابة'}
                         {(userData?.unionStartDate || userData?.unionEndDate) && ' في الفترة من '}
-                        {userData.unionStartDate ? new Date(userData.unionStartDate).toLocaleDateString('ar') : ''}
-                        {userData.unionEndDate ? ` إلى ${new Date(userData.unionEndDate).toLocaleDateString('ar')}` : userData.unionStartDate ? ' حتى الآن' : ''}
+                        {userData.unionStartDate ? formatDateWithArabicMonth(new Date(userData.unionStartDate)) : ''}
+                        {userData.unionEndDate ? ` إلى ${formatDateWithArabicMonth(new Date(userData.unionEndDate))}` : userData.unionStartDate ? ' حتى الآن' : ''}
                       </p>
                     </div>
                   )}
