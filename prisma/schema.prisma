@@ -10,6 +10,7 @@ generator client {
 enum UserRole {
   ADMIN
   USER
+  MEMBERSHIP_SECRETARY
 }
 
 model User {
@@ -157,6 +158,12 @@ model User {
   // Onboarding
   onboardingStatus String? @default("PENDING")  // "PENDING" | "COMPLETED"
   onboardingStep   Int?    @default(1)
+  
+  // Application status
+  applicationStatus String? @default("PENDING")  // "PENDING" | "APPROVED" | "REJECTED"
+  reviewedBy        String? @db.ObjectId
+  reviewedAt        DateTime?
+  reviewNotes       String?
 }
 
 

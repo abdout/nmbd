@@ -9,6 +9,7 @@ import { siteConfig } from "./constant"
 import { cn } from "@/lib/utils"
 import { Icons } from "./icons"
 import { MobileNav } from "./mobile-nav"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 interface MainNavProps {
   items?: MainNavItem[]
@@ -18,6 +19,19 @@ interface MainNavProps {
 export function MainNav({ items, children }: MainNavProps) {
   const segment = useSelectedLayoutSegment()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
+  const user = useCurrentUser()
+  
+  // Filter items based on user role
+  const filteredItems = items?.filter(item => {
+    // If the item doesn't have roleRequired, show it to everyone
+    if (!item.roleRequired) return true
+    
+    // If user is not logged in or has no role, don't show role-restricted items
+    if (!user || !user.role) return false
+    
+    // Check if user role is in the required roles list
+    return item.roleRequired.includes(user.role)
+  })
 
   return (
     <div className="flex gap-6 md:gap-10 antialiased font-sans">
@@ -43,9 +57,9 @@ export function MainNav({ items, children }: MainNavProps) {
 
 
       </Link>
-      {items?.length ? (
+      {filteredItems?.length ? (
         <nav className="hidden gap-8 antialiased font-sans md:flex ">
-          {items?.map((item, index) => (
+          {filteredItems?.map((item, index) => (
             <Link
               key={index}
               href={item.disabled ? "#" : item.href}
@@ -70,8 +84,8 @@ export function MainNav({ items, children }: MainNavProps) {
           <div className="ml-2"><Icons.close /></div> : <div className="w-6 h-6 bg-yellow-400 rounded-full ml-2" />}
         <span className="font-bold text-lg">القائمة</span>
       </button>
-      {showMobileMenu && items && (
-        <MobileNav items={items}>{children}</MobileNav>
+      {showMobileMenu && filteredItems && (
+        <MobileNav items={filteredItems}>{children}</MobileNav>
       )}
 
     </div>

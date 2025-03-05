@@ -167,15 +167,10 @@ export const marketingConfig: MarketingConfig = {
       href: "/task",
     },
 
-
-
     {
       title: "ورقة",
       href: "/paper",
     },
-
-
-
 
     {
       title: "امانة",
@@ -185,8 +180,11 @@ export const marketingConfig: MarketingConfig = {
       title: "مال",
       href: "/finance",
     },
-
-
-
+    
+    {
+      title: "العضوية",
+      href: "/membership/applications",
+      roleRequired: ["ADMIN", "MEMBERSHIP_SECRETARY"],
+    },
   ],
 }
