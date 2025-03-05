@@ -149,7 +149,7 @@ export const docsConfig: DocsConfig = {
   ],
 }
 
-import { MarketingConfig } from "@/components/template/header-taxonomy/type"
+import { MarketingConfig } from "./type"
 
 export const marketingConfig: MarketingConfig = {
   mainNav: [
