@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef } from "react";
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
 import { Option } from "../../atom/auto-complete";
@@ -10,7 +10,7 @@ interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
-  watch?: (fields: string | string[]) => string | number | null | undefined;
+  watch?: UseFormWatch<InformationSchema>;
   defaultValues?: Partial<InformationSchema>;
 }
 
@@ -146,19 +146,19 @@ const Birthdate = ({
         (defaultValues?.birthMonth != null && defaultValues?.birthMonth !== '');
       
       // Watch current values if watch function is provided
-      const currentCountry = watch ? watch('birthCountry') : null;
-      const currentState = watch ? watch('birthState') : null;
-      const currentLocality = watch ? watch('birthLocality') : null;
+      const currentCountry = watch ? watch('birthCountry') : '';
+      const currentState = watch ? watch('birthState') : '';
+      const currentLocality = watch ? watch('birthLocality') : '';
       
       // Safely get year and month as strings (could be numbers or strings)
-      const currentYear = watch ? (watch('birthYear') != null ? watch('birthYear').toString() : '') : '';
-      const currentMonth = watch ? (watch('birthMonth') != null ? watch('birthMonth').toString() : '') : '';
+      const currentYear = watch ? (watch('birthYear') != null ? String(watch('birthYear')) : '') : '';
+      const currentMonth = watch ? (watch('birthMonth') != null ? String(watch('birthMonth')) : '') : '';
       
       // Check if user has entered any data in the current session
       const hasCurrentData = 
-        (currentCountry && currentCountry.length > 0) ||
-        (currentState && currentState.length > 0) ||
-        (currentLocality && currentLocality.length > 0) ||
+        (typeof currentCountry === 'string' && currentCountry.length > 0) ||
+        (typeof currentState === 'string' && currentState.length > 0) ||
+        (typeof currentLocality === 'string' && currentLocality.length > 0) ||
         (currentYear && currentYear.length > 0) ||
         (currentMonth && currentMonth.length > 0);
       
