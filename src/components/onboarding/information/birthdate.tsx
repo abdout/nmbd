@@ -10,7 +10,7 @@ interface BirthdateProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
-  watch?: (fields: string | string[]) => any;
+  watch?: (fields: string | string[]) => string | number | null | undefined;
   defaultValues?: Partial<InformationSchema>;
 }
 
@@ -146,9 +146,9 @@ const Birthdate = ({
         (defaultValues?.birthMonth != null && defaultValues?.birthMonth !== '');
       
       // Watch current values if watch function is provided
-      const currentCountry = watch ? watch('birthCountry') : '';
-      const currentState = watch ? watch('birthState') : '';
-      const currentLocality = watch ? watch('birthLocality') : '';
+      const currentCountry = watch ? watch('birthCountry') : null;
+      const currentState = watch ? watch('birthState') : null;
+      const currentLocality = watch ? watch('birthLocality') : null;
       
       // Safely get year and month as strings (could be numbers or strings)
       const currentYear = watch ? (watch('birthYear') != null ? watch('birthYear').toString() : '') : '';

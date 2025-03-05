@@ -64,19 +64,6 @@ const Form = ({ type, data }: FormProps) => {
     defaultValues: data,
   });
 
-  // Function to render field error messages directly in the UI
-  const renderErrorMessage = (fieldName: keyof InformationSchema) => {
-    const error = errors[fieldName];
-    if (error) {
-      return (
-        <div className="text-red-500 text-sm mt-1 text-right" dir="rtl">
-          {error.message?.toString() || "هذا الحقل مطلوب"}
-        </div>
-      );
-    }
-    return null;
-  };
-
   // Watch location and birthdate fields
   const locationFields = watch(['currentCountry', 'currentState', 'currentLocality', 'currentAdminUnit', 'currentNeighborhood']);
   const birthdateFields = watch(['birthCountry', 'birthState', 'birthLocality', 'birthYear', 'birthMonth']);
