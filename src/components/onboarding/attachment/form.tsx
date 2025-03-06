@@ -93,7 +93,7 @@ const AttachmentForm = ({
         {type === "create" ? "Upload Files" : "Update Files"}
       </h1> */}
 
-      <div className="flex flex-row gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
         {ATTACHMENT_FIELDS.map(({ name, label, type: fieldType }) => (
           <CldUploadWidget
             key={name}

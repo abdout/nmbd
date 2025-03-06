@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,38 @@ const PhD = ({
   const [selectedPhdCompletionYear, setSelectedPhdCompletionYear] = useState<Item | null>(null);
   const [selectedPhdMajor, setSelectedPhdMajor] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [majorCompleted, setMajorCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && majorCompleted && yearCompleted) {
+      // Add a small delay to ensure DOM updates
+      setTimeout(() => {
+        // Dispatch event when all PhD fields are completed
+        const event = new CustomEvent('educationFieldCompleted', {
+          detail: {
+            componentType: 'phd',
+            fieldType: 'all'
+          }
+        });
+        document.dispatchEvent(event);
+      }, 100);
+    }
+  }, [institutionCompleted, majorCompleted, yearCompleted]);
+
   // Handle PhD institution selection
   const handlePhdInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('phdInstitution', item.label);
       setSelectedPhdInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('phdInstitution', '');
       setSelectedPhdInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +60,11 @@ const PhD = ({
     if (item) {
       setValue('phdCompletionYear', item.value);
       setSelectedPhdCompletionYear(item);
+      setYearCompleted(true);
     } else {
       setValue('phdCompletionYear', '');
       setSelectedPhdCompletionYear(null);
+      setYearCompleted(false);
     }
   };
 
@@ -47,9 +73,11 @@ const PhD = ({
     if (item) {
       setValue('phdMajor', item.label);
       setSelectedPhdMajor(item);
+      setMajorCompleted(true);
     } else {
       setValue('phdMajor', '');
       setSelectedPhdMajor(null);
+      setMajorCompleted(false);
     }
   };
 

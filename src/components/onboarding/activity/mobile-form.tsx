@@ -13,7 +13,7 @@ import { useActionState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MonthYearRangePicker } from "@/components/atom/month-year-range";
 import { AutoComplete, Option } from "@/components/atom/auto-complete";
-import ClubSelector from "./club-selector";
+import ClubSelector from "./mobile-club-selector";
 import { Skills } from "./skills";
 import { Interests } from "./interests";
 
@@ -453,12 +453,12 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     <form
       ref={localFormRef}
       onSubmit={onSubmit}
-      className="w-[55%] h-[13rem] flex flex-col -mt-2"
+      className="w-full h-[22rem] flex flex-col -mt-2"
       noValidate
     >
       <ScrollArea ref={scrollAreaRef} className="w-full pr-4">
         <div dir="rtl" className="flex flex-col gap-6 w-full px-4">
-          <div id="skills-section" className="flex gap-4 w-full">
+          <div id="skills-section" className="flex flex-col gap-4 ">
             <Skills 
               value={watch("skills")} 
               onChange={(skills: string[]) => setValue("skills", skills)} 
@@ -481,7 +481,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
           <div className="space-y-8 w-full">
             {selectedActivities.includes("سياسي") && (
               <div id="party-section" className="flex flex-col gap-6 border-b pb-7 border-gray-200">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       اسم الحزب
@@ -514,7 +514,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
 
             {selectedActivities.includes("نقابي") && (
               <div id="union-section" className="flex flex-col gap-6 border-b pb-7 border-gray-200">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       اسم النقابة
@@ -547,7 +547,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
 
             {selectedActivities.includes("اجتماعي") && (  
               <div id="ngo-section" className="flex flex-col gap-6 border-b pb-7 border-gray-200">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       اسم المنظمة
@@ -578,7 +578,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
 
             {selectedActivities.includes("شبابي") && (
               <div id="club-section" className="flex flex-col gap-6 border-b pb-7 border-gray-200">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       اسم النادي
@@ -609,7 +609,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
 
             {selectedActivities.includes("تطوعي") && (
               <div id="voluntary-section" className="flex flex-col gap-6">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       اسم الجهة التطوعية
@@ -635,7 +635,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
                     />
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                   <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 pb-2">
                       الفترة الزمنية
@@ -651,7 +651,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
                     />
                   </div>
                 </div>
-                {renderSchemaWarning('voluntary')}
+                {/* {renderSchemaWarning('voluntary')} */}
               </div>
             )}
           </div>

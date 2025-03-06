@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,35 @@ const Student = ({
   const [selectedStudentFaculty, setSelectedStudentFaculty] = useState<Item | null>(null);
   const [selectedStudentYear, setSelectedStudentYear] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [facultyCompleted, setFacultyCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && facultyCompleted && yearCompleted) {
+      // Dispatch event when all Student fields are completed
+      const event = new CustomEvent('educationFieldCompleted', {
+        detail: {
+          componentType: 'student',
+          fieldType: 'all'
+        }
+      });
+      document.dispatchEvent(event);
+    }
+  }, [institutionCompleted, facultyCompleted, yearCompleted]);
+
   // Handle student institution selection
   const handleStudentInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('studentInstitution', item.label);
       setSelectedStudentInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('studentInstitution', '');
       setSelectedStudentInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +57,11 @@ const Student = ({
     if (item) {
       setValue('studentFaculty', item.label);
       setSelectedStudentFaculty(item);
+      setFacultyCompleted(true);
     } else {
       setValue('studentFaculty', '');
       setSelectedStudentFaculty(null);
+      setFacultyCompleted(false);
     }
   };
 
@@ -47,9 +70,11 @@ const Student = ({
     if (item) {
       setValue('studentYear', item.value);
       setSelectedStudentYear(item);
+      setYearCompleted(true);
     } else {
       setValue('studentYear', '');
       setSelectedStudentYear(null);
+      setYearCompleted(false);
     }
   };
 

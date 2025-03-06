@@ -133,8 +133,8 @@ const ContactForm = ({
             </Card>
           </TabsContent>
         ))}
-        <div className="flex items-center justify-between mb-6">
-          <TabsList className="flex gap-2 bg-background">
+        <div className="flex items-center justify-center md:justify-between mb-6">
+          <TabsList className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-2 bg-background">
             {tabsData.slice().reverse().map(({ icon, name }) => (
               <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
                 {icon}

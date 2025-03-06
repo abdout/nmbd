@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,35 @@ const Bachelor = ({
   const [selectedBachelorCompletionYear, setSelectedBachelorCompletionYear] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [majorCompleted, setMajorCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && majorCompleted && yearCompleted) {
+      // Dispatch event when all Bachelor fields are completed
+      const event = new CustomEvent('educationFieldCompleted', {
+        detail: {
+          componentType: 'bachelor',
+          fieldType: 'all'
+        }
+      });
+      document.dispatchEvent(event);
+    }
+  }, [institutionCompleted, majorCompleted, yearCompleted]);
+
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('bachelorInstitution', item.label);
       setSelectedInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('bachelorInstitution', '');
       setSelectedInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +57,11 @@ const Bachelor = ({
     if (item) {
       setValue('bachelorCompletionYear', item.value);
       setSelectedBachelorCompletionYear(item);
+      setYearCompleted(true);
     } else {
-      setValue('bachelorCompletionYear', undefined);
+      setValue('bachelorCompletionYear', '');
       setSelectedBachelorCompletionYear(null);
+      setYearCompleted(false);
     }
   };
 
@@ -47,9 +70,11 @@ const Bachelor = ({
     if (item) {
       setValue('bachelorMajor', item.label);
       setSelectedMajor(item);
+      setMajorCompleted(true);
     } else {
       setValue('bachelorMajor', '');
       setSelectedMajor(null);
+      setMajorCompleted(false);
     }
   };
 

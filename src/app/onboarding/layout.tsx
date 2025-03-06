@@ -5,6 +5,7 @@ import ButtonNavigation from '@/components/onboarding/button-nav';
 import { FormProvider } from '@/components/onboarding/form-context';
 import { Toaster } from 'sonner';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function OnboardingLayout({
   children,
@@ -13,12 +14,34 @@ export default function OnboardingLayout({
 }) {
   const pathname = usePathname();
   const isReviewPage = pathname === '/onboarding/review';
+  const [toastPosition, setToastPosition] = useState<'top-center' | 'bottom-right'>('bottom-right');
+
+  // Update toast position based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      // Use 768px as the breakpoint for mobile devices
+      if (window.innerWidth < 768) {
+        setToastPosition('top-center');
+      } else {
+        setToastPosition('bottom-right');
+      }
+    };
+
+    // Set initial position
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup function to remove event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <FormProvider>
-      <div className={isReviewPage ? "p-6" : "px-20 py-10"}>
+      <div className={isReviewPage ? "p-6" : "px-4 sm:px-10 md:px-20 py-10"}>
         <Toaster 
-          position="bottom-right"
+          position={toastPosition}
           toastOptions={{
             style: {
               maxWidth: '300px',

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,38 @@ const Master = ({
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
   const [selectedCompletionYear, setSelectedCompletionYear] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [majorCompleted, setMajorCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && majorCompleted && yearCompleted) {
+      // Add a small delay to ensure DOM updates
+      setTimeout(() => {
+        // Dispatch event when all Master fields are completed
+        const event = new CustomEvent('educationFieldCompleted', {
+          detail: {
+            componentType: 'master',
+            fieldType: 'all'
+          }
+        });
+        document.dispatchEvent(event);
+      }, 100);
+    }
+  }, [institutionCompleted, majorCompleted, yearCompleted]);
+
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('masterInstitution', item.label);
       setSelectedInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('masterInstitution', '');
       setSelectedInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +60,11 @@ const Master = ({
     if (item) {
       setValue('masterMajor', item.label);
       setSelectedMajor(item);
+      setMajorCompleted(true);
     } else {
       setValue('masterMajor', '');
       setSelectedMajor(null);
+      setMajorCompleted(false);
     }
   };
 
@@ -47,9 +73,11 @@ const Master = ({
     if (item) {
       setValue('masterCompletionYear', item.value);
       setSelectedCompletionYear(item);
+      setYearCompleted(true);
     } else {
       setValue('masterCompletionYear', '');
       setSelectedCompletionYear(null);
+      setYearCompleted(false);
     }
   };
 

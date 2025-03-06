@@ -41,7 +41,7 @@ export default function StepNavigation() {
     <div className='flex flex-col'>
       {/* <BackButton currentStep={currentStep} /> */}
       <div className=" ">
-        <div className="relative flex flex-row justify-between  lg:gap-4">
+        <div className="relative flex flex-row justify-between  gap-2 lg:gap-4">
           {steps.map((step) => {
             const isActive = currentPath === step.route;
             const isVisited = visitedSteps[step.route];
@@ -56,7 +56,7 @@ export default function StepNavigation() {
               >
                 <span
                   className={clsx(
-                    'flex h-2 w-2 items-center justify-center rounded-full bg-neutral-200 text-sm transition-colors duration-200 lg:h-4 lg:w-4',
+                    'flex h-3 w-3 items-center justify-center rounded-full bg-neutral-200 text-sm transition-colors duration-200 lg:h-4 lg:w-4',
                     {
                       'bg-yellow-400 text-black border ': isActive,
                       'bg-green-500 text-white border-none': isVisited && !hasError && !isActive,

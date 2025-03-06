@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,38 @@ const Professor = ({
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
   const [selectedCompletionYear, setSelectedCompletionYear] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [majorCompleted, setMajorCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && majorCompleted && yearCompleted) {
+      // Add a small delay to ensure DOM updates
+      setTimeout(() => {
+        // Dispatch event when all professor fields are completed
+        const event = new CustomEvent('educationFieldCompleted', {
+          detail: {
+            componentType: 'professor',
+            fieldType: 'all'
+          }
+        });
+        document.dispatchEvent(event);
+      }, 100);
+    }
+  }, [institutionCompleted, majorCompleted, yearCompleted]);
+
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('professorInstitution', item.label);
       setSelectedInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('professorInstitution', '');
       setSelectedInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +60,11 @@ const Professor = ({
     if (item) {
       setValue('professorMajor', item.label);
       setSelectedMajor(item);
+      setMajorCompleted(true);
     } else {
       setValue('professorMajor', '');
       setSelectedMajor(null);
+      setMajorCompleted(false);
     }
   };
 
@@ -47,9 +73,11 @@ const Professor = ({
     if (item) {
       setValue('professorCompletionYear', item.value);
       setSelectedCompletionYear(item);
+      setYearCompleted(true);
     } else {
       setValue('professorCompletionYear', '');
       setSelectedCompletionYear(null);
+      setYearCompleted(false);
     }
   };
 

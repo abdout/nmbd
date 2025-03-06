@@ -1,12 +1,12 @@
 'use client';
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
-import Student from "./student";
-import Diploma from "./diploma";
-import Bachelor from "./bachelor";
-import Master from "./master";
-import PhD from "./phd";
-import Professor from "./professor";
+import Student from "./mobile-student";
+import Diploma from "./mobile-diploma";
+import Bachelor from "./mobile-bachelor";
+import Master from "./mobile-master";
+import PhD from "./mobile-phd";
+import Professor from "./mobile-professor";
 import Occupation from "./occupation";
 import { useEffect, useRef, useState } from "react";
 
@@ -145,8 +145,7 @@ const Degree = ({
             <div ref={professorRef}>
               <Professor register={register} errors={errors} setValue={setValue} />
             </div>
-            <div ref={phdRef} className="space-y-4">
-              <p className="text-sm font-semibold mb-2">بيانات الدكتوراه:</p>
+            <div ref={phdRef}>
               <PhD register={register} errors={errors} setValue={setValue} />
             </div>
             <div ref={masterRef}>
@@ -160,8 +159,7 @@ const Degree = ({
       case 'phd':
         return (
           <div className="space-y-6">
-            <div ref={phdRef} className="space-y-4">
-              <p className="text-sm font-semibold mb-2">بيانات الدكتوراه:</p>
+            <div ref={phdRef}>
               <PhD register={register} errors={errors} setValue={setValue} />
             </div>
             <div ref={masterRef}>

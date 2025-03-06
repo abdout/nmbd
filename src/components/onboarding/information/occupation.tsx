@@ -18,7 +18,7 @@ const Occupation = ({ register, errors, educationLevel }: OccupationProps) => {
   return (
     <div className="pt-4 border-t">
       <p className="text-sm font-semibold mb-2">الدرجة الوظيفية:</p>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3 gap-4">
         {/* Current occupation/rank */}
         <div className="relative">
           <Input

@@ -13,8 +13,8 @@ import { getNextRoute } from '../utils';
 import Name from "./name";
 import Location from "./location";
 import Birthdate from "./birthdate";
-import DegreeSelector from "./degree-selector";
-import Degree from "./degree";
+import DegreeSelector from "./mobile-degree-selector";
+import Degree from "./mobile-degree";
 
 // Add this at the top of the file, after the imports
 declare global {
@@ -32,13 +32,8 @@ const Form = ({ type, data }: FormProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  
-  // Create refs for each form section
-  const nameRowRef = useRef<HTMLDivElement>(null);
-  const locationRowRef = useRef<HTMLDivElement>(null);
-  const degreeSelectorRowRef = useRef<HTMLDivElement>(null);
-  const degreeDetailsRowRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const locationSectionRef = useRef<HTMLDivElement>(null);
+  const bioSectionRef = useRef<HTMLDivElement>(null);
   
   // Always use the hook unconditionally at the top level
   const formContextValue = useFormContext();
@@ -57,12 +52,6 @@ const Form = ({ type, data }: FormProps) => {
   // Add state for local storage data
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
 
-  // States to track row completion
-  const [nameRowCompleted, setNameRowCompleted] = useState(false);
-  const [locationRowCompleted, setLocationRowCompleted] = useState(false);
-  const [birthdateRowCompleted, setBirthdateRowCompleted] = useState(false);
-  const [degreeSelectorCompleted, setDegreeSelectorCompleted] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -75,124 +64,31 @@ const Form = ({ type, data }: FormProps) => {
     defaultValues: data,
   });
 
-  // Get form values to track for auto-scrolling
-  const fullname = watch('fullname');
-  const currentCountry = watch('currentCountry');
-  const currentState = watch('currentState');
-  const currentLocality = watch('currentLocality');
-  const birthYear = watch('birthYear');
-  const birthMonth = watch('birthMonth');
+  // Watch location and birthdate fields
+  const locationFields = watch(['currentCountry', 'currentState', 'currentLocality', 'currentAdminUnit', 'currentNeighborhood']);
+  const birthdateFields = watch(['birthCountry', 'birthState', 'birthLocality', 'birthYear', 'birthMonth']);
 
-  // Function to scroll to element with better handling of variable content
-  const scrollToElement = (elementRef: React.RefObject<HTMLDivElement | null>) => {
-    if (elementRef.current && scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        // Get the element's position relative to the scrollable container
-        const elementRect = elementRef.current.getBoundingClientRect();
-        const containerRect = scrollContainer.getBoundingClientRect();
-        const relativeTop = elementRect.top - containerRect.top;
-        
-        // Calculate optimal position based on element height
-        const elementHeight = elementRect.height;
-        const containerHeight = containerRect.height;
-        
-        // If element is taller than container, scroll to top
-        // Otherwise, center it if possible
-        const targetOffset = elementHeight > containerHeight * 0.8 
-          ? 10  // Just a small padding from top for tall elements
-          : Math.max(10, (containerHeight - elementHeight) / 4); // Less center, more top-biased
-        
-        // Scroll to the element's position with smooth behavior
-        scrollContainer.scrollTo({
-          top: scrollContainer.scrollTop + relativeTop - targetOffset,
-          behavior: 'smooth'
-        });
-      }
-    }
-  };
-
-  // Watch for name field completion
   useEffect(() => {
-    if (fullname && fullname.length > 3 && !nameRowCompleted) {
-      setNameRowCompleted(true);
-      // Scroll to location row when name is completed
-      setTimeout(() => scrollToElement(locationRowRef), 500);
-    }
-  }, [fullname, nameRowCompleted, locationRowRef]);
-
-  // Watch for location and birthdate completion
-  useEffect(() => {
-    // Check if location is selected
-    if (currentCountry && currentState && currentLocality && !locationRowCompleted) {
-      setLocationRowCompleted(true);
-    }
+    // Check if all location fields are filled
+    const isLocationComplete = locationFields.every(field => field);
     
-    // Check if birthdate is completed
-    if (birthYear && birthMonth && !birthdateRowCompleted) {
-      setBirthdateRowCompleted(true);
-    }
-    
-    // If both location and birthdate are completed, maximize scroll to degree selector
-    if (locationRowCompleted && birthdateRowCompleted) {
-      setTimeout(() => {
-        if (degreeSelectorRowRef.current && scrollAreaRef.current) {
-          const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-          if (scrollContainer) {
-            // Get maximum possible scroll to show degree selector fully
-            const elementRect = degreeSelectorRowRef.current.getBoundingClientRect();
-            const containerRect = scrollContainer.getBoundingClientRect();
-            
-            // Calculate position to put element fully at the top
-            const relativeTop = elementRect.top - containerRect.top + scrollContainer.scrollTop;
-            
-            // Apply maximum scroll with no offset for full top position
-            scrollContainer.scrollTo({
-              top: relativeTop, // no padding for full top view
-              behavior: 'smooth'
-            });
-          }
-        }
-      }, 300);
-    }
-  }, [
-    currentCountry, currentState, currentLocality,
-    birthYear, birthMonth,
-    locationRowCompleted, birthdateRowCompleted,
-    degreeSelectorRowRef
-  ]);
+    // Check if all birthdate fields are filled
+    const isBirthdateComplete = birthdateFields.every(field => field);
 
-  // Watch for degree selection
-  useEffect(() => {
-    if (educationLevel) {
-      setDegreeSelectorCompleted(true);
-      
-      // Wait for the DOM to update with the new degree components
-      setTimeout(() => {
-        if (degreeDetailsRowRef.current) {
-          scrollToElement(degreeDetailsRowRef);
+    // If both sections are complete, scroll to bio section
+    if (isLocationComplete && isBirthdateComplete) {
+      const timer = setTimeout(() => {
+        if (bioSectionRef.current) {
+          bioSectionRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
         }
-      }, 100);
-    }
-  }, [educationLevel, degreeSelectorCompleted, degreeDetailsRowRef]);
+      }, 500);
 
-  // Handle degree-specific components scrolling
-  const prevEducationLevelRef = useRef(educationLevel);
-  
-  useEffect(() => {
-    // Only run when educationLevel changes (not on initial render)
-    if (prevEducationLevelRef.current !== educationLevel && prevEducationLevelRef.current) {
-      // Different timing for different degree types
-      setTimeout(() => {
-        if (degreeDetailsRowRef.current) {
-          scrollToElement(degreeDetailsRowRef);
-        }
-      }, 300);
+      return () => clearTimeout(timer);
     }
-    
-    // Update the ref with current value for next comparison
-    prevEducationLevelRef.current = educationLevel;
-  }, [educationLevel, degreeDetailsRowRef]);
+  }, [locationFields, birthdateFields, bioSectionRef]);
 
   // Load form values when data prop changes (e.g., when data is fetched from the server)
   useEffect(() => {
@@ -300,28 +196,6 @@ const Form = ({ type, data }: FormProps) => {
       });
     }
   };
-
-  // Listen for degree content rendered event
-  useEffect(() => {
-    const handleDegreeContentRendered = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      // Check if it's a different degree than before
-      if (customEvent.detail?.educationLevel !== prevEducationLevelRef.current) {
-        // Scroll to degree details after content is rendered
-        setTimeout(() => {
-          if (degreeDetailsRowRef.current) {
-            scrollToElement(degreeDetailsRowRef);
-          }
-        }, 100);
-      }
-    };
-
-    document.addEventListener('degreeContentRendered', handleDegreeContentRendered);
-    
-    return () => {
-      document.removeEventListener('degreeContentRendered', handleDegreeContentRendered);
-    };
-  }, []);
 
   // Handle the actual form submission logic
   const onSubmitHandler = (formData: InformationSchema) => {
@@ -478,16 +352,19 @@ const Form = ({ type, data }: FormProps) => {
     });
   };
 
+ 
+
   return (
     <form
+    
       ref={localFormRef}
       onSubmit={handleSubmit(onSubmitHandler)}
-      className="h-[13rem] flex flex-col -mt-2 mx-auto"
+      className="h-[22rem] flex flex-col -mt-2 mx-auto"
       noValidate
     >
-      <ScrollArea ref={scrollAreaRef} className="">
-        <div dir="rtl" className="flex flex-col gap-6 px-6 w-full ">
-          <div ref={nameRowRef}>
+      <ScrollArea className="">
+        <div dir="rtl" className="flex flex-col gap-6 px-6  mx-auto ">
+          <div>
             <Name register={register} errors={errors} />
           </div>
           {/* <div>
@@ -496,10 +373,10 @@ const Form = ({ type, data }: FormProps) => {
           
           {/* Use a grid layout with lower gap and additional container styling */}
           <div 
-            ref={locationRowRef} 
+            ref={locationSectionRef} 
             className="flex flex-col gap-6"
           >
-            <div dir="rtl" className="grid grid-cols-2 gap-6">
+            <div dir="rtl" className="flex flex-col gap-6">
               <div className="relative">
                 <Location
                   register={register}
@@ -520,12 +397,12 @@ const Form = ({ type, data }: FormProps) => {
               </div>
             </div>
 
-            {/* <div>
+            {/* <div ref={bioSectionRef}>
               <Bio register={register} errors={errors} />
             </div> */}
           </div>
 
-          <div ref={degreeSelectorRowRef} className="pt-6">
+          <div className="pt-6">
             <DegreeSelector 
               setValue={setValue} 
               educationLevel={educationLevel} 
@@ -533,7 +410,7 @@ const Form = ({ type, data }: FormProps) => {
             />      
           </div>
           {educationLevel && (
-            <div ref={degreeDetailsRowRef}>
+            <div>
               <Degree
                 register={register}
                 errors={errors}

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
@@ -20,14 +20,35 @@ const Diploma = ({
   const [selectedYearOfCompletion, setSelectedYearOfCompletion] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
 
+  // Track field completion
+  const [institutionCompleted, setInstitutionCompleted] = useState(false);
+  const [majorCompleted, setMajorCompleted] = useState(false);
+  const [yearCompleted, setYearCompleted] = useState(false);
+  
+  // Check if all fields are completed
+  useEffect(() => {
+    if (institutionCompleted && majorCompleted && yearCompleted) {
+      // Dispatch event when all Diploma fields are completed
+      const event = new CustomEvent('educationFieldCompleted', {
+        detail: {
+          componentType: 'diploma',
+          fieldType: 'all'
+        }
+      });
+      document.dispatchEvent(event);
+    }
+  }, [institutionCompleted, majorCompleted, yearCompleted]);
+
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('diplomaInstitution', item.label);
       setSelectedInstitution(item);
+      setInstitutionCompleted(true);
     } else {
       setValue('diplomaInstitution', '');
       setSelectedInstitution(null);
+      setInstitutionCompleted(false);
     }
   };
 
@@ -36,9 +57,11 @@ const Diploma = ({
     if (item) {
       setValue('diplomaCompletionYear', item.value);
       setSelectedYearOfCompletion(item);
+      setYearCompleted(true);
     } else {
-      setValue('diplomaCompletionYear', undefined);
+      setValue('diplomaCompletionYear', '');
       setSelectedYearOfCompletion(null);
+      setYearCompleted(false);
     }
   };
 
@@ -47,9 +70,11 @@ const Diploma = ({
     if (item) {
       setValue('diplomaMajor', item.label);
       setSelectedMajor(item);
+      setMajorCompleted(true);
     } else {
       setValue('diplomaMajor', '');
       setSelectedMajor(null);
+      setMajorCompleted(false);
     }
   };
 
