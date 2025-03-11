@@ -3,6 +3,7 @@ import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { FocusContainer } from "@/components/onboarding/focus-container";
 
 interface NameProps {
   register: UseFormRegister<InformationSchema>;
@@ -38,37 +39,53 @@ const Name = ({ register, errors }: NameProps) => {
   }, [errors.fullname]);
 
   return (
-    // <div className="grid grid-cols-2 gap-6">
-    //   <div>
-    //     <label htmlFor="name" className="block mb-2 text-sm font-medium">
-    //       اسم المستخدم
-    //     </label>
-    //     <Input
-    //       id="name"
-    //       placeholder="اسم المستخدم"
-    //       dir="rtl"
-    //       className="text-right"
-    //       {...register('name')}
-    //     />
-    //     {errors.name && (
-    //       <span className="text-red-500 text-sm">{errors.name.message}</span>
-    //     )}
-    //   </div>
-
-      <div className="flex flex-col w-full" ref={nameRef}>
-        <label htmlFor="fullname" className="block mb-2 text-sm font-medium">
-          الاسم الكامل
-        </label>
-        <Input
-          id="fullname"
-          placeholder="الاسم الكامل"
-          dir="rtl"
-          className="text-right"
-          {...register('fullname')}
-        />
-        {/* Removed inline error display */}
-      </div>
-    // </div>
+    <FocusContainer>
+      {({ getClassName, handleFocus, handleBlur }) => (
+        <>
+          <div 
+            className={getClassName('fullname', 'mb-6 md:mb-0')} 
+            ref={nameRef}
+            data-name-field="true"
+          >
+            <label htmlFor="fullname" className="block mb-2 text-sm font-medium">
+              الاسم الكامل
+            </label>
+            <Input
+              id="fullname"
+              placeholder="الاسم الكامل"
+              dir="rtl"
+              className="text-right"
+              {...register('fullname')}
+              onFocus={handleFocus('fullname')}
+              onBlur={handleBlur}
+              data-name-field="true"
+            />
+            {/* Removed inline error display */}
+          </div>
+          <div 
+            className={getClassName('name')}
+            data-name-field="true"
+          >
+            <label htmlFor="name" className="block mb-2 text-sm font-medium">
+              اسم المستخدم
+            </label>
+            <Input
+              id="name"
+              placeholder="اسم المستخدم"
+              dir="rtl"
+              className="text-right"
+              {...register('name')}
+              onFocus={handleFocus('name')}
+              onBlur={handleBlur}
+              data-name-field="true"
+            />
+            {errors.name && (
+              <span className="text-red-500 text-sm">{errors.name.message}</span>
+            )}
+          </div>
+        </>
+      )}
+    </FocusContainer>
   );
 };
 

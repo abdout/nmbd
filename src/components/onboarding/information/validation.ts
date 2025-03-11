@@ -2,14 +2,9 @@ import { z } from "zod";
 
 export const informationSchema = z.object({
   id: z.string().optional(),
-  // name: z.string()
-  //   .min(2, { message: "الاسم يجب أن يحتوي على حرفين على الأقل" })
-  //   .regex(/^[\u0600-\u06FFa-zA-Z0-9\s._-]*$/, { 
-  //     message: "الاسم يمكن أن يحتوي على حروف عربية، إنجليزية، أرقام وبعض الرموز" 
-  //   })
-  //   .optional(),
+  name: z.string().optional(),
   fullname: z.string()
-    .min(2, { message: "حرفين على الأقل  للاسم الكامل" })
+    .min(8, { message: "اكتب الاسم الكامل" })
     .regex(/^[\u0600-\u06FFa-zA-Z\s._-]*$/, { 
       message: "الاسم الكامل يمكن أن يحتوي على حروف عربية، إنجليزية وبعض الرموز" 
     })

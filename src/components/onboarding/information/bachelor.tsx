@@ -3,52 +3,65 @@ import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import SelectPopover, { Item } from "./select-popover";
-import { institutions, bachelorMajors, generateCompletionYears } from "./constants";
+import { Option } from "@/components/atom/auto-complete";
+import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
+import { institutions, bachelorMajors, generateCompletionYears } from "./constant";
+import { useFocusSelect } from "../use-focus";
+
 
 interface BachelorProps {
   register: UseFormRegister<InformationSchema>;
   errors: FieldErrors<InformationSchema>;
   setValue: UseFormSetValue<InformationSchema>;
+  onComplete?: () => void;
 }
+
+// Convert Item arrays to Option arrays
+const INSTITUTIONS: Option[] = institutions.map(item => ({
+  value: item.value,
+  label: item.label
+}));
+
+const BACHELOR_MAJORS: Option[] = bachelorMajors.map(item => ({
+  value: item.value,
+  label: item.label
+}));
+
+const COMPLETION_YEARS: Option[] = generateCompletionYears().map(item => ({
+  value: item.value,
+  label: item.label
+}));
 
 const Bachelor = ({
   register,
   errors,
-  setValue
+  setValue,
+  onComplete
 }: BachelorProps) => {
   const [selectedInstitution, setSelectedInstitution] = useState<Item | null>(null);
-  const [selectedBachelorCompletionYear, setSelectedBachelorCompletionYear] = useState<Item | null>(null);
+  const [selectedBachelorYear, setSelectedBachelorYear] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
+  const [bachelorCompleted, setBachelorCompleted] = useState(false);
 
-  // Track field completion
-  const [institutionCompleted, setInstitutionCompleted] = useState(false);
-  const [majorCompleted, setMajorCompleted] = useState(false);
-  const [yearCompleted, setYearCompleted] = useState(false);
-  
-  // Check if all fields are completed
+  // Use the focus field hook for the three fields
+  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
+    useFocusSelect<'institution' | 'major' | 'year'>();
+
+  // Register all fields required by React Hook Form
   useEffect(() => {
-    if (institutionCompleted && majorCompleted && yearCompleted) {
-      // Dispatch event when all Bachelor fields are completed
-      const event = new CustomEvent('educationFieldCompleted', {
-        detail: {
-          componentType: 'bachelor',
-          fieldType: 'all'
-        }
-      });
-      document.dispatchEvent(event);
-    }
-  }, [institutionCompleted, majorCompleted, yearCompleted]);
+    register('bachelorInstitution', { required: "يرجى اختيار الجامعة" });
+    register('bachelorMajor', { required: "يرجى اختيار التخصص" });
+    register('bachelorCompletionYear', { required: "يرجى اختيار السنة" });
+  }, [register]);
 
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
     if (item) {
       setValue('bachelorInstitution', item.label);
       setSelectedInstitution(item);
-      setInstitutionCompleted(true);
     } else {
       setValue('bachelorInstitution', '');
       setSelectedInstitution(null);
-      setInstitutionCompleted(false);
     }
   };
 
@@ -56,12 +69,10 @@ const Bachelor = ({
   const handleBachelorYearSelect = (item: Item | null) => {
     if (item) {
       setValue('bachelorCompletionYear', item.value);
-      setSelectedBachelorCompletionYear(item);
-      setYearCompleted(true);
+      setSelectedBachelorYear(item);
     } else {
-      setValue('bachelorCompletionYear', '');
-      setSelectedBachelorCompletionYear(null);
-      setYearCompleted(false);
+      setValue('bachelorCompletionYear', undefined);
+      setSelectedBachelorYear(null);
     }
   };
 
@@ -70,59 +81,156 @@ const Bachelor = ({
     if (item) {
       setValue('bachelorMajor', item.label);
       setSelectedMajor(item);
-      setMajorCompleted(true);
     } else {
       setValue('bachelorMajor', '');
       setSelectedMajor(null);
-      setMajorCompleted(false);
     }
+  };
+
+  // Define the hierarchical steps for bachelor selection
+  const bachelorSteps: SelectionStep[] = [
+    {
+      id: "institution",
+      title: "الجامعة",
+      placeholder: "اختر الجامعة",
+      emptyMessage: "لا توجد جامعات متاحة",
+      getOptions: () => INSTITUTIONS
+    },
+    {
+      id: "major",
+      title: "التخصص",
+      placeholder: "اختر التخصص",
+      emptyMessage: "لا توجد تخصصات متاحة",
+      getOptions: () => BACHELOR_MAJORS
+    },
+    {
+      id: "completionYear",
+      title: "سنة التخرج",
+      placeholder: "اختر السنة",
+      emptyMessage: "لا توجد سنوات متاحة",
+      getOptions: () => COMPLETION_YEARS
+    }
+  ];
+
+  // Handle completion of the hierarchical selection
+  const handleComplete = (selections: Record<string, Option>) => {
+    // Map the selections to the form values
+    setValue('bachelorInstitution', selections.institution?.label || '');
+    setValue('bachelorMajor', selections.major?.label || '');
+    setValue('bachelorCompletionYear', selections.completionYear?.value || '');
+    
+    // Set component as completed
+    setBachelorCompleted(true);
+    
+    // Check if all fields are filled
+    if (
+      selections.institution?.value &&
+      selections.major?.value &&
+      selections.completionYear?.value
+    ) {
+      // Call onComplete callback if provided
+      if (onComplete) {
+        setTimeout(() => {
+          onComplete();
+        }, 300);
+      }
+    }
+    
+    // Maintain the original event dispatch for backward compatibility
+    const event = new CustomEvent('educationFieldCompleted', {
+      detail: {
+        componentType: 'bachelor',
+        fieldType: 'all'
+      }
+    });
+    document.dispatchEvent(event);
+  };
+
+  // Custom animation timing configurations
+  const timing = {
+    transitionDelay: 250,
+    dropdownDelay: 600
   };
 
   return (
     <div className="space-y-4">
       <p className="text-sm font-semibold mb-2">بيانات البكالوريوس:</p>
-      <div className="grid grid-cols-3 gap-3">
-        {/* Institution */}
-        <div className="relative">
-          <input type="hidden" {...register('bachelorInstitution')} value={selectedInstitution?.label || ''} />
-          <SelectPopover
-            items={institutions}
-            selectedItem={selectedInstitution}
-            setSelectedItem={handleInstitutionSelect}
-            label="الجامعة"
-          />
-          {errors.bachelorInstitution && (
-            <span className="text-red-500 text-sm">{errors.bachelorInstitution.message}</span>
-          )}
+      
+      {/* Show error messages */}
+      {(errors.bachelorInstitution || errors.bachelorMajor || errors.bachelorCompletionYear) && (
+        <div className="text-red-500 text-sm mb-2">
+          {errors.bachelorInstitution && <p>{errors.bachelorInstitution.message}</p>}
+          {errors.bachelorMajor && <p>{errors.bachelorMajor.message}</p>}
+          {errors.bachelorCompletionYear && <p>{errors.bachelorCompletionYear.message}</p>}
         </div>
+      )}
+      
+      {/* Desktop UI (md screens and above) with focus motion */}
+      <div className="hidden md:block">
+        <div className={getContainerClass()}>
+          {/* Institution */}
+          <div className={getFieldStyle('institution', 3)}>
+            <input type="hidden" {...register('bachelorInstitution')} value={selectedInstitution?.label || ''} />
+            <SelectPopover
+              items={institutions}
+              selectedItem={selectedInstitution}
+              setSelectedItem={handleInstitutionSelect}
+              label="الجامعة"
+              onFocus={() => setFocusedField('institution')}
+              onBlur={() => setFocusedField(null)}
+            />
+            {errors.bachelorInstitution && (
+              <span className="text-red-500 text-sm">{errors.bachelorInstitution.message}</span>
+            )}
+          </div>
 
-        {/* Major */}
-        <div className="relative">
-          <input type="hidden" {...register('bachelorMajor')} value={selectedMajor?.label || ''} />
-          <SelectPopover
-            items={bachelorMajors}
-            selectedItem={selectedMajor}
-            setSelectedItem={handleMajorSelect}
-            label="التخصص"
-          />
-          {errors.bachelorMajor && (
-            <span className="text-red-500 text-sm">{errors.bachelorMajor.message}</span>
-          )}
-        </div>
+          {/* Major */}
+          <div className={getFieldStyle('major', 3)}>
+            <input type="hidden" {...register('bachelorMajor')} value={selectedMajor?.label || ''} />
+            <SelectPopover
+              items={bachelorMajors}
+              selectedItem={selectedMajor}
+              setSelectedItem={handleMajorSelect}
+              label="التخصص"
+              onFocus={() => setFocusedField('major')}
+              onBlur={() => setFocusedField(null)}
+            />
+            {errors.bachelorMajor && (
+              <span className="text-red-500 text-sm">{errors.bachelorMajor.message}</span>
+            )}
+          </div>
 
-        {/* Completion Year */}
-        <div className="relative">
-          <input type="hidden" {...register('bachelorCompletionYear')} value={selectedBachelorCompletionYear?.value || ''} />
-          <SelectPopover
-            items={generateCompletionYears()}
-            selectedItem={selectedBachelorCompletionYear}
-            setSelectedItem={handleBachelorYearSelect}
-            label="السنة"
-          />
-          {errors.bachelorCompletionYear && (
-            <span className="text-red-500 text-sm">{errors.bachelorCompletionYear.message}</span>
-          )}
+          {/* Year of Completion */}
+          <div className={getFieldStyle('year', 3)}>
+            <input type="hidden" {...register('bachelorCompletionYear')} value={selectedBachelorYear?.value || ''} />
+            <SelectPopover
+              items={generateCompletionYears()}
+              selectedItem={selectedBachelorYear}
+              setSelectedItem={handleBachelorYearSelect}
+              label="السنة"
+              onFocus={() => setFocusedField('year')}
+              onBlur={() => setFocusedField(null)}
+            />
+            {errors.bachelorCompletionYear && (
+              <span className="text-red-500 text-sm">{errors.bachelorCompletionYear.message}</span>
+            )}
+          </div>
         </div>
+      </div>
+
+      {/* Mobile UI (smaller than md screens) */}
+      <div className="md:hidden relative" style={{ 
+        zIndex: 40,
+        position: "relative",
+        isolation: "isolate" 
+      }}>
+        <AnimatedHierarchicalSelect 
+          steps={bachelorSteps} 
+          onComplete={handleComplete}
+          timing={timing}
+          className="w-full"
+          isLastStep={true}
+        />
       </div>
     </div>
   );

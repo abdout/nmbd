@@ -1,37 +1,53 @@
-'use client';
-
-import { MultiSelect, Option } from '@/components/atom/multi-select';
-import { INTERESTS } from './constant';
-import { Label } from '@/components/ui/label';
+import { MultiSelect, Option } from "@/components/atom/multi-select";
 
 interface InterestsProps {
   value: string[];
-  onChange: (value: string[]) => void;
+  onChange: (interests: string[]) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
-export function Interests({ value, onChange }: InterestsProps) {
-  const interestOptions: Option[] = INTERESTS.map(interest => ({
-    value: interest,
-    label: interest
-  }));
+const INTERESTS = [
+  "السياسة",
+  "الاقتصاد",
+  "التعليم",
+  "الصحة",
+  "البيئة",
+  "التكنولوجيا",
+  "الفنون",
+  "الرياضة",
+  "العمل التطوعي",
+  "حقوق الإنسان",
+  "التنمية المستدامة",
+  "الثقافة",
+  "الإعلام",
+  "العلوم",
+  "الأدب",
+] as const;
 
+const INTEREST_OPTIONS: Option[] = INTERESTS.map((interest) => ({
+  label: interest,
+  value: interest,
+}));
+
+export function Interests({ value, onChange, onFocus, onBlur }: InterestsProps) {
   const selectedOptions = value.map(interest => ({
+    label: interest,
     value: interest,
-    label: interest
   }));
-
-  const handleChange = (selected: Option[]) => {
-    onChange(selected.map(option => option.value));
-  };
 
   return (
-    <div className="space-y-2">
-      <Label>الاهتمامات</Label>
+    <div className="w-full space-y-2">
+      <label className="block text-sm font-medium text-gray-700">
+        الاهتمامات
+      </label>
       <MultiSelect
-        options={interestOptions}
+        options={INTEREST_OPTIONS}
         selected={selectedOptions}
-        onChange={handleChange}
-        placeholder="اختر اهتماماتك..."
+        onChange={(selected) => onChange(selected.map(s => s.value))}
+        placeholder=" واحدة أو اكثر"
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </div>
   );

@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import Form from "@/components/onboarding/information/form";
 import { getInformation } from "@/components/onboarding/information/action";
 import type { InformationSchema } from "@/components/onboarding/information/validation";
-import MobileForm from "@/components/onboarding/information/mobile-form";
 
 export default async function InformationPage() {
   const userData = await getInformation();
@@ -15,7 +14,7 @@ export default async function InformationPage() {
   } as InformationSchema : undefined;
   
   return (
-    <div className="w-full md:w-[55%] md:mx-auto">
+    <div className="w-full md:w-[55%] mx-auto">
       <Suspense fallback={<div>Loading...</div>}>
         {/* Original form kept as backup
         <InformationForm 
@@ -23,18 +22,10 @@ export default async function InformationPage() {
           data={transformedData} 
         /> 
         */}
-        <div className="hidden md:block">
-          <Form 
-            type={userData ? "update" : "create"} 
-            data={transformedData} 
-          />
-        </div>
-        <div className="block md:hidden">
-          <MobileForm 
-            type={userData ? "update" : "create"} 
-            data={transformedData} 
-          />
-        </div>
+        <Form 
+          type={userData ? "update" : "create"} 
+          data={transformedData} 
+        />
       </Suspense>
     </div>
   );

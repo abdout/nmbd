@@ -47,7 +47,7 @@ const TermsPage = () => {
     }, [accepted]);
 
     return (
-        <form ref={formRef} className='w-full md:w-[50%] flex flex-col items-center justify-center py-4'>
+        <form ref={formRef} className='w-[74%] md:w-[50%] overflow-hidden flex flex-col items-center justify-center'>
             <p className='text-center justify-center'>
                 لا تستثني الحركة احداَ من عامة السودانين الصالحين في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى، ومن يتقي معوج المسلك وفاسد العمل.
             </p>
@@ -59,9 +59,9 @@ const TermsPage = () => {
                 />
                 <label
                     htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-[13px] font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                    اقرأ <Link href="#" className='text-blue-600'>ارشادات</Link> و <Link href="#" className='text-blue-600'>اوراق</Link> الحركة قبل البدء
+                    اقرأ <Link href="#" className='text-blue-600'>الارشادات</Link> و <Link href="#" className='text-blue-600'>الاوراق</Link> <span className='hidden md:inline'> قبل البدء</span> 
                 </label>
             </div>
             <button id="submit-terms" type="submit" className="hidden" />

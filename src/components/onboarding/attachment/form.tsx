@@ -8,7 +8,7 @@ import { useActionState } from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
-import { ATTACHMENT_FIELDS } from "./constants";
+import { ATTACHMENT_FIELDS } from "./constant";
 import { useTransition } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
@@ -66,6 +66,9 @@ const AttachmentForm = ({
   };
 
   const onSubmit = handleSubmit((data) => {
+    // Save form data to localStorage for step navigation tracking
+    localStorage.setItem('attachmentFormData', JSON.stringify(data));
+
     startTransition(() => {
       formAction(data);
     });
@@ -86,14 +89,13 @@ const AttachmentForm = ({
   return (
     <form 
       ref={formRef} 
-      className="flex flex-col gap-8" 
       onSubmit={onSubmit}
     >
       {/* <h1 className="text-xl font-semibold">
         {type === "create" ? "Upload Files" : "Update Files"}
       </h1> */}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-8">
         {ATTACHMENT_FIELDS.map(({ name, label, type: fieldType }) => (
           <CldUploadWidget
             key={name}
@@ -152,8 +154,10 @@ const AttachmentForm = ({
                     </>
                   )
                 ) : (
-                  <span className="text-center text-gray-700 text-sm z-10 whitespace-pre-line">
-                    {label}
+                  <span className="text-center text-gray-700 text-sm z-10 flex flex-col items-center">
+                    {label.split(' ').map((word, index) => (
+                      <span key={index}>{word}</span>
+                    ))}
                   </span>
                 )}
               </div>

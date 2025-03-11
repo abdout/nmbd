@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, useMemo } from 'react';
+import { FC, useState, useMemo, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -18,6 +18,9 @@ interface SelectPopoverProps {
   setSelectedItem: (item: Item | null) => void;
   label: string;
   className?: string;
+  displayValue?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const SelectPopover: FC<SelectPopoverProps> = ({
@@ -26,10 +29,13 @@ const SelectPopover: FC<SelectPopoverProps> = ({
   setSelectedItem,
   label,
   className = '',
+  displayValue,
+  onFocus,
+  onBlur
 }) => {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
+  
   // Filter items based on search term
   const filteredItems = items.filter(item =>
     item.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -50,17 +56,41 @@ const SelectPopover: FC<SelectPopoverProps> = ({
     return contentHeight;
   }, [filteredItems.length]);
 
+  // Focus event handler
+  const handleFocus = () => {
+    if (onFocus) onFocus();
+  };
+
+  // Blur event handler
+  const handleBlur = () => {
+    if (!open && onBlur) onBlur();
+  };
+
+  // Handle popover open/close
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen && onFocus) {
+      onFocus();
+    } else if (!isOpen && onBlur) {
+      // Only trigger blur if closing the popover
+      onBlur();
+    }
+  };
+
   return (
-    <div className={cn("relative w-full", className)}>
-      <Popover open={open} onOpenChange={setOpen}>
+    <div className={cn("relative w-full h-full", className)}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <Button 
             variant="outline" 
-            className="w-full justify-between"
-            onClick={() => setOpen(!open)}
+            className="w-full h-full justify-between overflow-hidden whitespace-nowrap"
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           >
-            <span>{selectedItem ? selectedItem.label : label}</span>
-            <ChevronDown className="h-5 w-5 text-gray-400 transition-transform" />
+            <span className="overflow-hidden truncate max-w-[85%] text-left">
+              {selectedItem ? (displayValue || selectedItem.label) : label}
+            </span>
+            <ChevronDown className="h-5 w-5 text-gray-400 transition-transform flex-shrink-0" />
           </Button>
         </PopoverTrigger>
         <PopoverContent 
@@ -76,6 +106,7 @@ const SelectPopover: FC<SelectPopoverProps> = ({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
                 dir="rtl"
+                onFocus={handleFocus}
               />
             </div>
             <div className="relative">
@@ -100,9 +131,9 @@ const SelectPopover: FC<SelectPopoverProps> = ({
                         }}
                         className="flex w-full items-center justify-between py-2 px-4 cursor-pointer"
                       >
-                        <span className="text-right">{item.label}</span>
+                        <span className="text-right truncate">{item.label}</span>
                         {selectedItem?.value === item.value && (
-                          <Check className="h-4 w-4 text-blue-500" />
+                          <Check className="h-4 w-4 flex-shrink-0" />
                         )}
                       </CommandItem>
                     ))}

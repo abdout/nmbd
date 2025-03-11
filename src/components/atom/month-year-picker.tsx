@@ -90,7 +90,7 @@ export function MonthYearPicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-right font-normal",
+              "w-full h-10 justify-start text-right font-normal",
               !date && "text-muted-foreground"
             )}
           >

@@ -1,4 +1,4 @@
-import { onboardingRoutes } from './types';
+import { onboardingRoutes } from './type';
 
 export const getNextRoute = (currentPath: string): string => {
   const routes = Object.values(onboardingRoutes);

@@ -22,14 +22,14 @@ import { getNextRoute } from '../utils';
 type ContactField = keyof Omit<ContactSchema, 'id'>;
 
 const tabsData: Array<{icon: React.ReactNode, name: ContactField, label: string, placeholder: string}> = [
-  { icon: <FaTiktok size={24} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
-  { icon: <FaInstagram size={24} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
-  { icon: <FaLinkedin size={24} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
-  { icon: <FaTelegram size={24} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
-  { icon: <FaFacebook size={24} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
-  { icon: <FaTwitter size={24} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
-  { icon: <FaWhatsapp size={24} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
-  { icon: <FaPhone size={20} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
+  { icon: <FaTiktok size={28} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
+  { icon: <FaInstagram size={28} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
+  { icon: <FaLinkedin size={28} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
+  { icon: <FaTelegram size={28} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
+  { icon: <FaFacebook size={28} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
+  { icon: <FaTwitter size={28} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
+  { icon: <FaWhatsapp size={28} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
+  { icon: <FaPhone size={25} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
 ];
 
 const ContactForm = ({
@@ -72,6 +72,9 @@ const ContactForm = ({
       id: formData.id
     };
 
+    // Save to localStorage for step navigation tracking
+    localStorage.setItem('contactFormData', JSON.stringify(data));
+
     startTransition(() => {
       formAction(data);
     });
@@ -101,7 +104,8 @@ const ContactForm = ({
   return (
     <form 
       ref={formRef} 
-      className="max-w-2xl mx-auto" 
+      className="w-full flex flex-col p-2"
+      
       onSubmit={onSubmit}
     >
       {data?.id && (
@@ -122,7 +126,7 @@ const ContactForm = ({
                   defaultValue={data?.[name] || ''}
                   placeholder={placeholder}
                   aria-invalid={errors[name] ? "true" : "false"}
-                  className="w-full px-3 h-9 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full  border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors[name] && (
                   <span className="text-sm text-red-500">
@@ -133,8 +137,8 @@ const ContactForm = ({
             </Card>
           </TabsContent>
         ))}
-        <div className="flex items-center justify-center md:justify-between mb-6">
-          <TabsList className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-2 bg-background">
+        <div className="flex items-center justify-center mb-6">
+          <TabsList className="grid grid-cols-4 md:grid-cols-8 items-center justify-center gap-4 md:gap-3 bg-background">
             {tabsData.slice().reverse().map(({ icon, name }) => (
               <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
                 {icon}

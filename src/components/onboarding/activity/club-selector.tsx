@@ -36,19 +36,19 @@ export default function ClubSelector({ setValue, selectedTypes, setSelectedTypes
 
   return (
     <div className="space-y-3 w-full">
-      <div className="flex items-center">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
         <label className="block text-sm font-medium text-gray-900">
            هل سبق وكنت عضو في نشاط...؟
         </label>
-        <p className="text-sm text-gray-500 px-2">واحدة أو أكثر</p>
+        <p className="text-sm text-gray-500">واحدة أو أكثر</p>
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-3">
         {CLUB_TYPES.map((type) => (
           <button
             key={type}
             type="button"
             onClick={() => handleSelect(type)}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors hover:bg-opacity-80
+            className={`px-2 py-1 rounded-full text-sm font-normal transition-colors hover:bg-opacity-80
               ${
                 selectedTypes.includes(type)
                   ? "bg-neutral-600 text-background"

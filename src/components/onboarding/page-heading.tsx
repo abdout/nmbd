@@ -10,7 +10,7 @@ const SiteHeading = ({ title, description }: Props) => {
 
     return (
         <div className="flex flex-col gap-1 items-center sm:gap-2 ">
-            <h2 className="font-heading text-2xl leading-[1.1] sm:text-2xl md:text-4xl">
+            <h2 className="font-heading text-2xl leading-[1.1] sm:text-2xl md:text-3xl">
                 {title}
             </h2>
 

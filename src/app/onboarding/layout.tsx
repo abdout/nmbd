@@ -5,7 +5,7 @@ import ButtonNavigation from '@/components/onboarding/button-nav';
 import { FormProvider } from '@/components/onboarding/form-context';
 import { Toaster } from 'sonner';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function OnboardingLayout({
   children,
@@ -14,62 +14,60 @@ export default function OnboardingLayout({
 }) {
   const pathname = usePathname();
   const isReviewPage = pathname === '/onboarding/review';
-  const [toastPosition, setToastPosition] = useState<'top-center' | 'bottom-right'>('bottom-right');
-
-  // Update toast position based on screen size
+  const [isMobile, setIsMobile] = useState(false);
+  
   useEffect(() => {
-    const handleResize = () => {
-      // Use 768px as the breakpoint for mobile devices
-      if (window.innerWidth < 768) {
-        setToastPosition('top-center');
-      } else {
-        setToastPosition('bottom-right');
-      }
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
     };
-
-    // Set initial position
-    handleResize();
-
+    
+    // Initial check
+    checkIfMobile();
+    
     // Add event listener for window resize
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup function to remove event listener
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup event listener
+    return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
   return (
     <FormProvider>
-      <div className={isReviewPage ? "p-6" : "px-4 sm:px-10 md:px-20 py-10"}>
+      <div className={`${isReviewPage ? "py-16 pt-20 px-2 md:px-14 min-h-screen " : "px-0 md:px-20 py-8 h-screen overflow-hidden"} flex flex-col`}>
         <Toaster 
-          position={toastPosition}
+          position={isMobile ? "top-center" : "bottom-right"}
           toastOptions={{
             style: {
-              maxWidth: '300px',
-              minWidth: '200px',
+              maxWidth: isMobile ? '96%' : '270px',
+              minWidth: isMobile ? '100px' : '200px',
               padding: '16px',
-              fontSize: '14px'
+              fontSize: '13px'
             },
-            duration: 3000
+            duration: 3000,
+            className: isMobile ? 'w-full' : ''
           }}
         />
         {!isReviewPage && (
-          <PageHeading
-            title="حبابك عشرة"
-            description="سيكون لنا متسع من الموت للنوم"
-          />
+          <div className="flex-none mt-4 md:mt-0">
+            <PageHeading
+              title="حبابك عشرة"
+              description="سيكون لنا متسع من الموت للنوم"
+            />
+          </div>
         )}
 
-        <div className="flex flex-col gap-x-6 items-center justify-center">
-          <div className="w-full flex flex-col items-center justify-center py-14">
+        <div className={`${isReviewPage ? "flex-grow" : "flex-1"} flex flex-col items-center justify-center`}>
+          <div className={`w-full flex flex-col items-center justify-center ${isReviewPage ? "" : "max-h-full overflow-auto"}`}>
             {children}
           </div>
-          {!isReviewPage && (
-            <div className="absolute bottom-10 left-0 right-0 flex flex-col space-y-6 items-center justify-center">
-              <StepNavigation />
-              <ButtonNavigation />
-            </div>
-          )}
         </div>
+        
+        {!isReviewPage && (
+          <div className="flex-none w-full mt-auto flex flex-col gap-6 items-center justify-center">
+            <StepNavigation />
+            <ButtonNavigation />
+          </div>
+        )}
       </div>
     </FormProvider>
   );

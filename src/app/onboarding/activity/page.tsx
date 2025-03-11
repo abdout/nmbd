@@ -2,7 +2,7 @@ import { currentUser } from "@/lib/auth";
 import ActivityForm from "@/components/onboarding/activity/form";
 import { Suspense } from "react";
 import { db } from "@/lib/db";
-import MobileActivityForm from "@/components/onboarding/activity/mobile-form";
+
 async function getActivityData() {
   try {
     const user = await currentUser();
@@ -46,12 +46,7 @@ export default async function ActivityPage() {
   return (
     <div className="w-full flex items-center justify-center">
       <Suspense fallback={<div>Loading...</div>}>
-      <div className="hidden md:block">
         <ActivityForm user={userData} />
-      </div>
-      <div className="block md:hidden">
-        <MobileActivityForm user={userData} />
-      </div>
       </Suspense>
     </div>
   );

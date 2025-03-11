@@ -1,37 +1,53 @@
-'use client';
-
-import { MultiSelect, Option } from '@/components/atom/multi-select';
-import { SKILLS } from './constant';
-import { Label } from '@/components/ui/label';
+import { MultiSelect, Option } from "@/components/atom/multi-select";
 
 interface SkillsProps {
   value: string[];
-  onChange: (value: string[]) => void;
+  onChange: (skills: string[]) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
-export function Skills({ value, onChange }: SkillsProps) {
-  const skillOptions: Option[] = SKILLS.map(skill => ({
-    value: skill,
-    label: skill
-  }));
+const SKILLS = [
+  "القيادة",
+  "التواصل",
+  "العمل الجماعي",
+  "حل المشكلات",
+  "التخطيط",
+  "التنظيم",
+  "إدارة الوقت",
+  "التفاوض",
+  "الإقناع",
+  "التحليل",
+  "البحث",
+  "الكتابة",
+  "العرض",
+  "التدريب",
+  "التوجيه",
+] as const;
 
+const SKILL_OPTIONS: Option[] = SKILLS.map((skill) => ({
+  label: skill,
+  value: skill,
+}));
+
+export function Skills({ value, onChange, onFocus, onBlur }: SkillsProps) {
   const selectedOptions = value.map(skill => ({
+    label: skill,
     value: skill,
-    label: skill
   }));
-
-  const handleChange = (selected: Option[]) => {
-    onChange(selected.map(option => option.value));
-  };
 
   return (
-    <div className="space-y-2">
-      <Label>المهارات</Label>
+    <div className="w-full space-y-2">
+      <label className="block text-sm font-medium text-gray-700">
+        المهارات
+      </label>
       <MultiSelect
-        options={skillOptions}
+        options={SKILL_OPTIONS}
         selected={selectedOptions}
-        onChange={handleChange}
-        placeholder="اختر مهاراتك..."
+        onChange={(selected) => onChange(selected.map(s => s.value))}
+        placeholder=" واحدة أو اكثر"
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </div>
   );

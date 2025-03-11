@@ -53,6 +53,85 @@ export const INTERESTS = [
   'صحة ولياقة'
 ] as const;
 
+// Dropdown options for AutoComplete fields
+export const PARTY_OPTIONS = [
+  { value: " البعث العربي الاشتراكي", label: "حزب البعث العربي الاشتراكي" },
+  { value: " الشيوعي السوري", label: "الحزب الشيوعي السوري" },
+  { value: " الاتحاد الاشتراكي العربي", label: "حزب الاتحاد الاشتراكي العربي" },
+  { value: " السوري القومي الاجتماعي", label: "الحزب السوري القومي الاجتماعي" },
+  { value: " الشيوعي السوري (المكتب السياسي)", label: "الحزب الشيوعي السوري (المكتب السياسي)" },
+  { value: " الديمقراطي السوري", label: "الحزب الديمقراطي السوري" },
+];
+
+export const UNION_OPTIONS = [
+  { value: "نقابة المعلمين", label: "نقابة المعلمين" },
+  { value: "نقابة المهندسين", label: "نقابة المهندسين" },
+  { value: "نقابة الأطباء", label: "نقابة الأطباء" },
+  { value: "نقابة المحامين", label: "نقابة المحامين" },
+  { value: "نقابة الصيادلة", label: "نقابة الصيادلة" },
+  { value: "نقابة الصحفيين", label: "نقابة الصحفيين" },
+  { value: "نقابة الفنانين", label: "نقابة الفنانين" },
+  { value: "نقابة العمال", label: "نقابة العمال" },
+];
+
+export const NGO_OPTIONS = [
+  { value: "الهلال الأحمر السوري", label: "الهلال الأحمر السوري" },
+  { value: "جمعية البر والإحسان", label: "جمعية البر والإحسان" },
+  { value: "منظمة المرأة السورية", label: "منظمة المرأة السورية" },
+  { value: "جمعية رعاية الأيتام", label: "جمعية رعاية الأيتام" },
+  { value: "مؤسسة الشام الخيرية", label: "مؤسسة الشام الخيرية" },
+  { value: "جمعية حماية البيئة", label: "جمعية حماية البيئة" },
+];
+
+export const NGO_ACTIVITY_OPTIONS = [
+  { value: "تعليم", label: "تعليم" },
+  { value: "صحة", label: "صحة" },
+  { value: "إغاثة", label: "إغاثة" },
+  { value: "تنمية مجتمعية", label: "تنمية مجتمعية" },
+  { value: "دعم نفسي", label: "دعم نفسي" },
+  { value: "حماية البيئة", label: "حماية البيئة" },
+  { value: "ثقافة وفنون", label: "ثقافة وفنون" },
+  { value: "تمكين المرأة", label: "تمكين المرأة" },
+];
+
+export const CLUB_OPTIONS = [
+  { value: "نادي الجلاء الرياضي", label: "نادي الجلاء الرياضي" },
+  { value: "نادي الوحدة", label: "نادي الوحدة" },
+  { value: "نادي تشرين", label: "نادي تشرين" },
+  { value: "نادي الكرامة", label: "نادي الكرامة" },
+  { value: "نادي الاتحاد", label: "نادي الاتحاد" },
+  { value: "نادي حطين", label: "نادي حطين" },
+];
+
+export const CLUB_TYPE_OPTIONS = [
+  { value: "كرة قدم", label: "كرة قدم" },
+  { value: "كرة سلة", label: "كرة سلة" },
+  { value: "كرة طائرة", label: "كرة طائرة" },
+  { value: "سباحة", label: "سباحة" },
+  { value: "تنس", label: "تنس" },
+  { value: "كاراتيه", label: "كاراتيه" },
+  { value: "جودو", label: "جودو" },
+  { value: "مصارعة", label: "مصارعة" },
+];
+
+export const VOLUNTARY_OPTIONS = [
+  { value: "الهلال الأحمر", label: "الهلال الأحمر" },
+  { value: "كشافة", label: "كشافة" },
+  { value: "مبادرات تطوعية", label: "مبادرات تطوعية" },
+  { value: "قوافل إغاثة", label: "قوافل إغاثة" },
+  { value: "حملات تنظيف", label: "حملات تنظيف" },
+  { value: "تعليم وتدريب", label: "تعليم وتدريب" },
+];
+
+export const VOLUNTARY_ROLE_OPTIONS = [
+  { value: "متطوع", label: "متطوع" },
+  { value: "منسق", label: "منسق" },
+  { value: "قائد فريق", label: "قائد فريق" },
+  { value: "مدرب", label: "مدرب" },
+  { value: "مساعد إداري", label: "مساعد إداري" },
+  { value: "مسؤول تواصل", label: "مسؤول تواصل" },
+];
+
 export type ActivityFieldName = 
   | 'partyMember' | 'partyName' | 'partyStartDate' | 'partyEndDate'
   | 'unionMember' | 'unionName' | 'unionStartDate' | 'unionEndDate'
