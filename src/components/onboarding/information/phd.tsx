@@ -112,8 +112,16 @@ const PhD = ({
         // Mark the component as completed
         setPhdCompleted(true);
         
+        console.log('🔍 DEBUG: PhD desktop mode - All fields completed:', {
+          institution: selectedPhdInstitution.label,
+          major: selectedPhdMajor.label,
+          year: selectedPhdYear.value
+        });
+        console.log('🔍 DEBUG: PhD desktop onComplete callback exists:', !!onComplete);
+        
         // Call onComplete callback if provided
         if (onComplete) {
+          console.log('🔍 DEBUG: Calling PhD desktop onComplete callback');
           onComplete();
         }
         
@@ -126,6 +134,12 @@ const PhD = ({
         });
         document.dispatchEvent(event);
       }
+    } else {
+      console.log('🔍 DEBUG: PhD desktop mode - Not all fields completed:', {
+        institution: !!selectedPhdInstitution,
+        major: !!selectedPhdMajor,
+        year: !!selectedPhdYear
+      });
     }
   };
 
@@ -164,7 +178,12 @@ const PhD = ({
     // Set component as completed
     setPhdCompleted(true);
     
-    console.log('[PhDDebug] PhD fields completed in mobile mode:', selections);
+    console.log('🔍 DEBUG: PhD fields completed:', {
+      institution: selections.institution?.label,
+      major: selections.major?.label,
+      completionYear: selections.completionYear?.value
+    });
+    console.log('🔍 DEBUG: PhD onComplete callback exists:', !!onComplete);
     
     // Check if all fields are filled
     if (
@@ -172,11 +191,16 @@ const PhD = ({
       selections.major?.value &&
       selections.completionYear?.value
     ) {
-      console.log('[PhDDebug] All PhD fields are filled in mobile mode, calling onComplete');
+      console.log('🔍 DEBUG: All PhD fields are filled, calling onComplete');
       // Call onComplete callback if provided
       if (onComplete) {
         onComplete();
       }
+    } else {
+      console.log('🔍 DEBUG: Not all PhD fields filled:', 
+        !selections.institution?.value ? 'Missing institution' : 
+        !selections.major?.value ? 'Missing major' : 
+        'Missing completion year');
     }
     
     // Maintain the original event dispatch for backward compatibility

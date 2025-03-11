@@ -12,7 +12,6 @@ import {
   CLUB_OPTIONS,
   CLUB_TYPE_OPTIONS,
   VOLUNTARY_OPTIONS,
-  VOLUNTARY_ROLE_OPTIONS
 } from './constant';
 
 interface DateRange {

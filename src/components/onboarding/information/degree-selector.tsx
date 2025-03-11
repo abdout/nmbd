@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UseFormSetValue } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface DegreeSelectorProps {
   setValue: UseFormSetValue<InformationSchema>;
@@ -11,6 +11,8 @@ interface DegreeSelectorProps {
 }
 
 const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeSelectorProps) => {
+  const degreeSelectorRef = useRef<HTMLDivElement>(null);
+
   // Set default to student if not already set
   useEffect(() => {
     if (!educationLevel) {
@@ -19,9 +21,34 @@ const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeS
     }
   }, [educationLevel, setValue, setEducationLevel]);
 
+  // Function to scroll to the degree component
+  const scrollToDegreeComponent = (selectedValue: string) => {
+    if (selectedValue === 'student') return;
+    
+    // Try multiple times with increasing delays to ensure DOM is updated
+    [50, 150, 300, 500, 1000].forEach(delay => {
+      setTimeout(() => {
+        // Target the specific section for the selected degree
+        const sectionId = `section-${selectedValue}`;
+        const targetSection = document.getElementById(sectionId);
+        
+        if (targetSection) {
+          // Scroll the target into view
+          targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, delay);
+    });
+  };
+
   const handleValueChange = (value: string) => {
     setValue('educationLevel', value);
     setEducationLevel(value);
+    
+    // Trigger scroll to the selected degree component
+    scrollToDegreeComponent(value);
   };
 
   // Common education levels for both mobile and desktop
@@ -35,7 +62,12 @@ const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeS
   ];
 
   return (
-    <div dir="rtl" className="flex flex-col">
+    <div 
+      ref={degreeSelectorRef} 
+      dir="rtl" 
+      className="flex flex-col"
+      data-section="degreeSelector"
+    >
       {/* Title with responsive styling for the colon */}
       <p className="text-sm font-semibold mb-2">
         الدرجة العلمية<span className="hidden md:inline">:</span>

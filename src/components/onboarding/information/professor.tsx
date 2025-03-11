@@ -164,6 +164,13 @@ const Professor = ({
     setValue('professorCompletionYear', selections.completionYear?.value || '');
 
     setProfessorCompleted(true);
+    
+    console.log('🔍 DEBUG: Professor fields completed:', {
+      institution: selections.institution?.label,
+      major: selections.major?.label,
+      completionYear: selections.completionYear?.value
+    });
+    console.log('🔍 DEBUG: onComplete callback exists:', !!onComplete);
 
     // Check if all fields are filled
     if (
@@ -173,8 +180,14 @@ const Professor = ({
     ) {
       // Call onComplete callback if provided
       if (onComplete) {
+        console.log('🔍 DEBUG: Calling Professor onComplete callback');
         onComplete();
       }
+    } else {
+      console.log('🔍 DEBUG: Not all Professor fields filled in:', 
+        !selections.institution?.value ? 'Missing institution' : 
+        !selections.major?.value ? 'Missing major' : 
+        'Missing completion year');
     }
     
     // Maintain the original event dispatch for backward compatibility

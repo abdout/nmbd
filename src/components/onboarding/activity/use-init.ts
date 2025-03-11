@@ -6,7 +6,7 @@ import { ActivityUser } from './type';
 export function useInitActivities(
   user: ActivityUser,
   watch: UseFormWatch<ActivitySchema>,
-  setValue: UseFormSetValue<ActivitySchema>
+  // setValue: UseFormSetValue<ActivitySchema>
 ) {  
   // Watched form value
   const watchedSelectedActivities = watch("selectedActivities");

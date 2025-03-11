@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ClubSelector from "./club-selector";
@@ -73,7 +73,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   const {
     selectedActivities,
     setSelectedActivities
-  } = useInitActivities(user, watch, setValue);
+  } = useInitActivities(user, watch);
 
   // custom hooks
   const { parseISODateToDate, handleDateRangeChange } = useDate(setValue);
