@@ -45,7 +45,9 @@ const Professor = ({
   const [professorCompleted, setProfessorCompleted] = useState(false);
 
   // Use the focus field hook for the three fields
-  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
+  const { 
+    // focusedField,
+     getFieldStyle, getContainerClass, setFocusedField } = 
     useFocusSelect<'institution' | 'major' | 'year'>();
 
   // Track field selection state changes for debugging

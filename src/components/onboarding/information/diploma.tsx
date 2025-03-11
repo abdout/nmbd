@@ -41,7 +41,9 @@ const Diploma = ({
   const [selectedInstitution, setSelectedInstitution] = useState<Item | null>(null);
   const [selectedYearOfCompletion, setSelectedYearOfCompletion] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
-  const [diplomaCompleted, setDiplomaCompleted] = useState(false);
+  const [
+    // diplomaCompleted
+    , setDiplomaCompleted] = useState(false);
 
   // Use the focus field hook for the three fields
   const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 

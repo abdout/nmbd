@@ -41,7 +41,9 @@ const Bachelor = ({
   const [selectedInstitution, setSelectedInstitution] = useState<Item | null>(null);
   const [selectedBachelorYear, setSelectedBachelorYear] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
-  const [bachelorCompleted, setBachelorCompleted] = useState(false);
+  const [
+    // bachelorCompleted
+    , setBachelorCompleted] = useState(false);
 
   // Use the focus field hook for the three fields
   const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 

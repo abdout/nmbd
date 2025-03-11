@@ -44,7 +44,9 @@ const Master = ({
   const [masterCompleted, setMasterCompleted] = useState(false);
 
   // Use the focus field hook for the three fields
-  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
+  const { 
+    // focusedField,
+     getFieldStyle, getContainerClass, setFocusedField } = 
     useFocusSelect<'institution' | 'major' | 'year'>();
 
   // Register all fields required by React Hook Form

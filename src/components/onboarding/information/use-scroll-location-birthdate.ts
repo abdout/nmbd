@@ -27,6 +27,14 @@ export const useScrollLocationBirthdate = ({
   const [locationComplete, setLocationComplete] = useState(false);
   const [birthdateComplete, setBirthdateComplete] = useState(false);
 
+  // Track focus states
+  const [locationFocused, setLocationFocused] = useState(false);
+  const [birthdateFocused, setBirthdateFocused] = useState(false);
+  
+  // Track if we've already scrolled on focus for each section
+  const hasScrolledLocationOnFocus = useRef(false);
+  const hasScrolledBirthdateOnFocus = useRef(false);
+
   // Track initial values of fields to detect real user changes
   const initialValues = useRef({
     location: {
@@ -96,9 +104,22 @@ export const useScrollLocationBirthdate = ({
       hasRealUserInteraction,
       isMobile,
       hasScrolledLocation: hasScrolledLocation.current,
-      hasScrolledBirthdate: hasScrolledBirthdate.current
+      hasScrolledBirthdate: hasScrolledBirthdate.current,
+      locationFocused,
+      birthdateFocused,
+      hasScrolledLocationOnFocus: hasScrolledLocationOnFocus.current,
+      hasScrolledBirthdateOnFocus: hasScrolledBirthdateOnFocus.current
     });
-  }, [locationInteracted, birthdateInteracted, locationComplete, birthdateComplete, hasRealUserInteraction, isMobile]);
+  }, [
+    locationInteracted, 
+    birthdateInteracted, 
+    locationComplete, 
+    birthdateComplete, 
+    hasRealUserInteraction, 
+    isMobile,
+    locationFocused,
+    birthdateFocused
+  ]);
 
   // Detect mobile screen
   useEffect(() => {
@@ -118,6 +139,8 @@ export const useScrollLocationBirthdate = ({
   useEffect(() => {
     hasScrolledLocation.current = false;
     hasScrolledBirthdate.current = false;
+    hasScrolledLocationOnFocus.current = false;
+    hasScrolledBirthdateOnFocus.current = false;
   }, [isMobile]);
 
   // Watch individual fields
@@ -379,6 +402,101 @@ export const useScrollLocationBirthdate = ({
   // Override the isPrefilledData check for testing
   const forceScroll = false; // Change to false - we'll use hasRealUserInteraction instead
   
+  // Setup focus detection on mount
+  useEffect(() => {
+    const detectFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Check if the focus event is from location section
+      const isLocationFocus = target.closest('[data-location-field="true"]') || 
+                              locationRef.current?.contains(target) ||
+                              // Check if any hierarchical select component related to location is focused
+                              (target.closest('.css-rek2z9') && 
+                               !target.closest('[data-birthdate-field="true"]'));
+      
+      // Check if the focus event is from birthdate section
+      const isBirthdateFocus = target.closest('[data-birthdate-field="true"]') || 
+                               birthdateRef.current?.contains(target);
+      
+      console.log('[ScrollDebug] Focus detected:', { 
+        target: target.tagName, 
+        isLocationFocus, 
+        isBirthdateFocus
+      });
+      
+      if (isLocationFocus) {
+        setLocationFocused(true);
+        setBirthdateFocused(false);
+      } else if (isBirthdateFocus) {
+        setBirthdateFocused(true);
+        setLocationFocused(false);
+      }
+    };
+    
+    // Add the focus event listener to the document
+    document.addEventListener('focusin', detectFocus);
+    
+    // Also detect clicks to handle custom dropdowns that may not trigger focus events
+    const detectClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Check if the click is on location section
+      const isLocationClick = target.closest('[data-location-field="true"]') || 
+                              locationRef.current?.contains(target) ||
+                              // Check if any hierarchical select component related to location is clicked
+                              (target.closest('.css-rek2z9') && 
+                               !target.closest('[data-birthdate-field="true"]'));
+      
+      // Check if the click is on birthdate section
+      const isBirthdateClick = target.closest('[data-birthdate-field="true"]') || 
+                              birthdateRef.current?.contains(target);
+      
+      console.log('[ScrollDebug] Click detected:', { 
+        target: target.tagName, 
+        isLocationClick, 
+        isBirthdateClick
+      });
+      
+      if (isLocationClick) {
+        setLocationFocused(true);
+        setBirthdateFocused(false);
+      } else if (isBirthdateClick) {
+        setBirthdateFocused(true);
+        setLocationFocused(false);
+      }
+    };
+    
+    document.addEventListener('click', detectClick);
+    
+    return () => {
+      document.removeEventListener('focusin', detectFocus);
+      document.removeEventListener('click', detectClick);
+    };
+  }, []);
+  
+  // Handle focus-based scrolling
+  useEffect(() => {
+    if (locationFocused && locationRef.current && !hasScrolledLocationOnFocus.current) {
+      console.log('[ScrollDebug] Scrolling to location on focus');
+      hasScrolledLocationOnFocus.current = true;
+      scrollOutOfView(locationRef.current);
+      
+      // Reset the other section's focus scroll flag so it will scroll again when focused
+      hasScrolledBirthdateOnFocus.current = false;
+    }
+  }, [locationFocused]);
+  
+  useEffect(() => {
+    if (birthdateFocused && birthdateRef.current && !hasScrolledBirthdateOnFocus.current) {
+      console.log('[ScrollDebug] Scrolling to birthdate on focus');
+      hasScrolledBirthdateOnFocus.current = true;
+      scrollOutOfView(birthdateRef.current);
+      
+      // Reset the other section's focus scroll flag so it will scroll again when focused
+      hasScrolledLocationOnFocus.current = false;
+    }
+  }, [birthdateFocused]);
+
   // Handle scrolling based on completion and device
   useEffect(() => {
     // Simplify the logic - scroll if user has made real changes or it's a new form

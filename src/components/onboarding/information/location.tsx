@@ -133,19 +133,20 @@ const Location = ({
   };
 
   return (
-    <div className="w-full" ref={sectionRef}>
+    <div className="w-full" ref={sectionRef} data-location-field="true">
       {/* AnimatedHierarchicalSelect component with improved z-index and positioning */}
       <div className="relative" style={{ 
         zIndex: 50,
         position: "relative",
         isolation: "isolate" 
-      }}>
+      }} data-location-field="true">
         <AnimatedHierarchicalSelect 
           steps={locationSteps} 
           onComplete={handleComplete}
           timing={timing}
           className="w-full"
           isLastStep={true}
+          data-location-field="true"
         />
       </div>
     </div>

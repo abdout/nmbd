@@ -34,7 +34,7 @@ export default function Club({
   watch,
   setValue,
   getOptionByValue,
-  renderSchemaWarning,
+  // renderSchemaWarning,
   parseISODateToDate,
   handleDateRangeChange,
   selectedActivities,

@@ -146,6 +146,35 @@ const Form = ({ type, data }: FormProps) => {
     watch,
     isPrefilledData
   });
+  
+  // Log focus and scroll refs for debugging
+  useEffect(() => {
+    console.log('[FormDebug] Focus refs initialized:', {
+      locationRef: !!locationRef.current,
+      birthdateRef: !!birthdateRef.current,
+      locationComplete,
+      birthdateComplete
+    });
+    
+    // Add a click handler to document to monitor user interactions
+    const documentClickHandler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      console.log('[FormDebug] Document click:', {
+        element: target.tagName,
+        className: target.className,
+        locationContains: locationRef.current?.contains(target),
+        birthdateContains: birthdateRef.current?.contains(target),
+        hasLocationDataAttr: !!target.closest('[data-location-field="true"]'),
+        hasBirthdateDataAttr: !!target.closest('[data-birthdate-field="true"]')
+      });
+    };
+    
+    document.addEventListener('click', documentClickHandler);
+    
+    return () => {
+      document.removeEventListener('click', documentClickHandler);
+    };
+  }, [locationRef.current, birthdateRef.current, locationComplete, birthdateComplete]);
 
   // Set form reference for ButtonNavigation if context is available
   if (formRef && localFormRef.current) {
