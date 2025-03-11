@@ -2,7 +2,7 @@ import { getUserById } from "@/components/auth/data/user";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
