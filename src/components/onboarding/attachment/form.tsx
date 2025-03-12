@@ -121,7 +121,7 @@ const AttachmentForm = ({
                   fieldType === 'image' ? (
                     <>
                       <Image
-                        src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : '/placeholder-profile.png'}
+                        src={formValues[name] || '/placeholder-profile.png'}
                         alt={label}
                         width={96}
                         height={96}
