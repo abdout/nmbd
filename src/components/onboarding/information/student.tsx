@@ -6,7 +6,7 @@ import SelectPopover, { Item } from "./select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
 import { institutions, faculties, studentYears } from "./constant";
-import { useFocusSelect } from "@/components/onboarding/use-focus";
+import { useFocusField } from "../useFocusField";
 
 
 interface StudentProps {
@@ -39,11 +39,11 @@ const Student = ({
   const [selectedStudentInstitution, setSelectedStudentInstitution] = useState<Item | null>(null);
   const [selectedStudentFaculty, setSelectedStudentFaculty] = useState<Item | null>(null);
   const [selectedStudentYear, setSelectedStudentYear] = useState<Item | null>(null);
-  const [studentCompleted, setStudentCompleted] = useState(false);
+  const [_studentCompleted, setStudentCompleted] = useState(false);
   
   // Use the focus field hook for the three fields
-  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
-    useFocusSelect<'institution' | 'faculty' | 'year'>();
+  const { getFieldStyle, getContainerClass, setFocusedField } = 
+    useFocusField<'institution' | 'faculty' | 'year'>();
 
   // Register all fields required by React Hook Form
   useEffect(() => {

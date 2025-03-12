@@ -6,7 +6,7 @@ import SelectPopover, { Item } from "./select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
 import { institutions, professorMajors, generateCompletionYears } from "./constant";
-import { useFocusSelect } from "@/components/onboarding/use-focus";
+import { useFocusField } from "../useFocusField";
 
 
 
@@ -48,7 +48,7 @@ const Professor = ({
   const { 
     // focusedField,
      getFieldStyle, getContainerClass, setFocusedField } = 
-    useFocusSelect<'institution' | 'major' | 'year'>();
+    useFocusField<'institution' | 'major' | 'year'>();
 
   // Track field selection state changes for debugging
   useEffect(() => {
@@ -203,22 +203,22 @@ const Professor = ({
   };
 
   // Force complete for debugging
-  const forceComplete = () => {
-    setProfessorCompleted(true);
+  // const forceComplete = () => {
+  //   setProfessorCompleted(true);
     
-    if (onComplete) {
-      onComplete();
-    }
+  //   if (onComplete) {
+  //     onComplete();
+  //   }
     
-    // Dispatch event
-    const event = new CustomEvent('educationFieldCompleted', {
-      detail: {
-        componentType: 'professor',
-        fieldType: 'all'
-      }
-    });
-    document.dispatchEvent(event);
-  };
+  //   // Dispatch event
+  //   const event = new CustomEvent('educationFieldCompleted', {
+  //     detail: {
+  //       componentType: 'professor',
+  //       fieldType: 'all'
+  //     }
+  //   });
+  //   document.dispatchEvent(event);
+  // };
 
   return (
     <div className="space-y-4">

@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+// import { auth } from "@/auth";
 import { db } from "@/lib/db";
 // import { UserCard } from "@/components/user/user-card";
 
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function UsersPage() {
-  const session = await auth();
+  // const session = await auth();
   // const currentUserId = session?.user?.id;
   
   // Fetch all users from the database

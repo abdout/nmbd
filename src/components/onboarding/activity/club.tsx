@@ -171,7 +171,7 @@ export default function Club({
       if (unionElement && unionSectionRef) {
         console.log("🟢 Found union section via querySelector, updating ref");
         // This is a workaround and not ideal, but helps in emergency situations
-        (unionSectionRef as any).current = unionElement;
+        (unionSectionRef as React.MutableRefObject<HTMLDivElement>).current = unionElement as HTMLDivElement;
       }
     }
     
@@ -421,7 +421,7 @@ export default function Club({
     }
     
     // Super strict! Only proceed if both are ACTUALLY dates, not just objects
-    const isValidDate = (date: any) => 
+    const isValidDate = (date: Date | null | undefined): boolean => 
       date instanceof Date && !isNaN(date.getTime());
       
     if (!isValidDate(range.from) || !isValidDate(range.to)) {

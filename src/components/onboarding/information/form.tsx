@@ -49,38 +49,38 @@ const useMediaQuery = (query: string): boolean => {
   return matches;
 };
 
-// Simple deep equal function without external dependencies
-function deepEqual(a: any, b: any): boolean {
-  if (a === b) return true;
-  
-  if (a === null || b === null || 
-      typeof a !== 'object' || typeof b !== 'object') {
-    return false;
-  }
-  
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (!deepEqual(a[i], b[i])) return false;
-    }
-    return true;
-  }
-  
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
-  
-  if (keysA.length !== keysB.length) return false;
-  
-  for (const key of keysA) {
-    if (!keysB.includes(key)) return false;
-    if (!deepEqual(a[key], b[key])) return false;
-  }
-  
-  return true;
-}
+// Simple deep equal function without external dependencies - commented out as it's currently unused
+// function deepEqual<T>(a: T, b: T): boolean {
+//   if (a === b) return true;
+//   
+//   if (a === null || b === null || 
+//       typeof a !== 'object' || typeof b !== 'object') {
+//     return false;
+//   }
+//   
+//   if (Array.isArray(a) && Array.isArray(b)) {
+//     if (a.length !== b.length) return false;
+//     for (let i = 0; i < a.length; i++) {
+//       if (!deepEqual(a[i], b[i])) return false;
+//     }
+//     return true;
+//   }
+//   
+//   const keysA = Object.keys(a);
+//   const keysB = Object.keys(b);
+//   
+//   if (keysA.length !== keysB.length) return false;
+//   
+//   for (const key of keysA) {
+//     if (!keysB.includes(key)) return false;
+//     if (!deepEqual(a[key], b[key])) return false;
+//   }
+//   
+//   return true;
+// }
 
 const Form = ({ type, data }: FormProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, _startTransition] = useTransition();
   
   // Always use the hook unconditionally at the top level
   const formContextValue = useFormContext();
@@ -124,7 +124,7 @@ const Form = ({ type, data }: FormProps) => {
   });
 
   // Use our form initialization hook
-  const { localStorageLoaded } = useFormInit({
+  const { } = useFormInit({
     data,
     reset,
     setEducationLevel,
@@ -141,7 +141,8 @@ const Form = ({ type, data }: FormProps) => {
     birthdateRef,
     locationComplete,
     birthdateComplete,
-    isMobile: isMobileScroll
+    // Renamed to avoid unused variable warning
+    isMobile: _isMobileScroll
   } = useScrollLocationBirthdate({
     watch,
     isPrefilledData
