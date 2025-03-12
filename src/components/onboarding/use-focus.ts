@@ -7,6 +7,9 @@ import { cn } from '@/lib/utils';
  */
 export function useFocus<T extends string>(
   defaultClassName: string = '',
+  expandedWidth: string = '60%',
+  shrunkWidth: string = '40%',
+  equalWidth: string = '50%',
 ) {
   // Track which field is focused
   const [focusedItem, setFocusedItem] = useState<T | null>(null);
@@ -17,7 +20,7 @@ export function useFocus<T extends string>(
   // Generate handler for blur event
   const handleBlur = () => setFocusedItem(null);
 
-  // Generate class name based on item ID and focus state - using hard-coded values
+  // Generate class name based on item ID and focus state using the provided width values
   const getClassName = (item: T, additionalClasses: string = '') => {
     const baseClasses = cn(
       defaultClassName,
@@ -25,19 +28,18 @@ export function useFocus<T extends string>(
       additionalClasses
     );
     
-    // Using direct Tailwind classes instead of string interpolation for more reliable behavior
     if (focusedItem === item) {
-      // Focused item - expanded (55%)
-      return `${baseClasses} md:w-[60%] z-10`;
+      // Focused item - expanded
+      return `${baseClasses} md:w-[${expandedWidth}] z-10`;
     }
     
     if (focusedItem !== null) {
-      // Another item is focused - shrunk (45%)
-      return `${baseClasses} md:w-[40%]`;
+      // Another item is focused - shrunk
+      return `${baseClasses} md:w-[${shrunkWidth}]`;
     }
     
-    // No focus - equal width (50%)
-    return `${baseClasses} md:w-[50%]`;
+    // No focus - equal width
+    return `${baseClasses} md:w-[${equalWidth}]`;
   };
 
   return {
