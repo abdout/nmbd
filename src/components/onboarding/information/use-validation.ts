@@ -8,7 +8,7 @@ interface ValidationProps<T extends FieldValues> {
   errorMessage: string;
   defaultValues?: Partial<T>;
   currentValues?: Partial<T>;
-  toastStyle?: Partial<CSSStyleDeclaration>;
+  toastStyle?: Record<string, string>;
 }
 
 export function useFormValidation<T extends FieldValues>({ 
