@@ -7,12 +7,30 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Icon } from '@iconify/react';
+import { Metadata } from 'next';
 
-export default async function UserProfile({
-  params
-}: {
+type Props = {
   params: { id: string }
-}) {
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Fetch user data
+  const user = await getUserById(params.id);
+  
+  if (!user) {
+    return {
+      title: 'User Not Found',
+      description: 'The requested user profile could not be found.'
+    };
+  }
+  
+  return {
+    title: `${user.name || 'User'} Profile`,
+    description: `View ${user.name || 'User'}'s profile and information.`
+  };
+}
+
+export default async function UserProfile({ params }: Props) {
   // Get the profile user by ID
   const profileUser = await getUserById(params.id);
   
