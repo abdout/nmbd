@@ -33,7 +33,7 @@ export const articles: ArticleItem[] = [
     description: "في السودان، يوجد قيمة التضامن ولكن بدلاً من التضامن في الاستهلاك فقط، دعونا نتضامن في الإنتاج أيضًا",
     link: "/article/4",
     videoId: "yjSIrCLQL9U",
-    image: "/article/23.jpg",
+    image: "/article/14.jpg",
     date: "14 ابريل 2024",
     author: "قاسم الظافر"
   }
