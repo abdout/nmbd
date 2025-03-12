@@ -49,38 +49,9 @@ const useMediaQuery = (query: string): boolean => {
   return matches;
 };
 
-// Simple deep equal function without external dependencies
-function deepEqual(a: any, b: any): boolean {
-  if (a === b) return true;
-  
-  if (a === null || b === null || 
-      typeof a !== 'object' || typeof b !== 'object') {
-    return false;
-  }
-  
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (!deepEqual(a[i], b[i])) return false;
-    }
-    return true;
-  }
-  
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
-  
-  if (keysA.length !== keysB.length) return false;
-  
-  for (const key of keysA) {
-    if (!keysB.includes(key)) return false;
-    if (!deepEqual(a[key], b[key])) return false;
-  }
-  
-  return true;
-}
-
 const Form = ({ type, data }: FormProps) => {
-  const [isPending, startTransition] = useTransition();
+  // Prefix startTransition with underscore to indicate it's intentionally unused
+  const [isPending, _startTransition] = useTransition();
   
   // Always use the hook unconditionally at the top level
   const formContextValue = useFormContext();
@@ -123,8 +94,8 @@ const Form = ({ type, data }: FormProps) => {
     defaultValues: data,
   });
 
-  // Use our form initialization hook
-  const { localStorageLoaded } = useFormInit({
+  // Use our form initialization hook - prefix localStorageLoaded with underscore
+  const { localStorageLoaded: _localStorageLoaded } = useFormInit({
     data,
     reset,
     setEducationLevel,
@@ -141,7 +112,8 @@ const Form = ({ type, data }: FormProps) => {
     birthdateRef,
     locationComplete,
     birthdateComplete,
-    isMobile: isMobileScroll
+    // Prefix isMobileScroll with underscore to indicate it's intentionally unused
+    isMobile: _isMobileScroll
   } = useScrollLocationBirthdate({
     watch,
     isPrefilledData

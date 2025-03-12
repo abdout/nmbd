@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ReviewCardProps } from './type';
 
 // Helper function to convert PDF URL to preview URL
-const getPdfPreviewUrl = (url: string) => {
+const _getPdfPreviewUrl = (url: string) => {
   if (!url || !url.includes('cloudinary.com')) return url;
 
   // Always use /upload/ path and ensure PDF extension is removed

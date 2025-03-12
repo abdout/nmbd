@@ -94,14 +94,18 @@ export default function Club({
 
   // Debug log current form state
   useEffect(() => {
+    const partyName = watch("partyName");
+    const partyStartDate = watch("partyStartDate");
+    const partyEndDate = watch("partyEndDate");
+    
     console.log("🔍 FORM STATE:", {
-      partyName: watch("partyName"),
-      partyStartDate: watch("partyStartDate"),
-      partyEndDate: watch("partyEndDate"),
+      partyName,
+      partyStartDate,
+      partyEndDate,
       completedSections,
       userModifiedFields
     });
-  }, [watch("partyName"), watch("partyStartDate"), watch("partyEndDate"), completedSections, userModifiedFields]);
+  }, [watch, completedSections, userModifiedFields]);
 
   // Function to scroll to a specific section - now enhanced with scrollToRef if available
   const scrollToSection = (sectionRef: React.RefObject<HTMLDivElement | null>) => {
@@ -171,7 +175,7 @@ export default function Club({
       if (unionElement && unionSectionRef) {
         console.log("🟢 Found union section via querySelector, updating ref");
         // This is a workaround and not ideal, but helps in emergency situations
-        (unionSectionRef as any).current = unionElement;
+        (unionSectionRef as React.MutableRefObject<Element>).current = unionElement;
       }
     }
     
@@ -421,7 +425,7 @@ export default function Club({
     }
     
     // Super strict! Only proceed if both are ACTUALLY dates, not just objects
-    const isValidDate = (date: any) => 
+    const isValidDate = (date: Date | undefined): boolean => 
       date instanceof Date && !isNaN(date.getTime());
       
     if (!isValidDate(range.from) || !isValidDate(range.to)) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { UseFormReset } from 'react-hook-form';
+import { UseFormReset, UseFormSetValue } from 'react-hook-form';
 import { toast } from 'sonner';
 import { InformationSchema } from './validation';
 
@@ -8,7 +8,7 @@ interface UseFormInitProps {
   reset: UseFormReset<InformationSchema>;
   setEducationLevel: (level: string) => void;
   setCurrentFormId?: (id: string) => void;
-  setValue: (name: any, value: any) => void;
+  setValue: UseFormSetValue<InformationSchema>;
 }
 
 export function useFormInit({
