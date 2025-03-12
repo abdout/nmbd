@@ -119,14 +119,25 @@ const AttachmentForm = ({
                 {formValues[name] ? (
                   // Only the profile picture (صورة شخصية) should be treated as an image
                   fieldType === 'image' ? (
-                    <Image
-                      src={formValues[name] || ''}
-                      alt={label}
-                      width={96}
-                      height={96}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      unoptimized
-                    />
+                    <>
+                      <Image
+                        src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : '/placeholder-profile.png'}
+                        alt={label}
+                        width={96}
+                        height={96}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          // Handle image loading errors
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/placeholder-profile.png'; // Fallback to a placeholder
+                          console.error('Image failed to load:', formValues[name]);
+                        }}
+                      />
+                      <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                        صورة شخصية
+                      </div>
+                    </>
                   ) : (
                     <>
                       {/* Display PDF preview for all PDF fields */}
@@ -141,7 +152,7 @@ const AttachmentForm = ({
                             unoptimized
                           />
                           <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                            PDF
+                            {label}
                           </div>
                         </div>
                       ) : (
