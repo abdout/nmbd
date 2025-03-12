@@ -39,7 +39,6 @@ const Student = ({
   const [selectedStudentInstitution, setSelectedStudentInstitution] = useState<Item | null>(null);
   const [selectedStudentFaculty, setSelectedStudentFaculty] = useState<Item | null>(null);
   const [selectedStudentYear, setSelectedStudentYear] = useState<Item | null>(null);
-  const [_studentCompleted, setStudentCompleted] = useState(false);
   
   // Use the focus field hook for the three fields
   const { getFieldStyle, getContainerClass, setFocusedField } = 
@@ -116,8 +115,6 @@ const Student = ({
     setValue('studentInstitution', selections.institution.label);
     setValue('studentFaculty', selections.faculty.label);
     setValue('studentYear', selections.year.value);
-
-    setStudentCompleted(true);
 
     // Dispatch event when all Student fields are completed
     const event = new CustomEvent('educationFieldCompleted', {

@@ -80,7 +80,7 @@ const useMediaQuery = (query: string): boolean => {
 // }
 
 const Form = ({ type, data }: FormProps) => {
-  const [isPending, _startTransition] = useTransition();
+  const [isPending] = useTransition();
   
   // Always use the hook unconditionally at the top level
   const formContextValue = useFormContext();
@@ -140,9 +140,7 @@ const Form = ({ type, data }: FormProps) => {
     locationRef, 
     birthdateRef,
     locationComplete,
-    birthdateComplete,
-    // Renamed to avoid unused variable warning
-    isMobile: _isMobileScroll
+    birthdateComplete
   } = useScrollLocationBirthdate({
     watch,
     isPrefilledData

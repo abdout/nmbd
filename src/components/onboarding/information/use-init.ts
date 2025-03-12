@@ -8,7 +8,7 @@ interface UseFormInitProps {
   reset: UseFormReset<InformationSchema>;
   setEducationLevel: (level: string) => void;
   setCurrentFormId?: (id: string) => void;
-  setValue: (name: any, value: any) => void;
+  setValue: (name: keyof InformationSchema, value: InformationSchema[keyof InformationSchema]) => void;
 }
 
 export function useFormInit({

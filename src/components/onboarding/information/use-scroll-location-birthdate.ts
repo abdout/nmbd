@@ -179,7 +179,7 @@ export const useScrollLocationBirthdate = ({
     const initialBirthdateValues = initialValues.current.birthdate;
     
     // Helper function to safely compare values that might be undefined
-    const valueChanged = (current: any, initial: any) => {
+    const valueChanged = (current: string | number | undefined | null, initial: string | number | undefined | null) => {
       // If both are undefined or null, no change
       if ((current === undefined || current === null) && (initial === undefined || initial === null)) {
         return false;

@@ -2,21 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { ReviewCardProps } from './type';
 
-// Helper function to convert PDF URL to preview URL
-const getPdfPreviewUrl = (url: string) => {
-  if (!url || !url.includes('cloudinary.com')) return url;
-
-  // Always use /upload/ path and ensure PDF extension is removed
-  url = url.replace('/raw/upload/', '/upload/').replace('.pdf', '');
-  
-  // Extract the base URL and file path
-  const baseUrl = url.substring(0, url.indexOf('/upload/') + 8);
-  const filePath = url.substring(url.indexOf('/upload/') + 8);
-  
-  // Generate preview URL with transformation
-  return `${baseUrl}q_auto,f_jpg,pg_1/${filePath}`;
-};
-
 export function AttachmentsCard({ userData }: ReviewCardProps) {
   // Check if there are any attachments
   const hasAttachments = userData?.image || userData?.cv || 
