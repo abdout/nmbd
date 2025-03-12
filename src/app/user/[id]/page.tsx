@@ -9,11 +9,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Icon } from '@iconify/react';
 import { Metadata } from 'next';
 
-type Props = {
-  params: { id: string }
+interface PageProps {
+  params: {
+    id: string;
+  };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   // Fetch user data
   const user = await getUserById(params.id);
   
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function UserProfile({ params }: Props) {
+export default async function UserProfile({ params }: PageProps) {
   // Get the profile user by ID
   const profileUser = await getUserById(params.id);
   
