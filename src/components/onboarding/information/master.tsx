@@ -213,7 +213,7 @@ const Master = ({
       <div className="hidden md:block">
         <div className={getContainerClass()}>
           {/* Institution */}
-          <div className={getFieldStyle('institution', 3)}>
+          <div className={getFieldStyle('institution')}>
             <input type="hidden" {...register('masterInstitution')} value={selectedInstitution?.label || ''} />
             <SelectPopover
               items={institutions}
@@ -229,7 +229,7 @@ const Master = ({
           </div>
 
           {/* Major */}
-          <div className={getFieldStyle('major', 3)}>
+          <div className={getFieldStyle('major')}>
             <input type="hidden" {...register('masterMajor')} value={selectedMajor?.label || ''} />
             <SelectPopover
               items={masterMajors}
@@ -245,7 +245,7 @@ const Master = ({
           </div>
 
           {/* Year of Completion */}
-          <div className={getFieldStyle('year', 3)}>
+          <div className={getFieldStyle('year')}>
             <input type="hidden" {...register('masterCompletionYear')} value={selectedCompletionYear?.value || ''} />
             <SelectPopover
               items={generateCompletionYears()}
