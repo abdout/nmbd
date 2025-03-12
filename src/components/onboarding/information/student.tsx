@@ -39,10 +39,10 @@ const Student = ({
   const [selectedStudentInstitution, setSelectedStudentInstitution] = useState<Item | null>(null);
   const [selectedStudentFaculty, setSelectedStudentFaculty] = useState<Item | null>(null);
   const [selectedStudentYear, setSelectedStudentYear] = useState<Item | null>(null);
-  const [_studentCompleted, setStudentCompleted] = useState(false);
+  const [studentCompleted, setStudentCompleted] = useState(false);
   
   // Use the focus field hook for the three fields
-  const { focusedField: _focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
+  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
     useFocusSelect<'institution' | 'faculty' | 'year'>();
 
   // Register all fields required by React Hook Form

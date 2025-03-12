@@ -46,7 +46,7 @@ const Diploma = ({
     , setDiplomaCompleted] = useState(false);
 
   // Use the focus field hook for the three fields
-  const { focusedField: _focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
+  const { focusedField, getFieldStyle, getContainerClass, setFocusedField } = 
     useFocusSelect<'institution' | 'major' | 'completionYear'>();
 
   // Register all fields required by React Hook Form
@@ -171,7 +171,7 @@ const Diploma = ({
       <div className="hidden md:block">
         <div className={getContainerClass()}>
           {/* Institution */}
-          <div className={getFieldStyle('institution')}>
+          <div className={getFieldStyle('institution', 3)}>
             <input type="hidden" {...register('diplomaInstitution')} value={selectedInstitution?.label || ''} />
             <SelectPopover
               items={institutions}
@@ -187,7 +187,7 @@ const Diploma = ({
           </div>
 
           {/* Major */}
-          <div className={getFieldStyle('major')}>
+          <div className={getFieldStyle('major', 3)}>
             <input type="hidden" {...register('diplomaMajor')} value={selectedMajor?.label || ''} />
             <SelectPopover
               items={diplomaMajors}
@@ -203,7 +203,7 @@ const Diploma = ({
           </div>
 
           {/* Year of Completion */}
-          <div className={getFieldStyle('completionYear')}>
+          <div className={getFieldStyle('completionYear', 3)}>
             <input type="hidden" {...register('diplomaCompletionYear')} value={selectedYearOfCompletion?.value || ''} />
             <SelectPopover
               items={generateCompletionYears()}

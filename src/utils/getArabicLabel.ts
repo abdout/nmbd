@@ -1,5 +1,5 @@
 import { 
-  COUNTRIES, STATES, LOCALITIES, ADMIN_UNITS as _ADMIN_UNITS, NEIGHBORHOODS,
+  COUNTRIES, STATES, LOCALITIES, ADMIN_UNITS, NEIGHBORHOODS,
   BIRTH_MONTHS,
   studentYears, faculties, diplomaMajors, bachelorMajors, 
   masterMajors, phdMajors, professorMajors

@@ -25,7 +25,7 @@ const Location = ({
   register,
   errors,
   setValue,
-  watch: _watch,
+  watch,
   defaultValues
 }: LocationProps) => {
   // Use our custom validation hook

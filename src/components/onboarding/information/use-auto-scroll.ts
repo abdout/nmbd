@@ -80,7 +80,7 @@ export const useAutoScroll = () => {
           top: element.offsetTop - 50,
           behavior: 'smooth'
         });
-      } catch (_e) {
+      } catch (e) {
         // Silently fail
       }
     }

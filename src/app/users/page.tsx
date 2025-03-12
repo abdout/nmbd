@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function UsersPage() {
-  const _session = await auth();
+  const session = await auth();
   // const currentUserId = session?.user?.id;
   
   // Fetch all users from the database

@@ -7,8 +7,8 @@ interface ValidationProps<T extends FieldValues> {
   errorFields: (keyof T)[];
   errorMessage: string;
   defaultValues?: Partial<T>;
-  currentValues?: Record<string, string | number | boolean | null | undefined>;
-  toastStyle?: Record<string, string | number | boolean>;
+  currentValues?: Record<string, any>;
+  toastStyle?: Record<string, any>;
 }
 
 export function useFormValidation<T extends FieldValues>({ 
