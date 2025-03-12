@@ -151,15 +151,29 @@ export function MultiSelect({
     >
       <div 
         ref={containerRef}
-        className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+        className="group rounded-md border border-input px-3 py-2 text-sm transition-colors focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:pointer-events-none disabled:opacity-50"
       >
-        <div className="flex flex-wrap gap-1">
-          {selected.map((option) => {
+        <div className="flex overflow-x-auto whitespace-nowrap no-scrollbar w-44 h-5 gap-1">
+          {selected.length > 2 && (
+            <Badge 
+              variant="secondary"
+              className="px-1.5 py-0 text-xs flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+            >
+              +{selected.length - 2}
+            </Badge>
+          )}
+          {selected.slice(Math.max(0, selected.length - 2)).map((option) => {
             return (
-              <Badge key={option.value} variant="secondary">
-                {option.label}
+              <Badge 
+                key={option.value} 
+                variant="secondary"
+                className="px-1.5 py-0 text-xs flex-shrink-0 max-w-[80px]"
+              >
+                <span className="truncate max-w-[50px] inline-block">
+                  {option.label}
+                </span>
                 <button
-                  className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  className="ml-0.5 rounded-full outline-none focus:ring-1 focus:ring-ring focus-visible:outline-none focus-visible:ring-1 flex-shrink-0"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       handleUnselect(option);
@@ -171,7 +185,7 @@ export function MultiSelect({
                   }}
                   onClick={() => handleUnselect(option)}
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  <X className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground" />
                 </button>
               </Badge>
             );
@@ -183,7 +197,7 @@ export function MultiSelect({
             onBlur={handleInputBlur}
             onFocus={handleInputFocus}
             placeholder={selected.length > 0 ? "" : placeholder}
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className="ml-1 flex-1 bg-transparent outline-none placeholder:text-muted-foreground text-xs min-w-[30px]"
           />
         </div>
       </div>
@@ -211,7 +225,7 @@ export function MultiSelect({
                       setInputValue("");
                       onChange([...selected, option]);
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-sm"
                   >
                     {option.label}
                   </CommandItem>

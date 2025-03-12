@@ -46,6 +46,16 @@ export function MonthYearRangePicker({
   const [toYear, setToYear] = React.useState<number>(
     range.to?.getFullYear() || currentYear
   )
+  const [open, setOpen] = React.useState(false)
+  // Track selections made in current session
+  const [selectionsMade, setSelectionsMade] = React.useState<Set<'from' | 'to'>>(new Set())
+  
+  // Reset selections tracking when popover opens
+  React.useEffect(() => {
+    if (open) {
+      setSelectionsMade(new Set())
+    }
+  }, [open])
   
   React.useEffect(() => {
     if (range.from) {
@@ -126,6 +136,16 @@ export function MonthYearRangePicker({
     const newRange = { ...range, [key]: value }
     setRange(newRange)
     onChange?.(newRange)
+    
+    // Track this selection
+    const newSelections = new Set(selectionsMade)
+    newSelections.add(key)
+    setSelectionsMade(newSelections)
+    
+    // Only close if both selections have been made in this session
+    if (newSelections.has('from') && newSelections.has('to')) {
+      setOpen(false)
+    }
   }
 
   const formatDate = (date?: Date) => {
@@ -140,7 +160,7 @@ export function MonthYearRangePicker({
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date-range"

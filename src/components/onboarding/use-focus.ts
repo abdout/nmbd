@@ -4,16 +4,9 @@ import { cn } from '@/lib/utils';
 /**
  * Custom hook for handling focus-based motion effects between multiple elements
  * @param defaultClassName Base class to apply to all elements
- * @param expandedWidth Width for focused element (e.g. '55%')
- * @param shrunkWidth Width for non-focused element when another is focused (e.g. '45%')
- * @param equalWidth Width when no element is focused (e.g. '50%')
- * @returns Object with handlers and class generator function
  */
 export function useFocus<T extends string>(
   defaultClassName: string = '',
-  expandedWidth: string = '55%',
-  shrunkWidth: string = '45%',
-  equalWidth: string = '50%'
 ) {
   // Track which field is focused
   const [focusedItem, setFocusedItem] = useState<T | null>(null);
@@ -58,8 +51,6 @@ export function useFocus<T extends string>(
 
 /**
  * A custom hook to manage focus state for a group of fields with width adjustment
- * @param fields Array of possible field identifiers
- * @param config Configuration object for width percentages
  * @returns Object with focus state and helper functions
  */
 export function useFocusSelect<T extends string>() {
@@ -67,7 +58,7 @@ export function useFocusSelect<T extends string>() {
   const [focusedField, setFocusedField] = useState<T | null>(null);
 
   // Get the style for a field based on its focus state - hard-coded values
-  const getFieldStyle = (field: T, totalFields: number) => {
+  const getFieldStyle = (field: T) => {
     // Common base classes for all states with increased duration
     const baseClasses = "w-full transition-all duration-500 relative overflow-hidden";
     

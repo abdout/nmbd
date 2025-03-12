@@ -82,19 +82,38 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   const {
     skillsSectionRef,
     activitySectionRef,
-    detailsSectionRef
+    detailsSectionRef,
+    scrollToRef
   } = useScroll(watch, selectedActivities);
 
+  // Get a reference to the ScrollArea for programmatic scrolling
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
   // Local form ref that we'll sync with context
   const localFormRef = useRef<HTMLFormElement>(null);
 
   // Add focus motion effect for Skills and Interests fields
   const { getClassName, handleFocus, handleBlur } = useFocus<'skills' | 'interests'>(
-    '', // default class
-    '60%', // expanded width
-    '40%', // shrunk width
-    '50%'  // equal width
+    '' // default class
   );
+
+  // Add effect to scroll when activities change
+  useEffect(() => {
+    if (selectedActivities.length === 1) {
+      // Try to scroll using DOM APIs directly
+      const clubSection = document.getElementById('club-selector-section');
+      if (clubSection) {
+        // Add a negative scroll margin to make it scroll higher
+        clubSection.style.scrollMarginTop = "-50px";
+        clubSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      
+      // Also try to scroll the ScrollArea if we have a ref to it
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTop = 0;
+      }
+    }
+  }, [selectedActivities]);
 
   useEffect(() => {
     // Set form reference for ButtonNavigation
@@ -111,7 +130,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       className="w-full h-[22rem] md:w-[55%] md:h-[13rem] flex flex-col p-2"
       noValidate
     >
-      <ScrollArea className="w-full pr-4">
+      <ScrollArea ref={scrollAreaRef} className="w-full pr-4">
         <div dir="rtl" className="flex flex-col gap-8 w-full px-4">
           <div ref={skillsSectionRef} className="flex flex-col md:flex-row gap-4">
             <div className={getClassName('skills')}>
@@ -133,7 +152,11 @@ export default function ActivityForm({ user }: ActivityFormProps) {
             </div>
           </div>
 
-          <div ref={activitySectionRef} className="w-full">
+          <div 
+            ref={activitySectionRef} 
+            className="w-full pt-4"
+            id="club-selector-section"
+          >
             <ClubSelector
               setValue={setValue}
               selectedTypes={selectedActivities}
@@ -141,16 +164,21 @@ export default function ActivityForm({ user }: ActivityFormProps) {
             />
           </div>
 
-          <Club
-            watch={watch}
-            setValue={setValue}
-            getOptionByValue={getOptionByValue}
-            renderSchemaWarning={renderSchemaWarning}
-            parseISODateToDate={parseISODateToDate}
-            handleDateRangeChange={handleDateRangeChange}
-            selectedActivities={selectedActivities}
-            detailsSectionRef={detailsSectionRef}
-          />
+          {selectedActivities.length > 0 && (
+            <div ref={detailsSectionRef} className="w-full">
+              <Club
+                watch={watch}
+                setValue={setValue}
+                getOptionByValue={getOptionByValue}
+                renderSchemaWarning={renderSchemaWarning}
+                parseISODateToDate={parseISODateToDate}
+                handleDateRangeChange={handleDateRangeChange}
+                selectedActivities={selectedActivities}
+                detailsSectionRef={detailsSectionRef}
+                scrollToRef={scrollToRef}
+              />
+            </div>
+          )}
         </div>
       </ScrollArea>
 

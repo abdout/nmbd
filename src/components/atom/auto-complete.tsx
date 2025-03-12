@@ -266,6 +266,14 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
       
       // Blur input immediately to ensure the dropdown doesn't reopen
       inputRef.current?.blur();
+      
+      // Set a flag to prevent focus event from reopening dropdown
+      disableFocusOpenRef.current = true;
+      
+      // Reset the flag after a short delay to allow for future interactions
+      setTimeout(() => {
+        disableFocusOpenRef.current = false;
+      }, 300);
     },
     [onValueChange]
   )
@@ -321,7 +329,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
                     key={option.value}
                     value={option.value}
                     onSelect={() => handleSelect(option)}
-                    className="cursor-pointer px-3"
+                    className="cursor-pointer px-3 text-sm"
                   >
                     {option.label}
                   </CommandItem>
@@ -355,7 +363,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(({
           <CommandList>
             <CommandGroup>
               {safeOptions.map((option) => (
-                <CommandItem key={option.value} value={option.value}>
+                <CommandItem key={option.value} value={option.value} className="text-sm">
                   {option.label}
                 </CommandItem>
               ))}

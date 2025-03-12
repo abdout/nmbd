@@ -22,14 +22,14 @@ import { getNextRoute } from '../utils';
 type ContactField = keyof Omit<ContactSchema, 'id'>;
 
 const tabsData: Array<{icon: React.ReactNode, name: ContactField, label: string, placeholder: string}> = [
-  { icon: <FaTiktok size={28} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
-  { icon: <FaInstagram size={28} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
-  { icon: <FaLinkedin size={28} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
-  { icon: <FaTelegram size={28} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
-  { icon: <FaFacebook size={28} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
-  { icon: <FaTwitter size={28} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
-  { icon: <FaWhatsapp size={28} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
-  { icon: <FaPhone size={25} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
+  { icon: <FaTiktok size={26} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
+  { icon: <FaInstagram size={26} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
+  { icon: <FaLinkedin size={26} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
+  { icon: <FaTelegram size={26} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
+  { icon: <FaFacebook size={26} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
+  { icon: <FaTwitter size={26} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
+  { icon: <FaWhatsapp size={26} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
+  { icon: <FaPhone size={23} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
 ];
 
 const ContactForm = ({
@@ -126,7 +126,7 @@ const ContactForm = ({
                   defaultValue={data?.[name] || ''}
                   placeholder={placeholder}
                   aria-invalid={errors[name] ? "true" : "false"}
-                  className="w-full  border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full items-center justify-center  border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors[name] && (
                   <span className="text-sm text-red-500">
@@ -137,8 +137,8 @@ const ContactForm = ({
             </Card>
           </TabsContent>
         ))}
-        <div className="flex items-center justify-center mb-6">
-          <TabsList className="grid grid-cols-4 md:grid-cols-8 items-center justify-center gap-4 md:gap-3 bg-background">
+        <div className="flex items-center justify-center mb-4">
+          <TabsList className="grid grid-cols-4 md:grid-cols-8 items-center justify-center gap-4 md:gap-1 bg-background">
             {tabsData.slice().reverse().map(({ icon, name }) => (
               <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
                 {icon}
