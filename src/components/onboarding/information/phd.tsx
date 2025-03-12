@@ -238,7 +238,7 @@ const PhD = ({
       <div className="hidden md:block">
         <div className={getContainerClass()}>
           {/* Institution */}
-          <div className={getFieldStyle('institution', 3)}>
+          <div className={getFieldStyle('institution')}>
             <input type="hidden" {...register('phdInstitution')} value={selectedPhdInstitution?.label || ''} />
             <SelectPopover
               items={institutions}
@@ -254,7 +254,7 @@ const PhD = ({
           </div>
 
           {/* Major */}
-          <div className={getFieldStyle('major', 3)}>
+          <div className={getFieldStyle('major')}>
             <input type="hidden" {...register('phdMajor')} value={selectedPhdMajor?.label || ''} />
             <SelectPopover
               items={phdMajors}
@@ -270,7 +270,7 @@ const PhD = ({
           </div>
 
           {/* Year of Completion */}
-          <div className={getFieldStyle('year', 3)}>
+          <div className={getFieldStyle('year')}>
             <input type="hidden" {...register('phdCompletionYear')} value={selectedPhdYear?.value || ''} />
             <SelectPopover
               items={generateCompletionYears()}
