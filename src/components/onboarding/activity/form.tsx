@@ -15,7 +15,6 @@ import { useDate } from './use-date';
 import { useUtils } from './use-utils';
 import { useSubmit } from './use-submit';
 import { useInitActivities } from './use-init';
-import { useFocus } from '@/components/onboarding/use-focus';
 
 
 interface ActivityFormProps {
@@ -92,11 +91,6 @@ export default function ActivityForm({ user }: ActivityFormProps) {
   // Local form ref that we'll sync with context
   const localFormRef = useRef<HTMLFormElement>(null);
 
-  // Add focus motion effect for Skills and Interests fields
-  const { getClassName, handleFocus, handleBlur } = useFocus<'skills' | 'interests'>(
-    '' // default class
-  );
-
   // Add effect to scroll when activities change
   useEffect(() => {
     if (selectedActivities.length === 1) {
@@ -133,21 +127,17 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       <ScrollArea ref={scrollAreaRef} className="w-full pr-4">
         <div dir="rtl" className="flex flex-col gap-8 w-full px-4">
           <div ref={skillsSectionRef} className="flex flex-col md:flex-row gap-4">
-            <div className={getClassName('skills')}>
+            <div className="w-full md:w-1/2 transition-all duration-500 ease-in-out relative">
               <Skills 
                 value={watch("skills")} 
                 onChange={(skills: string[]) => setValue("skills", skills)} 
-                onFocus={handleFocus('skills')}
-                onBlur={handleBlur}
               />
             </div>
             
-            <div className={getClassName('interests')}>
+            <div className="w-full md:w-1/2 transition-all duration-500 ease-in-out relative">
               <Interests
                 value={watch("interests")}
                 onChange={(interests: string[]) => setValue("interests", interests)}
-                onFocus={handleFocus('interests')}
-                onBlur={handleBlur}
               />
             </div>
           </div>
