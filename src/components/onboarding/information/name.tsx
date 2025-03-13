@@ -39,7 +39,10 @@ const Name = ({ register, errors }: NameProps) => {
   }, [errors.fullname]);
 
   return (
-    <FocusContainer>
+    <FocusContainer
+      shrunkWidth="55%" 
+      expandedWidth="45%"
+    >
       {({ getClassName, handleFocus, handleBlur }) => (
         <>
           <div 

@@ -23,7 +23,7 @@ const Occupation = ({ register, errors, educationLevel }: OccupationProps) => {
         {({ getClassName, handleFocus, handleBlur }) => (
           <div className="grid grid-cols-1 md:flex md:flex-row gap-4 md:gap-6 w-full mb-4 md:mb-1 mt-2">
             {/* Current occupation/rank */}
-            <div className={getClassName('occupation', '')}>
+            <div className={getClassName('company', 'occupation')}>
               <Input
                 id="currentOccupation"
                 placeholder="المنصب الحالي"
@@ -37,7 +37,7 @@ const Occupation = ({ register, errors, educationLevel }: OccupationProps) => {
             </div>
 
             {/* Company name */}
-            <div className={getClassName('company')}>
+            <div className={getClassName('occupation', 'company')}>
               <Input
                 id="companyName"
                 placeholder="اسم الشركة"
