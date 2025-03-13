@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Project } from "./constant";
-import { Users, DollarSign, Building2, Target, TrendingUp, GitBranch, AlertCircle } from "lucide-react";
+import { Users, DollarSign, Building2, Target, TrendingUp, GitBranch } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const useOutsideClick = (
