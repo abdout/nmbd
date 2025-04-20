@@ -107,6 +107,7 @@ export const {
           onboardingStatus: "PENDING",
           onboardingStep: 1,
           
+          
           // Basic info
           fullname: null,
           description: null,

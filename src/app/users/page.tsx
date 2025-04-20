@@ -1,6 +1,6 @@
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
-// import { UserCard } from "@/components/user/user-card";
+import { UserCard } from "@/components/user/user-card";
 
 export const metadata = {
   title: "الأعضاء",
@@ -8,8 +8,8 @@ export const metadata = {
 };
 
 export default async function UsersPage() {
-  // const session = await auth();
-  // const currentUserId = session?.user?.id;
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   
   // Fetch all users from the database
   const users = await db.user.findMany({
@@ -47,13 +47,13 @@ export default async function UsersPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-          {/* {users.map((user) => (
+          {users.map((user) => (
             <UserCard 
               key={user.id} 
               user={user} 
               isCurrentUser={user.id === currentUserId}
             />
-          ))} */}
+          ))}
         </div>
       )}
     </div>

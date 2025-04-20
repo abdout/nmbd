@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import { getImagePath } from "@/lib/utils";
 
 // Helper function to convert PDF URL to preview URL
 const getPdfPreviewUrl = (url: string) => {
@@ -121,7 +122,7 @@ const AttachmentForm = ({
                   fieldType === 'image' ? (
                     <>
                       <Image
-                        src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : '/placeholder-profile.png'}
+                        src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : getImagePath('/placeholder-profile.png')}
                         alt={label}
                         width={96}
                         height={96}
@@ -130,7 +131,7 @@ const AttachmentForm = ({
                         onError={(e) => {
                           // Handle image loading errors
                           const target = e.target as HTMLImageElement;
-                          target.src = '/placeholder-profile.png'; // Fallback to a placeholder
+                          target.src = getImagePath('/placeholder-profile.png'); // Fallback to a placeholder
                           console.error('Image failed to load:', formValues[name]);
                         }}
                       />

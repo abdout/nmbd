@@ -16,6 +16,11 @@ export function getImagePath(path: string): string {
   // Get the base path from environment if available
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
   
+  // Check if the path is already an absolute URL
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  
   // Construct the full path
   return `${basePath}/${normalizedPath}`;
 }
