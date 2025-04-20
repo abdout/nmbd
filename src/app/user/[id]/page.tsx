@@ -8,11 +8,17 @@ import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Icon } from '@iconify/react';
 
-export default async function UserProfile({
-  params
-}: {
-  params: { id: string }
-}) {
+// Define the correct props interface for Next.js App Router page component
+type PageParams = {
+  id: string;
+};
+
+type PageProps = {
+  params: PageParams;
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+export default async function UserProfile({ params }: PageProps) {
   // Get the profile user by ID
   const profileUser = await getUserById(params.id);
   
