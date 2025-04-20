@@ -10,6 +10,8 @@ export const publicRoutes = [
   "/client",
   "/server",
   "/setting",
+  "/timeline",
+  "/article",
 ];
 
 /**
