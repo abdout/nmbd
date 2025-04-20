@@ -90,6 +90,7 @@ const PostInteraction = ({
               height={20}
               alt="comment"
               className="cursor-pointer"
+              loading="lazy"
               onError={(e) => {
                 console.error("debug posting: Failed to load comment icon");
                 e.currentTarget.style.display = 'none';
@@ -104,6 +105,7 @@ const PostInteraction = ({
               height={20}
               alt="retweet"
               className="cursor-pointer"
+              loading="lazy"
               onError={(e) => {
                 console.error("debug posting: Failed to load retweet icon");
                 e.currentTarget.style.display = 'none';
@@ -124,6 +126,7 @@ const PostInteraction = ({
                   height={18}
                   alt="like"
                   className="cursor-pointer mt-[6px]"
+                  loading="lazy"
                   onError={(e) => {
                     console.error("debug posting: Failed to load like icon");
                     e.currentTarget.style.display = 'none';
@@ -140,6 +143,7 @@ const PostInteraction = ({
               height={20}
               alt="share"
               className="cursor-pointer"
+              loading="lazy"
               onError={(e) => {
                 console.error("debug posting: Failed to load share icon");
                 e.currentTarget.style.display = 'none';

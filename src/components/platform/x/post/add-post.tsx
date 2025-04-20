@@ -52,6 +52,8 @@ const AddPost = () => {
         width={48}
         height={48}
         className="w-12 h-12 object-cover rounded-full"
+        loading="lazy"
+        sizes="48px"
       />
       {/* POST */}
       <div className="flex-1">
@@ -110,6 +112,8 @@ const AddPost = () => {
                     alt="Add Image"
                     width={25}
                     height={25}
+                    loading="lazy"
+                    sizes="25px"
                   />
 
                 </div>
@@ -117,15 +121,36 @@ const AddPost = () => {
             }}
           </CldUploadWidget>
           <div className="flex items-center gap-2 cursor-pointer reveal">
-            <Image src="/x/gif.png" alt="Add Video" width={27} height={27} />
+            <Image 
+              src="/x/gif.png" 
+              alt="Add Video" 
+              width={27} 
+              height={27} 
+              loading="lazy"
+              sizes="27px"
+            />
 
           </div>
           <div className="flex items-center gap-2 cursor-pointer reveal">
-            <Image src="/x/poll.png" alt="Create Poll" width={30} height={30} />
+            <Image 
+              src="/x/poll.png" 
+              alt="Create Poll" 
+              width={30} 
+              height={30} 
+              loading="lazy"
+              sizes="30px"
+            />
 
           </div>
           <div className="flex items-center gap-2 cursor-pointer reveal">
-            <Image src="/x/happiness.png" alt="Add Event" width={23} height={23} />
+            <Image 
+              src="/x/happiness.png" 
+              alt="Add Event" 
+              width={23} 
+              height={23} 
+              loading="lazy"
+              sizes="23px"
+            />
 
           </div>
           

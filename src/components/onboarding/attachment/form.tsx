@@ -127,7 +127,8 @@ const AttachmentForm = ({
                         width={96}
                         height={96}
                         className="absolute inset-0 w-full h-full object-cover"
-                        unoptimized
+                        loading="lazy"
+                        sizes="96px"
                         onError={(e) => {
                           // Handle image loading errors
                           const target = e.target as HTMLImageElement;
@@ -150,7 +151,8 @@ const AttachmentForm = ({
                             width={96}
                             height={96}
                             className="absolute inset-0 w-full h-full object-cover"
-                            unoptimized
+                            loading="lazy"
+                            sizes="96px"
                           />
                           <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
                             {label}

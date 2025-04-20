@@ -11,18 +11,20 @@ const nextConfig = {
       'lh3.googleusercontent.com',
       'platform-lookaside.fbsbx.com'
     ],
-    unoptimized: process.env.NODE_ENV === 'production',
+    // Enable optimization in all environments
+    unoptimized: false,
   },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
   headers: async () => {
     return [
       {
-        source: '/:all*(svg|jpg|png)',
+        source: '/:all*(svg|jpg|png|webp)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, must-revalidate',
+            // Improve caching - 30 days for static images
+            value: 'public, max-age=2592000, stale-while-revalidate=86400',
           }
         ],
       },

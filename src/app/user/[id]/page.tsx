@@ -41,6 +41,8 @@ export default async function UserProfile(props) {
                 width={150}
                 height={150}
                 className="rounded-full object-cover border-4 border-muted"
+                loading="lazy"
+                sizes="150px"
               />
               <h1 className="mt-4 text-2xl font-bold">
                 {profileUser.name}

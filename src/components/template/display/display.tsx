@@ -89,8 +89,9 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
                             alt={title}
                             src={src}
                             fill
-                            priority
-                            quality={100}
+                            loading="lazy"
+                            sizes="70vmin"
+                            priority={index === 0}
                         />
                     </div>
                     {current === index && (

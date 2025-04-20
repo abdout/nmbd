@@ -133,6 +133,8 @@ const Post = async ({ post }: { post: FeedPostType }) => {
               height={40}
               alt="User Avatar"
               className="w-14 h-14 rounded-full"
+              loading="lazy"
+              sizes="56px"
               onError={(e) => {
                 console.log("Error loading user avatar image for post:", post.id);
                 e.currentTarget.src = "/x/noAvatar.png";
@@ -161,6 +163,8 @@ const Post = async ({ post }: { post: FeedPostType }) => {
                 fill
                 className="object-cover rounded-xl"
                 alt="Post Image"
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={(e) => {
                   console.log("Error loading post image for post:", post.id, "URL:", postImgUrl);
                   // Fall back to a placeholder if the image doesn't load

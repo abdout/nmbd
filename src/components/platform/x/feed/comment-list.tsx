@@ -72,6 +72,8 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
             width={32}
             height={32}
             className="w-8 h-8 rounded-full"
+            loading="lazy"
+            sizes="32px"
           />
           <form
             onSubmit={(e) => {
@@ -94,6 +96,8 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
                 width={16}
                 height={16}
                 className="cursor-pointer"
+                loading="lazy"
+                sizes="16px"
               />
             </button>
           </form>
@@ -109,6 +113,8 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
               width={40}
               height={40}
               className="w-10 h-10 rounded-full"
+              loading="lazy"
+              sizes="40px"
             />
             {/* DESC */}
             <div className="flex flex-col gap-2 flex-1">
@@ -126,6 +132,8 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
                     width={12}
                     height={12}
                     className="cursor-pointer w-4 h-4"
+                    loading="lazy"
+                    sizes="12px"
                   />
                   <span className="text-gray-300">|</span>
                   <span className="text-gray-500">0 Likes</span>
@@ -140,6 +148,8 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
               width={16}
               height={16}
               className="cursor-pointer w-4 h-4"
+              loading="lazy"
+              sizes="16px"
             />
           </div>
         ))}

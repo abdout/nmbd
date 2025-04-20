@@ -12,6 +12,10 @@ export const publicRoutes = [
   "/setting",
   "/timeline",
   "/article",
+  "/father",
+  "/author",
+  
+  
 ];
 
 /**
