@@ -37,7 +37,7 @@ export const LoginForm = ({
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
-    ? "Email already in use with different provider!"
+    ? "البريد الإلكتروني مستخدم بالفعل مع مزود آخر!"
     : "";
 
   const [showTwoFactor, setShowTwoFactor] = useState(false);
@@ -72,7 +72,7 @@ export const LoginForm = ({
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError("Something went wrong"));
+        .catch(() => setError("حدث خطأ ما"));
     });
   };
 
@@ -80,9 +80,9 @@ export const LoginForm = ({
     <div className={cn("flex flex-col gap-6 min-w-[200px] md:min-w-[350px]", className)} {...props}>
       <Card className="border-none shadow-none">
         <CardHeader className="text-center">
-          {/* <CardTitle className="text-xl">Welcome back</CardTitle>
+          {/* <CardTitle className="text-xl">مرحبًا بعودتك</CardTitle>
           <CardDescription>
-            Login with your Apple or Google account
+            تسجيل الدخول باستخدام حساب Apple أو Google
           </CardDescription> */}
         </CardHeader>
         <CardContent>
@@ -93,7 +93,7 @@ export const LoginForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                  Or continue with
+                  أو 
                 </span>
               </div>
               
@@ -108,7 +108,7 @@ export const LoginForm = ({
                           <Input
                             {...field}
                             disabled={isPending}
-                            placeholder="Two Factor Code"
+                            placeholder="رمز التحقق بخطوتين"
                           />
                         </FormControl>
                         <FormMessage />
@@ -128,7 +128,7 @@ export const LoginForm = ({
                               id="email"
                               type="email"
                               disabled={isPending}
-                              placeholder="Email"
+                              placeholder="البريد الإلكتروني"
                             />
                           </FormControl>
                           <FormMessage />
@@ -146,14 +146,14 @@ export const LoginForm = ({
                               id="password"
                               type="password"
                               disabled={isPending}
-                              placeholder="Password"
+                              placeholder="كلمة المرور"
                             />
                           </FormControl>
                           <Link
                             href="/auth/reset"
                             className="text-sm text-start hover:underline underline-offset-4"
                           >
-                            Forgot password?
+                            نسيت كلمة المرور؟
                           </Link>
                           <FormMessage />
                         </FormItem>
@@ -166,13 +166,13 @@ export const LoginForm = ({
                 <FormSuccess message={success} />
                 
                 <Button disabled={isPending} type="submit" className="w-full h-11 text-base">
-                  {showTwoFactor ? "Confirm" : "Login"}
+                  {showTwoFactor ? "تأكيد" : "تسجيل الدخول"}
                 </Button>
               </div>
               
               <div className="text-center text-sm">
                 <Link href="/auth/join" className="hover:underline underline-offset-4">
-                  Don&apos;t have an account?
+                  ليس لديك حساب؟
                 </Link>
               </div>
             </form>
@@ -180,8 +180,8 @@ export const LoginForm = ({
         </CardContent>
       </Card>
       {/* <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-        By clicking continue, you agree to our <br/> <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        بالنقر على متابعة، فإنك توافق على <br/> <a href="#">شروط الخدمة</a>{" "}
+        و <a href="#">سياسة الخصوصية</a>.
       </div> */}
     </div>
   );

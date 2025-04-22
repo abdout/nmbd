@@ -17,7 +17,22 @@ export default auth((req) => {
   const pathname = nextUrl.pathname
   
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
-  const isPublicRoute = publicRoutes.includes(pathname)
+  
+  // Check if the path matches any public route, including dynamic routes
+  const isPublicRoute = publicRoutes.some(route => {
+    // For exact matches
+    if (route === pathname) return true;
+    
+    // For dynamic routes
+    if (route.includes('[id]')) {
+      const routePattern = route.replace('[id]', '[^/]+');
+      const regex = new RegExp(`^${routePattern.replace(/\//g, '\\/')}$`);
+      return regex.test(pathname);
+    }
+    
+    return false;
+  });
+  
   const isAuthRoute = authRoutes.includes(pathname)
 
   if (isApiAuthRoute) {

@@ -71,7 +71,7 @@ export const ResetForm = ({
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="Email"
+                          placeholder="البريد الإلكتروني"
                           type="email"
                         />
                       </FormControl>
@@ -88,13 +88,13 @@ export const ResetForm = ({
                   type="submit" 
                   className="w-full h-11 text-base"
                 >
-                  Reset password
+                  إعادة تعيين كلمة المرور
                 </Button>
               </div>
 
               <div className="text-center text-sm">
                 <Link href="/auth/login" className="hover:underline underline-offset-4">
-                  Back to login
+                  العودة إلى تسجيل الدخول
                 </Link>
               </div>
             </form>

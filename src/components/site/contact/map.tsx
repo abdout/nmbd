@@ -2,11 +2,11 @@
 import React, { useState, memo } from 'react';
 import { Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import OptimizedImage from '@/components/image/optimum-image';
 import { Icon } from '@iconify/react';
 
 // Office types
-type OfficeId = 'riyadh' | 'alkhobar';
+type OfficeId = 'khartoum' | 'portsudan';
 
 interface Office {
   id: OfficeId;
@@ -22,8 +22,8 @@ interface Office {
 
 // Constants for location data
 const OFFICES: Record<OfficeId, Office> = {
-  riyadh: {
-    id: 'riyadh',
+  khartoum: {
+    id: 'khartoum',
     title: "دار الخرطوم",
     address: [
       "العمارات, شارع 35 جمب السفارة السعودية",
@@ -34,10 +34,10 @@ const OFFICES: Record<OfficeId, Office> = {
       lat: 24.7136,
       lng: 46.6753
     },
-    mapImage: "/map.avif"
+    mapImage: "/map/office.jpg"
   },
-  alkhobar: {
-    id: 'alkhobar',
+  portsudan: {
+    id: 'portsudan',
     title: "دار الخرطوم",
     address: [
       "العمارات, شارع 35 جمب السفارة السعودية",
@@ -48,7 +48,7 @@ const OFFICES: Record<OfficeId, Office> = {
       lat: 26.2172,
       lng: 50.1971
     },
-    mapImage: "/map.avif"
+    mapImage: "/map/office.jpg"
   }
 };
 
@@ -74,12 +74,12 @@ const MapPage = () => {
           {/* Map Image Container */}
           <div className="flex flex-col h-full overflow-hidden rounded-lg">
             <div className="relative h-[300px] w-full">
-              <Image 
+              <OptimizedImage 
                 src={selectedOffice.mapImage}
                 alt={`Map of ${selectedOffice.title}`}
-                fill 
+                fill={true}
+                convertPath={false}
                 sizes="(max-width: 768px) 100vw, 50vw"
-                priority
                 className="object-cover" 
               />
             </div>

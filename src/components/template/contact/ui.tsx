@@ -1,5 +1,6 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 
 import Excute from './excute'
 // import Office from './office'
@@ -12,7 +13,7 @@ const Contact = () => {
   return (
     <>
     <Head title="الاتصال" description="حبابك عشرة" />
-    <div className=' flex flex-col space-y-8 md:px-20'>
+    <div className='flex flex-col space-y-8 md:px-20'>
         
         {/* <Office /> */}
         <MapSection />  
@@ -20,11 +21,9 @@ const Contact = () => {
         <NewsLetter />
         <Social />
         
-
     </div>
     </>
   )
 }
-
 
 export default Contact

@@ -28,7 +28,7 @@ export const NewVerificationForm = ({
     if (success || error) return;
 
     if (!token) {
-      setError("Missing token!");
+      setError("الرمز مفقود!");
       return;
     }
 
@@ -38,7 +38,7 @@ export const NewVerificationForm = ({
         setError(data.error);
       })
       .catch(() => {
-        setError("Something went wrong!");
+        setError("حدث خطأ ما!");
       });
   }, [token, success, error]);
 
@@ -52,7 +52,7 @@ export const NewVerificationForm = ({
     <div className={cn("flex flex-col gap-6 min-w-[200px] md:min-w-[350px]", className)} {...props}>
       <Card className="border-none shadow-none">
         <CardHeader className="text-center">
-          <h1 className="text-xl font-semibold">Confirming your verification</h1>
+          <h1 className="text-xl font-semibold">تأكيد التحقق</h1>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
@@ -68,7 +68,7 @@ export const NewVerificationForm = ({
 
             <div className="text-center text-sm">
               <Link href="/auth/login" className="hover:underline underline-offset-4">
-                Back to login
+                العودة إلى تسجيل الدخول
               </Link>
             </div>
           </div>

@@ -62,7 +62,7 @@ export const NewPasswordForm = ({
     <div className={cn("flex flex-col gap-6 min-w-[200px] md:min-w-[350px]", className)} {...props}>
       <Card className="border-none shadow-none">
         <CardHeader className="text-center">
-          <h1 className="text-xl font-semibold">Enter a new password</h1>
+          <h1 className="text-xl font-semibold">أدخل كلمة مرور جديدة</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -77,7 +77,7 @@ export const NewPasswordForm = ({
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="New Password"
+                          placeholder="كلمة المرور الجديدة"
                           type="password"
                         />
                       </FormControl>
@@ -94,13 +94,13 @@ export const NewPasswordForm = ({
                   type="submit" 
                   className="w-full h-11 text-base"
                 >
-                  Reset password
+                  إعادة تعيين كلمة المرور
                 </Button>
               </div>
 
               <div className="text-center text-sm">
                 <Link href="/auth/login" className="hover:underline underline-offset-4">
-                  Back to login
+                  العودة إلى تسجيل الدخول
                 </Link>
               </div>
             </form>

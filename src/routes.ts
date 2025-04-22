@@ -10,6 +10,13 @@ export const publicRoutes = [
   "/client",
   "/server",
   "/setting",
+  "/video",
+  "/video/[id]",
+  "/paper",
+  "/paper/[id]",
+  "/article",
+  "/article/[id]",
+  "/github"
 ];
 
 /**

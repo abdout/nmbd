@@ -226,7 +226,7 @@ p {
 
 /* Scrollbar customization for WebKit browsers (Chrome, Safari, Edge, etc.) */
 ::-webkit-scrollbar {
-  width: 10px; /* Width of the scrollbar */
+  width: 14px; /* Width of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {

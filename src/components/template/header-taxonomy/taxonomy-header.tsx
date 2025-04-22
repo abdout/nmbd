@@ -17,8 +17,8 @@ const TaxonomyHeader = () => {
               <Link
                 href="/login"
                 className={cn(
-                  buttonVariants({ variant: "secondary", size: "sm" }),
-                  "px-4"
+                  buttonVariants({ variant: "secondary", size: "sm" } ),
+                  "px-4 text-xs"
                 )}
               >
                 الدخول
