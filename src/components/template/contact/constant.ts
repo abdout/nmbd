@@ -1,0 +1,38 @@
+export const cardsData = [
+  {
+    name: "قاسم الظافر",
+    image: "/author/gasm.jpg",
+    rank: "الامين العام",
+    email: "circum:mail",
+    phone: "ph:phone-call-thin",
+    send: "gm@nmbd.org",
+    dail: "0917150001",
+  },
+  {
+    name: "هشام احمد",
+    image: "/author/hisham.jpg",
+    rank: "الامين السياسي",
+    email: "circum:mail",
+    phone: "ph:phone-call-thin",
+    send: "hm@nmbd.org",
+    dail: "0917150001",
+  },
+  {
+    name: "المقداد الهجان",
+    image: "/author/almgdad.jpg",
+    rank: "الامين الثقافي",
+    email: "circum:mail",
+    phone: "ph:phone-call-thin",
+    send: "gm@nmbd.org",
+    dail: "0917150001",
+  },
+  {
+    name: "زهير طه",
+    image: "/author/zuhir.jpg",
+    rank: "الامين الاعلامي",
+    email: "circum:mail",
+    phone: "ph:phone-call-thin",
+    send: "gm@nmbd.org",
+    dail: "0917150001",
+  },
+];
