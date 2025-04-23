@@ -175,6 +175,7 @@ model User {
   followRequestsReceived FollowRequest[] @relation("FollowRequestsReceived")
   blocksCreated      Block[]       @relation("BlocksSent")
   blocksReceived     Block[]       @relation("BlocksReceived")
+  images             Image[]
 }
 
 
@@ -309,4 +310,24 @@ model Block {
   blockedId  String    @db.ObjectId
 
   @@unique([blockerId, blockedId])
+}
+
+model Image {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  url         String
+  fileId      String
+  fileName    String
+  filePath    String?
+  thumbnailUrl String?
+  size        Int?
+  width       Int?
+  height      Int?
+  format      String?
+  tags        String[] @default([])
+  userId      String?  @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }

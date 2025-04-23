@@ -16,7 +16,9 @@ export const publicRoutes = [
   "/paper/[id]",
   "/article",
   "/article/[id]",
-  "/github"
+  "/github",
+  "/upload",
+  "/api/upload",
 ];
 
 /**
