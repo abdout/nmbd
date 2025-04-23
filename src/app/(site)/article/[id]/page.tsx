@@ -5,30 +5,68 @@ import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { articles } from '@/components/template/article/constant';
-import { ArticleItem } from '@/components/template/article/type';
+import { articles as staticArticles } from '@/components/template/article/constant';
+import { Article } from '@/components/article/type';
 import OptimizedImage from '@/components/image/optimum-image';
+import { getArticleBySlug } from '@/components/article/action';
 
 export default function ArticlePage() {
   const params = useParams();
-  const [article, setArticle] = useState<ArticleItem | null>(null);
+  const [article, setArticle] = useState<Article | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    if (!params.id) return;
+    const fetchArticle = async () => {
+      if (!params.id) return;
+      
+      const idString = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+      
+      try {
+        // First try to fetch from database by slug
+        const dbArticle = await getArticleBySlug(idString);
+        
+        if (dbArticle) {
+          setArticle(dbArticle);
+        } else {
+          // If no database article, try to use static article (for demo)
+          const id = parseInt(idString) - 1;
+          
+          if (isNaN(id) || id < 0 || id >= staticArticles.length) {
+            notFound();
+            return;
+          }
+          
+          // Map static article to Article type
+          const staticArticle = staticArticles[id];
+          setArticle({
+            id: `static-${id + 1}`,
+            title: staticArticle.title,
+            slug: `article-${id + 1}`,
+            description: staticArticle.description,
+            image: staticArticle.image,
+            body: "This is the full article content that will be displayed on the article page.",
+            author: staticArticle.author,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching article:", error);
+        notFound();
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    const idString = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
-    const id = parseInt(idString) - 1;
-    
-    if (isNaN(id) || id < 0 || id >= articles.length) {
-      notFound();
-      return;
-    }
-    
-    setArticle(articles[id]);
+    fetchArticle();
   }, [params.id]);
   
-  if (!article) {
+  if (isLoading) {
     return <div className="container mx-auto py-10 px-4">Loading...</div>;
+  }
+  
+  if (!article) {
+    return notFound();
   }
   
   return (
@@ -66,7 +104,7 @@ export default function ArticlePage() {
             <div className="flex items-center text-sm text-gray-600 gap-2">
               <span>{article.author}</span>
               <span className="mx-2">•</span>
-              <span>{article.date}</span>
+              <span>{new Date(article.createdAt).toLocaleDateString()}</span>
             </div>
           </header>
           
@@ -76,10 +114,7 @@ export default function ArticlePage() {
           
           <div className="prose max-w-none rtl">
             <p className="text-right">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.
-            </p>
-            <p className="text-right">
-              إذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه الخصوص، حيث يحتاج العميل فى كثير من الأحيان أن يطلع على صورة حقيقية لتصميم الموقع.
+              {article.body}
             </p>
           </div>
         </article>

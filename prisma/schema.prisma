@@ -331,3 +331,15 @@ model Image {
 
   @@index([userId])
 }
+
+model Article {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  description String
+  image       String
+  body        String
+  author      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
