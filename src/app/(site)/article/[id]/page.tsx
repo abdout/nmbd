@@ -91,7 +91,7 @@ export default function ArticlePage() {
               className="object-cover object-center"
               priority
               transformations={[
-                { quality: "80" },
+                { quality: 80 },
                 { format: "auto" }
               ]}
               objectFit="cover"
