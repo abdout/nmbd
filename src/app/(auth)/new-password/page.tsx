@@ -1,4 +1,4 @@
-import { NewPasswordForm } from "@/components/auth/password/password-form";
+import { NewPasswordForm } from "@/components/auth/password-form";
 
 const NewPasswordPage = () => {
   return ( 

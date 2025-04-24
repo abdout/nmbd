@@ -4,8 +4,6 @@ import React from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -37,7 +35,6 @@ export function ArticleDialog({
   const defaultValues: Partial<ArticleFormValues> = article
     ? {
         title: article.title,
-        slug: article.slug,
         description: article.description,
         image: article.image,
         body: article.body,
@@ -50,18 +47,21 @@ export function ArticleDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-[95vw] w-[1200px] h-[90vh] max-h-[900px] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {mode === "create" ? "Create New Article" : "Edit Article"}
-          </DialogTitle>
-        </DialogHeader>
-        <ArticleForm
-          mode={mode}
-          defaultValues={defaultValues}
-          articleId={article?.id}
-          onSuccess={handleSuccess}
-        />
+      <DialogContent 
+        style={{ width: "100vw", maxWidth: "100vw", direction: "rtl" }} 
+        className="h-[100vh] max-h-[100vh] overflow-y-auto p-0 rounded-none border-0 rtl"
+        dir="rtl"
+      >
+        <div className="flex justify-center">
+          <div className="w-1/2 p-4">
+            <ArticleForm
+              mode={mode}
+              defaultValues={defaultValues}
+              articleId={article?.id}
+              onSuccess={handleSuccess}
+            />
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -73,7 +73,7 @@ export function CreateArticleButton() {
       mode="create"
       trigger={
         <Button className="bg-primary text-white">
-          Add New Article
+          إضافة مقال جديد
         </Button>
       }
     />
