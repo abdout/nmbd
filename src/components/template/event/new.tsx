@@ -12,13 +12,6 @@ export default function EventCard() {
     isDisabled?: boolean;
   }
 
-  interface TimeZone {
-    code: string;
-    time: string;
-    period: string;
-    isActive: boolean;
-  }
-
   // Event data array
   const events: Event[] = [
     {
@@ -55,17 +48,6 @@ export default function EventCard() {
       isDisabled: true
     }
   ];
-
-  // Time zones array
-  const timeZones: TimeZone[] = [
-    { code: "KRT", time: "1:34", period: "PM", isActive: true },
-    { code: "CAI", time: "1:34", period: "PM", isActive: false },
-    { code: "ADD", time: "2:34", period: "PM", isActive: false },
-    { code: "NBO", time: "2:34", period: "PM", isActive: false }
-  ];
-
-  // Feed interactions
-  const feedInteractions: number[] = [15, 15, 10, 9, 9, 2];
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -122,27 +104,8 @@ export default function EventCard() {
                تدعوكم الحركة الوطنية للبناء والتنمية لحضور المؤتمر العام الأول - 
 نطرح فيه ملامح مشروعنا، ونفتح النقاش حول التحديات الراهنة وآفاق العمل المشترك
               </p>
-              {/* <div className="flex items-center gap-4 text-sm text-gray-500">
-                {feedInteractions.map((count, index) => (
-                  <span key={index} className="flex items-center gap-1">{count}</span>
-                ))}
-              </div> */}
             </div>
           </div>
-
-          {/* Time Zones
-          <div className="grid grid-cols-4 gap-4 text-center">
-            {timeZones.map((zone, index) => (
-              <div key={index}>
-                <div className={zone.isActive ? "text-blue-500" : "text-gray-500"}>
-                  {zone.code}
-                </div>
-                <div className={`text-2xl font-light ${zone.isActive ? "text-blue-500" : ""}`}>
-                  {zone.time}<span className="text-sm">{zone.period}</span>
-                </div>
-              </div>
-            ))}
-          </div> */}
         </div>
       </div>
     </div>

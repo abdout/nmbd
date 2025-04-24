@@ -104,7 +104,7 @@ export default function ArticlePage() {
             <div className="flex items-center text-sm text-gray-600 gap-2">
               <span>{article.author}</span>
               <span className="mx-2">•</span>
-              <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+              <span>{new Date(article.createdAt instanceof Date ? article.createdAt : new Date(article.createdAt)).toLocaleDateString()}</span>
             </div>
           </header>
           
