@@ -35,11 +35,13 @@ interface ArticleFormProps {
 
 // Sample authors array - you might want to fetch this from an API
 const authors = [
-  "محمد عبد الله",
-  "فاطمة الزهراء",
-  "أحمد محمود",
-  "سارة خالد",
-  "عمر الفاروق"
+  "المقداد الهجان",
+  "هشام احمد",
+  "ابو بكر جيكوني",
+  "قاسم الظافر",
+  "الفاضل فرح",
+  "يوسف مورو",
+  
 ];
 
 export default function ArticleForm({

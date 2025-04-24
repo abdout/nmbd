@@ -5,6 +5,8 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Article, ArticleFormValues } from "./type";
@@ -52,6 +54,11 @@ export function ArticleDialog({
         className="h-[100vh] max-h-[100vh] overflow-y-auto p-0 rounded-none border-0 rtl"
         dir="rtl"
       >
+        <DialogHeader className="rtl text-right" dir="rtl">
+          <DialogTitle className="text-right" dir="rtl">
+            {mode === "create" ? "إضافة مقال جديد" : "تعديل المقال"}
+          </DialogTitle>
+        </DialogHeader>
         <div className="flex justify-center">
           <div className="w-1/2 p-4">
             <ArticleForm
