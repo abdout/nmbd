@@ -1,6 +1,8 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
+import React from 'react'
+// Remove unused imports
+// import { useEffect, useState } from 'react'
+// import dynamic from 'next/dynamic'
 
 import Excute from './excute'
 // import Office from './office'

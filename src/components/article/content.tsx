@@ -30,7 +30,6 @@ export function ArticleCard({ article }: { article: Article }) {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   
   console.log("[ArticleCard] Rendering article card:", {
     id: article.id,
@@ -131,7 +130,7 @@ export function ArticleCard({ article }: { article: Article }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the article "{article.title}". This
+              This will permanently delete the article &quot;{article.title}&quot;. This
               action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

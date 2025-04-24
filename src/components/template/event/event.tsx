@@ -1,8 +1,8 @@
 import Head from '@/components/atom/site-heading'
 import React from 'react'
-import { LampDesktop } from './lamp-desktop'
-
-import { LampMobile } from './lamp-mobile'
+// Remove unused imports
+// import { LampDesktop } from './lamp-desktop'
+// import { LampMobile } from './lamp-mobile'
 import EventCard from './new'
 
 const Event = () => {

@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import OptimizedImage from "@/components/image/optimum-image";
 import { useState } from "react";
-import { convertToImageKitPath } from "@/components/image/image-utils";
 
 
 interface ArticleItem {
@@ -69,8 +68,8 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     loading="lazy"
                                     convertPath={false}
                                     transformations={[
-                                        { quality: "80" as any },
-                                        { format: "auto" as any }
+                                        { quality: "80" },
+                                        { format: "auto" }
                                     ]}
                                 />
                             </div>

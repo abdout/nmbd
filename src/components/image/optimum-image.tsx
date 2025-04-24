@@ -24,7 +24,7 @@ interface OptimizedImageProps {
   convertPath?: boolean;
   debug?: boolean; // Debug mode flag - uses a placeholder image
   onLoad?: () => void;
-  onError?: (error: any) => void;
+  onError?: (error: Error | unknown) => void;
 }
 
 /**
@@ -67,8 +67,8 @@ export default function OptimizedImage({
   // Common transformations for optimization
   const defaultTransformations: Transformation[] = [
     // Convert numeric quality to string as required by ImageKit
-    { quality: quality.toString() as any }, // Use type assertion to fix type mismatch
-    { format: 'auto' as any }
+    { quality: quality.toString() },
+    { format: 'auto' }
   ];
 
   // Combine default transformations with any custom ones

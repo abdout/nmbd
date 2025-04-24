@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
       const formData = await req.formData();
       
       const file = formData.get('file') as File;
-      const userId = formData.get('userId') as string;
+      // Extract userId but comment it out since it's not used yet
+      // const userId = formData.get('userId') as string;
       
       if (!file) {
         console.error('No file in request');
@@ -49,8 +50,9 @@ export async function POST(req: NextRequest) {
       // Upload to ImageKit
       const imageKitResponse = await uploadToImageKit(file);
       
-      // Save to database
-      const savedImage = await saveImageToDatabase(imageKitResponse, userId);
+      // Save to database - Note: userId is needed here but commented out
+      // const savedImage = await saveImageToDatabase(imageKitResponse, userId);
+      const savedImage = await saveImageToDatabase(imageKitResponse);
       
       console.log('Upload completed successfully');
       return NextResponse.json({ 
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
       console.log('Processing as JSON payload');
       
       const body = await req.json();
-      const { imageUrl, userId } = body;
+      const { imageUrl } = body; // Removed unused userId
       
       if (!imageUrl) {
         console.error('No image URL provided');

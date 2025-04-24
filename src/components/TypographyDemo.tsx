@@ -24,19 +24,19 @@ export function TypographyDemo() {
       </div>
 
       <div>
-        <H2>The King's Plan</H2>
+        <H2>The King&apos;s Plan</H2>
         <P>
           The king thought long and hard, and finally came up with a brilliant plan: he would tax the jokes in the kingdom.
         </P>
         <Blockquote>
-          "After all," he said, "everyone enjoys a good joke, so it's only fair that they should pay for the privilege."
+          &quot;After all,&quot; he said, &quot;everyone enjoys a good joke, so it&apos;s only fair that they should pay for the privilege.&quot;
         </Blockquote>
       </div>
 
       <div>
         <H3>The Joke Tax</H3>
         <P>
-          The king's subjects were not amused. They grumbled and complained, but the king was firm:
+          The king&apos;s subjects were not amused. They grumbled and complained, but the king was firm:
         </P>
         <List>
           <li>1st level of puns: 5 gold coins</li>
@@ -44,22 +44,22 @@ export function TypographyDemo() {
           <li>3rd level of one-liners: 20 gold coins</li>
         </List>
         <P>
-          As a result, people stopped telling jokes, and the kingdom fell into a gloom. But there was one person who refused to let the king's foolishness get him down: a court jester named Jokester.
+          As a result, people stopped telling jokes, and the kingdom fell into a gloom. But there was one person who refused to let the king&apos;s foolishness get him down: a court jester named Jokester.
         </P>
       </div>
 
       <div>
-        <H4>Jokester's Revolt</H4>
+        <H4>Jokester&apos;s Revolt</H4>
         <P>
-          Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king's pillow, in his soup, even in the royal toilet. The king was furious, but he couldn't seem to stop Jokester.
+          Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king&apos;s pillow, in his soup, even in the royal toilet. The king was furious, but he couldn&apos;t seem to stop Jokester.
         </P>
         <P>
-          And then, one day, the people of the kingdom discovered that the jokes left by Jokester were so funny that they couldn't help but laugh. And once they started laughing, they couldn't stop.
+          And then, one day, the people of the kingdom discovered that the jokes left by Jokester were so funny that they couldn&apos;t help but laugh. And once they started laughing, they couldn&apos;t stop.
         </P>
       </div>
 
       <div>
-        <H3>The People's Rebellion</H3>
+        <H3>The People&apos;s Rebellion</H3>
         <P>
           The people of the kingdom, feeling uplifted by the laughter, started to tell jokes and puns again, and soon the entire kingdom was in on the joke.
         </P>
@@ -68,8 +68,8 @@ export function TypographyDemo() {
           <table className="w-full">
             <thead>
               <tr className="m-0 border-t p-0 even:bg-muted">
-                <th className="border px-4 py-2 text-left font-bold">King's Treasury</th>
-                <th className="border px-4 py-2 text-left font-bold">People's happiness</th>
+                <th className="border px-4 py-2 text-left font-bold">King&apos;s Treasury</th>
+                <th className="border px-4 py-2 text-left font-bold">People&apos;s happiness</th>
               </tr>
             </thead>
             <tbody>
