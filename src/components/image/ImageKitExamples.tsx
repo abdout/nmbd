@@ -48,7 +48,7 @@ export default function ImageKitExamples() {
           transformation={[
             { width: 400 },
             { height: 300 },
-            { quality: '80' },
+            { quality: 80 },
             { format: 'webp' },
             { effectGray: true },
             { radius: '15' }
@@ -67,7 +67,7 @@ export default function ImageKitExamples() {
           width={400} 
           height={300}
           transformation={[
-            { quality: '80' },
+            { quality: 80 },
             { format: 'auto' }
           ]}
           className="rounded-md"
@@ -85,7 +85,7 @@ export default function ImageKitExamples() {
           height={800}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           transformation={[
-            { quality: '80' },
+            { quality: 80 },
             { format: 'auto' }
           ]}
           className="w-full h-auto rounded-md"

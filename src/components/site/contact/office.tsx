@@ -22,7 +22,7 @@ const MobileOffice = () => {
                   className='' 
                   transformations={[
                     { format: 'auto' },
-                    { quality: '80' }
+                    { quality: 80 }
                   ]}
                 />
                 </Link>
@@ -57,7 +57,7 @@ const DesktopOffice = () => {
                   className='' 
                   transformations={[
                     { format: 'auto' },
-                    { quality: '80' }
+                    { quality: 80 }
                   ]}
                 />
                 </Link>

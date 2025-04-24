@@ -65,7 +65,7 @@ export default function AllPapersPage() {
                 fill
                 className="object-cover object-center group-hover:scale-105 transition duration-300"
                 transformations={[
-                  { quality: "80" },
+                  { quality: 80 },
                   { format: "auto" }
                 ]}
                 objectFit="cover"

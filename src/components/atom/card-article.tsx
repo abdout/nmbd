@@ -68,7 +68,7 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     loading="lazy"
                                     convertPath={false}
                                     transformations={[
-                                        { quality: "80" },
+                                        { quality: 80 },
                                         { format: "auto" }
                                     ]}
                                 />

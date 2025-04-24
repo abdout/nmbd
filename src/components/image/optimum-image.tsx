@@ -66,8 +66,8 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   // Common transformations for optimization
   const defaultTransformations: Transformation[] = [
-    // Convert numeric quality to string as required by ImageKit
-    { quality: quality.toString() },
+    // Use number type for quality as required by ImageKit
+    { quality },
     { format: 'auto' }
   ];
 

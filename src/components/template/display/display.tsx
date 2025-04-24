@@ -92,7 +92,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
                             sizes="70vmin"
                             priority={isPriority}
                             transformations={[
-                                { quality: "80" },
+                                { quality: 80 },
                                 { format: "auto" }
                             ]}
                             objectFit="cover"

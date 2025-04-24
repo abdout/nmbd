@@ -64,11 +64,12 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                     fill
                                     sizes="(max-width: 768px) 33vw, 25vw"
                                     transformation={[
-                                        { quality: "80" },
+                                        { quality: 80 },
                                         { format: "auto" }
                                     ]}
                                     style={{ objectFit: "cover" }}
                                     loading="lazy"
+                                    convertPath={false}
                                 />
                             </div>
                             <div className="w-2/3 flex flex-col justify-between md:py-2 py-0">
