@@ -68,7 +68,7 @@ export function getBlurDataUrl(
 export function formatImageSrc(src: string): string {
   // Handle absolute URLs (remote images)
   if (src.startsWith('http')) {
-    return `/${src}`;
+    return src; // Return the URL unchanged for external URLs
   }
   
   // Handle relative URLs without leading slash
@@ -100,9 +100,12 @@ export function generateSrcSet(
  * Replace numeric characters with letters (1=a, 2=b, etc.)
  */
 export function convertToImageKitPath(imagePath: string): string {
-  // If the path already starts with 'http', it's an external URL, use web proxy format
+  console.log("[convertToImageKitPath] Converting path:", imagePath);
+  
+  // If the path already starts with 'http', it's an external URL, return it as is
   if (imagePath.startsWith('http')) {
-    return `/${imagePath}`;
+    console.log("[convertToImageKitPath] External URL detected, using as is:", imagePath);
+    return imagePath; // Return the URL unchanged, without adding a leading slash
   }
   
   // For local paths, apply the digit-to-letter transformation
@@ -137,6 +140,22 @@ export function convertToImageKitPath(imagePath: string): string {
     
     return `/${letters}.avif`;
   });
+  
+  // Handle WEBP files
+  transformedPath = transformedPath.replace(/\/(\d+)\.webp/g, (match, number) => {
+    const letters = number.split('').map(digit => {
+      const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
+      return String.fromCharCode(charCode);
+    }).join('');
+    
+    return `/${letters}.webp`;
+  });
+  
+  console.log("[convertToImageKitPath] Final transformed path:", transformedPath);
+  
+  if (transformedPath === imagePath) {
+    console.log("[convertToImageKitPath] Warning: Path was not transformed, might indicate an unexpected format");
+  }
   
   return transformedPath;
 } 

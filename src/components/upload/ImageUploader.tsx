@@ -21,6 +21,8 @@ export default function ImageUploader({
   buttonText = 'Upload Image',
   allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 }: ImageUploaderProps) {
+  console.log("[ImageUploader] Component initialized");
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { 
     preview, 
@@ -32,13 +34,32 @@ export default function ImageUploader({
     isUploading
   } = useImageUpload();
 
+  console.log("[ImageUploader] Current state:", { preview, error, status, isUploading });
+
   const handleUpload = async () => {
-    const result = await upload();
-    if (result && onUploadComplete) {
-      onUploadComplete(result);
-    } else if (!result && onError && error) {
-      onError(error);
+    console.log("[ImageUploader] Starting upload process");
+    try {
+      const result = await upload();
+      console.log("[ImageUploader] Upload result:", result);
+      
+      if (result && onUploadComplete) {
+        console.log("[ImageUploader] Calling onUploadComplete with result:", result);
+        onUploadComplete(result);
+      } else if (!result && onError && error) {
+        console.error("[ImageUploader] Upload failed, calling onError with:", error);
+        onError(error);
+      }
+    } catch (err) {
+      console.error("[ImageUploader] Exception during upload:", err);
+      if (onError) {
+        onError(err instanceof Error ? err.message : "Unknown upload error");
+      }
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("[ImageUploader] File selected");
+    handleFileChange(e);
   };
 
   return (
@@ -58,6 +79,8 @@ export default function ImageUploader({
               width={300} 
               height={300}
               className="mx-auto rounded-md object-contain"
+              onLoad={() => console.log("[ImageUploader] Preview image loaded successfully")}
+              onError={(e) => console.error("[ImageUploader] Preview image failed to load:", e)}
             />
           </div>
         ) : (
@@ -72,7 +95,7 @@ export default function ImageUploader({
         <input
           type="file"
           ref={fileInputRef}
-          onChange={handleFileChange}
+          onChange={handleFileSelect}
           accept={allowedTypes.join(',')}
           className="hidden"
           id="file-upload"
@@ -89,7 +112,10 @@ export default function ImageUploader({
         <div className="mt-4 flex justify-between">
           <button
             type="button"
-            onClick={reset}
+            onClick={() => {
+              console.log("[ImageUploader] Reset clicked");
+              reset();
+            }}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
           >
             Cancel

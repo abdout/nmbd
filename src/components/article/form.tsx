@@ -34,6 +34,9 @@ export default function ArticleForm({
     defaultValues.image || null
   );
 
+  console.log("[ArticleForm] Initial uploadedImage:", uploadedImage);
+  console.log("[ArticleForm] Initial defaultValues:", defaultValues);
+
   const form = useForm<ArticleFormValues>({
     resolver: zodResolver(ArticleSchema),
     defaultValues: defaultValues as ArticleFormValues,
@@ -62,46 +65,71 @@ export default function ArticleForm({
 
   // Handle image upload completion
   const handleImageUpload = (imageData: ImageData) => {
+    console.log("[ArticleForm] Image upload complete. Image data:", imageData);
+    console.log("[ArticleForm] Setting image URL:", imageData.url);
     setUploadedImage(imageData.url);
     form.setValue("image", imageData.url);
+    console.log("[ArticleForm] Form values after image upload:", form.getValues());
   };
 
   // Handle form submission
-  const onSubmit = async (data: ArticleFormValues) => {
-    setIsSubmitting(true);
-    setError(null);
+  const handleSubmit = async (values: ArticleFormValues) => {
+    console.log("[ArticleForm] Form submission started with values:", values);
+    console.log("[ArticleForm] Current uploaded image URL:", uploadedImage);
 
     try {
-      let result;
+      setIsSubmitting(true);
+      setError(null);
+      
+      if (!uploadedImage) {
+        console.error("[ArticleForm] No image provided for article");
+        setError("Please upload an image for the article");
+        setIsSubmitting(false);
+        return;
+      }
 
+      console.log("[ArticleForm] Submitting with image URL:", values.image);
+      
+      let result;
       if (mode === "create") {
-        result = await createArticle(data);
-      } else if (mode === "edit" && articleId) {
-        result = await updateArticle(articleId, data);
+        result = await createArticle(values);
+      } else if (articleId) {
+        result = await updateArticle(articleId, values);
       } else {
         throw new Error("Invalid form mode or missing article ID");
       }
 
+      console.log("[ArticleForm] Server action result:", result);
+      
       if (result.status === "error") {
-        setError(result.message || "An error occurred");
-      } else {
-        router.refresh();
-        if (onSuccess) onSuccess();
+        console.error("[ArticleForm] Error from server action:", result.message);
+        setError(result.message || "An unknown error occurred");
+        setIsSubmitting(false);
+        return;
       }
+
+      console.log("[ArticleForm] Submission successful");
+      
+      // Refresh articles and close dialog
+      router.refresh();
+      if (onSuccess) onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("[ArticleForm] Exception during form submission:", err);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
       {error && (
-        <div className="p-4 bg-red-50 text-red-500 rounded-md">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+          {error}
+        </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div>
             <Label htmlFor="title">Title</Label>
@@ -109,7 +137,7 @@ export default function ArticleForm({
               id="title"
               {...form.register("title")}
               onChange={handleTitleChange}
-              placeholder="Article Title"
+              placeholder="Article title"
             />
             {form.formState.errors.title && (
               <p className="text-red-500 text-sm mt-1">
@@ -133,6 +161,21 @@ export default function ArticleForm({
           </div>
 
           <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              {...form.register("description")}
+              placeholder="Brief description of the article"
+              rows={3}
+            />
+            {form.formState.errors.description && (
+              <p className="text-red-500 text-sm mt-1">
+                {form.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+
+          <div>
             <Label htmlFor="author">Author</Label>
             <Input
               id="author"
@@ -142,21 +185,6 @@ export default function ArticleForm({
             {form.formState.errors.author && (
               <p className="text-red-500 text-sm mt-1">
                 {form.formState.errors.author.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              {...form.register("description")}
-              placeholder="Short description of the article"
-              rows={3}
-            />
-            {form.formState.errors.description && (
-              <p className="text-red-500 text-sm mt-1">
-                {form.formState.errors.description.message}
               </p>
             )}
           </div>
@@ -178,6 +206,8 @@ export default function ArticleForm({
                   src={uploadedImage}
                   alt="Article image preview"
                   className="w-full max-h-48 object-cover rounded-md"
+                  onLoad={() => console.log("[ArticleForm] Preview image loaded successfully:", uploadedImage)}
+                  onError={(e) => console.error("[ArticleForm] Preview image failed to load:", uploadedImage, e)}
                 />
               </div>
             )}

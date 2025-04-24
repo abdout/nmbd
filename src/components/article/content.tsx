@@ -23,12 +23,20 @@ import { deleteArticle } from "./action";
 import { Article, ArticleAction } from "./type";
 import { Loader2, Edit, Trash } from "lucide-react";
 import OptimizedImage from "@/components/image/optimum-image";
+import { isImageKitUrl } from "@/components/image/image-kit";
 
 // Component for displaying a single article card with context menu
 export function ArticleCard({ article }: { article: Article }) {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  
+  console.log("[ArticleCard] Rendering article card:", {
+    id: article.id,
+    title: article.title, 
+    image: article.image
+  });
 
   // Handle context menu actions
   const handleAction = (action: ArticleAction) => {
@@ -39,12 +47,19 @@ export function ArticleCard({ article }: { article: Article }) {
 
   // Handle article delete
   const handleDelete = async () => {
-    setIsDeleting(true);
+    console.log("[ArticleCard] Deleting article:", article.id);
     try {
-      await deleteArticle(article.id);
-      router.refresh();
+      setIsDeleting(true);
+      const result = await deleteArticle(article.id);
+      
+      if (result.status === "success") {
+        console.log("[ArticleCard] Article deleted successfully");
+        router.refresh();
+      } else {
+        console.error("[ArticleCard] Delete failed:", result.message);
+      }
     } catch (error) {
-      console.error("Error deleting article:", error);
+      console.error("[ArticleCard] Delete error:", error);
     } finally {
       setIsDeleting(false);
       setShowDeleteDialog(false);
@@ -70,6 +85,19 @@ export function ArticleCard({ article }: { article: Article }) {
                 alt={article.title}
                 fill
                 className="object-cover"
+                debug={false}
+                convertPath={!isImageKitUrl(article.image)}
+                onLoad={() => console.log("[ArticleCard] Article image loaded successfully:", article.image)}
+                onError={(e) => {
+                  console.error("[ArticleCard] Article image failed to load:", article.image, e);
+                  // Try direct loading as fallback
+                  const imgElement = e.target as HTMLImageElement;
+                  if (imgElement && article.image) {
+                    console.log("[ArticleCard] Attempting fallback direct image load");
+                    // If it's not already an ImageKit URL, try using it directly
+                    imgElement.src = article.image;
+                  }
+                }}
               />
             </div>
             <div className="p-4 bg-white dark:bg-neutral-800">

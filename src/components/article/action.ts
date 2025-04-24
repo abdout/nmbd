@@ -11,9 +11,17 @@ import { revalidatePath } from "next/cache";
 export async function createArticle(
   data: ArticleFormValues
 ): Promise<ActionState> {
+  console.log("[createArticle] Starting article creation with data:", {
+    title: data.title,
+    slug: data.slug,
+    image: data.image,
+    hasImage: !!data.image
+  });
+  
   try {
     // Validate the data
     const validatedData = ArticleSchema.parse(data);
+    console.log("[createArticle] Data validation successful");
     
     // Check if article with same slug already exists
     const existingArticle = await db.article.findUnique({
@@ -21,15 +29,37 @@ export async function createArticle(
     });
 
     if (existingArticle) {
+      console.error("[createArticle] Slug already exists:", validatedData.slug);
       return {
         status: "error",
         message: "An article with this slug already exists",
       };
     }
 
+    // Verify image URL is valid
+    if (!validatedData.image) {
+      console.error("[createArticle] No image provided");
+      return {
+        status: "error",
+        message: "An image is required for the article",
+      };
+    }
+
+    console.log("[createArticle] Image URL check:", {
+      imageUrl: validatedData.image,
+      isValid: Boolean(validatedData.image && validatedData.image.trim() !== "")
+    });
+    
     // Create the article
-    await db.article.create({
+    console.log("[createArticle] Creating article in database");
+    const article = await db.article.create({
       data: validatedData,
+    });
+    
+    console.log("[createArticle] Article created successfully:", {
+      id: article.id,
+      slug: article.slug,
+      image: article.image
     });
 
     // Revalidate the articles page
@@ -40,7 +70,7 @@ export async function createArticle(
       message: "Article created successfully",
     };
   } catch (error) {
-    console.error("Failed to create article:", error);
+    console.error("[createArticle] Failed to create article:", error);
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Failed to create article",

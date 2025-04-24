@@ -62,43 +62,73 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
  * @returns Promise with the ImageKit response
  */
 export async function uploadToImageKit(file: File): Promise<ImageKitResponse> {
-  console.log(`Starting upload to ImageKit for file: ${file.name}`);
+  console.log(`[uploadToImageKit] Starting upload to ImageKit for file: ${file.name}`);
   
   try {
     // Check if ImageKit is properly initialized
     if (!imagekit) {
+      console.error('[uploadToImageKit] ImageKit is not properly initialized');
+      console.error('[uploadToImageKit] Environment variables check:',
+        { 
+          publicKey: !!IMAGEKIT_PUBLIC_KEY, 
+          privateKey: !!IMAGEKIT_PRIVATE_KEY, 
+          urlEndpoint: IMAGEKIT_URL_ENDPOINT 
+        }
+      );
       throw new Error('ImageKit is not properly initialized. Please check your environment variables.');
     }
     
+    console.log('[uploadToImageKit] ImageKit initialized successfully');
+    
     // Validate file type
     if (!VALID_IMAGE_TYPES.includes(file.type)) {
+      console.error(`[uploadToImageKit] Invalid file type: ${file.type}. Allowed types:`, VALID_IMAGE_TYPES);
       throw new Error(`Invalid file type: ${file.type}. Allowed types: ${VALID_IMAGE_TYPES.join(', ')}`);
     }
     
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
+      console.error(`[uploadToImageKit] File too large: ${file.size} bytes. Maximum: ${MAX_FILE_SIZE} bytes`);
       throw new Error(`File too large: ${file.size} bytes. Maximum allowed: ${MAX_FILE_SIZE} bytes`);
     }
     
     // Convert File to Buffer
+    console.log('[uploadToImageKit] Converting file to buffer');
     const buffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(buffer);
     
-    console.log(`File converted to buffer, size: ${fileBuffer.length} bytes`);
+    console.log(`[uploadToImageKit] File converted to buffer, size: ${fileBuffer.length} bytes`);
     
     // Upload to ImageKit
+    console.log('[uploadToImageKit] Sending file to ImageKit API');
     const uploadResult = await imagekit.upload({
       file: fileBuffer,
       fileName: file.name,
       useUniqueFileName: true
     });
     
-    console.log(`Successfully uploaded to ImageKit, fileId: ${uploadResult.fileId}`);
+    console.log(`[uploadToImageKit] Successfully uploaded to ImageKit:`, {
+      fileId: uploadResult.fileId,
+      url: uploadResult.url,
+      name: uploadResult.name,
+      size: uploadResult.size
+    });
     
     return uploadResult;
   } catch (error) {
-    console.error('Error uploading to ImageKit:', error);
-    throw new Error(`Failed to upload image to ImageKit: ${error instanceof Error ? error.message : String(error)}`);
+    console.error('[uploadToImageKit] Error details:', error);
+    
+    // Try to get more detailed error information
+    let errorMessage = 'Unknown error during upload';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      console.error('[uploadToImageKit] Error message:', error.message);
+      console.error('[uploadToImageKit] Error stack:', error.stack);
+    } else {
+      console.error('[uploadToImageKit] Non-Error object thrown:', error);
+    }
+    
+    throw new Error(`Failed to upload image to ImageKit: ${errorMessage}`);
   }
 }
 
@@ -146,43 +176,51 @@ export async function saveImageToDatabase(imageData: ImageKitResponse, userId?: 
  * @returns Promise with the saved image data
  */
 export async function handleImageUpload(formData: FormData) {
-  console.log('Starting handleImageUpload process');
+  console.log('---------------------------------------------');
+  console.log('[handleImageUpload] Starting image upload process');
   
   try {
     const file = formData.get('file') as File;
     const userId = formData.get('userId') as string || undefined;
     
     if (!file) {
-      console.error('No file provided in form data');
+      console.error('[handleImageUpload] No file provided in form data');
       throw new Error('No file provided');
     }
     
-    console.log(`Processing file: ${file.name}, size: ${file.size} bytes, type: ${file.type}`);
+    console.log(`[handleImageUpload] Processing file: ${file.name}, size: ${file.size} bytes, type: ${file.type}`);
     
     if (!file.type.startsWith('image/')) {
-      console.error(`Invalid file type: ${file.type}`);
+      console.error(`[handleImageUpload] Invalid file type: ${file.type}`);
       throw new Error('Only image files are allowed');
     }
     
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      console.error(`File too large: ${file.size} bytes`);
+      console.error(`[handleImageUpload] File too large: ${file.size} bytes`);
       throw new Error(`File size exceeds the ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
     }
     
     // Upload to ImageKit
+    console.log('[handleImageUpload] Calling uploadToImageKit');
     const imageKitResponse = await uploadToImageKit(file);
+    console.log('[handleImageUpload] ImageKit upload successful, response:', imageKitResponse);
     
     // Save to database
+    console.log('[handleImageUpload] Saving image to database');
     const savedImage = await saveImageToDatabase(imageKitResponse, userId);
+    console.log('[handleImageUpload] Database save successful, image record:', savedImage);
     
     // Revalidate the path to refresh data
     revalidatePath('/upload');
     
-    console.log('Image upload process completed successfully');
+    console.log('[handleImageUpload] Image upload process completed successfully');
+    console.log('---------------------------------------------');
+    
     return { success: true, image: savedImage };
   } catch (error) {
-    console.error('Error in handleImageUpload:', error);
+    console.error('[handleImageUpload] Error in handleImageUpload:', error);
+    console.log('---------------------------------------------');
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error occurred during upload' 

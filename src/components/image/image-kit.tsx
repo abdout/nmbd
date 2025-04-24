@@ -4,10 +4,15 @@ import { ImageKitProvider } from '@imagekit/next';
 import { ReactNode } from 'react';
 
 // Your ImageKit URL endpoint from your ImageKit dashboard
-// Replace this with your actual ImageKit URL endpoint
 export const imageKitConfig = {
   urlEndpoint: "https://ik.imagekit.io/abdout"
 };
+
+// Function to check if a URL is from ImageKit
+export function isImageKitUrl(url: string): boolean {
+  if (!url) return false;
+  return url.includes('ik.imagekit.io') || url.includes('imagekit.io');
+}
 
 export function ImageKitWrapper({ children }: { children: ReactNode }) {
   return (

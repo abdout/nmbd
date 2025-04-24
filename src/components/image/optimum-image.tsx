@@ -3,6 +3,7 @@
 import { Image, type Transformation } from '@imagekit/next';
 import { cn } from '@/lib/utils';
 import { convertToImageKitPath } from '@/components/image/image-utils';
+import { isImageKitUrl } from '@/components/image/image-kit';
 
 interface OptimizedImageProps {
   src: string;
@@ -22,6 +23,8 @@ interface OptimizedImageProps {
   transformations?: Transformation[];
   convertPath?: boolean;
   debug?: boolean; // Debug mode flag - uses a placeholder image
+  onLoad?: () => void;
+  onError?: (error: any) => void;
 }
 
 /**
@@ -58,6 +61,8 @@ export default function OptimizedImage({
   transformations = [],
   convertPath = true,
   debug = false, // Individual component debug mode
+  onLoad,
+  onError,
 }: OptimizedImageProps) {
   // Common transformations for optimization
   const defaultTransformations: Transformation[] = [
@@ -80,8 +85,13 @@ export default function OptimizedImage({
   // Use the placeholder in debug mode, otherwise use the original source
   const finalSrc = isDebugMode ? debugImageSrc : src;
   
+  // Special handling for ImageKit URLs - don't try to convert them
+  // This helps prevent double-processing of URLs that already contain the correct format
+  const imageKitUrlDetected = isImageKitUrl(finalSrc);
+  
   // In debug mode, we don't need to convert the path since we're using a known ImageKit path
-  const shouldConvertPath = isDebugMode ? false : convertPath;
+  // Also skip conversion for URLs that are already ImageKit URLs
+  const shouldConvertPath = isDebugMode || imageKitUrlDetected ? false : convertPath;
   
   // Process the image src path if needed
   const processedSrc = shouldConvertPath ? convertToImageKitPath(finalSrc) : finalSrc;
@@ -107,6 +117,12 @@ export default function OptimizedImage({
       placeholder={placeholder}
       blurDataURL={blurDataURL}
       transformation={allTransformations}
+      onLoad={() => {
+        if (onLoad) onLoad();
+      }}
+      onError={(e) => {
+        if (onError) onError(e);
+      }}
     />
   );
 } 
