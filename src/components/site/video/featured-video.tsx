@@ -1,7 +1,7 @@
 import Head from '@/components/atom/site-heading'
 import React from 'react'
 import { featuredVideos } from './constant'
-import HoverEffect from '@/components/atom/card-video'
+import HoverEffect from '@/components/site/video/card-video'
 
 
 
