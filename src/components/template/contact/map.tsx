@@ -97,7 +97,7 @@ const MapPage = () => {
             {Object.values(OFFICES).map((office) => (
               <div 
                 key={office.id}
-                className={`p-4 rounded-lg cursor-pointer transition-colors ${selectedOffice.id === office.id ? 'bg-neutral-100' : 'hover:bg-neutral-100/10'}`}
+                className={`p-4 rounded-lg cursor-pointer transition-colors ${selectedOffice.id === office.id ? 'bg-neutral-100 dark:bg-neutral-800' : 'hover:bg-neutral-100/10 dark:hover:bg-neutral-800/10'}`}
                 onClick={() => handleOfficeSelect(office.id)}
               >
                 <h3 className='font-bold'>{office.title}</h3>

@@ -42,13 +42,12 @@ const footerSections = [
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 antialiased font-sans text-gray-700 py-6 md:py-10 relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] w-screen flex items-center justify-center mt-4">
+    <footer className="bg-gray-100 dark:bg-gray-900 antialiased font-sans text-gray-700 dark:text-gray-300 py-6 md:py-10 relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] w-screen flex items-center justify-center mt-4">
       <div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-20 gap-y-10 md:gap-48">
           {footerSections.map((section, index) => (
             <div key={index} className="w-full text-right">
-               <h3 className="text-lg font-bold text-black">
-
+               <h3 className="text-lg font-bold text-black dark:text-white">
                 {section.title}
               </h3>
               <ul className="space-y-2 mt-2">
@@ -56,7 +55,7 @@ const Footer = () => {
                   <li key={linkIndex}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-gray-500 hover:text-gray-900 "
+                      className="text-[15px] text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     >
                       {link.text}
                     </Link>
@@ -66,15 +65,15 @@ const Footer = () => {
             </div>
           ))}
         </div>
-        <hr className="my-4 md:my-6 border-gray-200" />
-        <div className="flex gap-8 items-center justify-start">
+        <hr className="my-4 md:my-6 border-gray-200 dark:border-gray-700" />
+        <div className="flex gap-8 items-center justify-start text-gray-500 dark:text-gray-400">
           <p>السودان</p>
           <p>العربية</p>
           {/* <FooterAddressComponent />   */}
         </div>
 
 
-        {/* <div className="mt-8 text-center text-sm text-gray-500">
+        {/* <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
           <p>© {new Date().getFullYear()} الحركة الوطنية للبناء والتنمية. جميع الحقوق محفوظة</p>
         </div> */}
       </div>

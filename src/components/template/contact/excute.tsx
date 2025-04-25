@@ -14,7 +14,7 @@ const MobileExcute = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-center justify-center px-8 md:px-0">
         {cardsData.map((card, index) => (
-          <Card key={index} className="group w-full md:w-[180px] flex  p-4 gap-6 items-center  relative border border-transparent">
+          <Card key={index} className="group w-full md:w-[180px] flex  p-4 gap-6 items-center  relative">
             <div className="border-animation border absolute inset-0 pointer-events-none">
               <span className="absolute inset-0"></span>
               <div className="left-top absolute top-0 left-0"></div>

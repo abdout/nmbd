@@ -58,23 +58,47 @@ export default function EventCard() {
             <div 
               key={index} 
               className={`${event.isHighlighted 
-                ? 'bg-yellow-400 text-white' 
-                : 'bg-gray-100'} p-8 flex flex-col h-full`}
+                ? 'bg-yellow-400 text-white dark:bg-yellow-500' 
+                : 'bg-neutral-100 dark:bg-neutral-700'} p-8 flex flex-col h-full`}
             >
-              <div className={`text-7xl font-light mb-1 ${!event.isHighlighted ? (event.isDisabled ? 'text-slate-300' : 'text-slate-700') : ''}`}>
+              <div className={`text-7xl font-light mb-1 ${
+                !event.isHighlighted 
+                  ? (event.isDisabled 
+                    ? 'text-neutral-300 dark:text-neutral-500' 
+                    : 'text-neutral-700 dark:text-neutral-200') 
+                  : ''
+              }`}>
                 {event.date}
               </div>
-              <div className={`text-sm tracking-wider mb-10 ${!event.isHighlighted ? (event.isDisabled ? 'text-slate-300' : 'text-slate-700') : ''}`}>
+              <div className={`text-sm tracking-wider mb-10 ${
+                !event.isHighlighted 
+                  ? (event.isDisabled 
+                    ? 'text-neutral-300 dark:text-neutral-500' 
+                    : 'text-neutral-700 dark:text-neutral-200') 
+                  : ''
+              }`}>
                 {event.month}
               </div>
 
-              <h2 className={`text-2xl font-light mb-4 ${!event.isHighlighted ? (event.isDisabled ? 'text-slate-300' : 'text-slate-700') : ''}`}>
+              <h2 className={`text-2xl font-light mb-4 ${
+                !event.isHighlighted 
+                  ? (event.isDisabled 
+                    ? 'text-neutral-300 dark:text-neutral-500' 
+                    : 'text-neutral-700 dark:text-neutral-200') 
+                  : ''
+              }`}>
                 {event.title.split(' ').slice(0, 2).join(' ')}
                 <br />
                 {event.title.split(' ').slice(2).join(' ')}
               </h2>
 
-              <div className={`mt-auto ${!event.isHighlighted ? (event.isDisabled ? 'text-slate-300' : 'text-slate-700') : ''}`}>
+              <div className={`mt-auto ${
+                !event.isHighlighted 
+                  ? (event.isDisabled 
+                    ? 'text-neutral-300 dark:text-neutral-500' 
+                    : 'text-neutral-700 dark:text-neutral-200') 
+                  : ''
+              }`}>
                 <div className="mb-1 text-sm font-medium">{event.time}</div>
                 <div className="text-sm font-medium">{event.location}</div>
               </div>
@@ -83,7 +107,7 @@ export default function EventCard() {
         </div>
 
         {/* Feed Section */}
-        <div className="mt-12 border-t pt-4">
+        <div className="mt-12 border-t pt-4 border-neutral-200 dark:border-neutral-700">
           <div className="flex items-start gap-4 mb-8 w-[70%]">
             <Image 
               src="/video/nmbd.jpg" 
@@ -96,11 +120,11 @@ export default function EventCard() {
             />
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-semibold text-blue-800">@nmbd</span>
-                <span className="text-gray-500 text-sm">منذ 4 دقائق في</span>
-                <span className="text-blue-500">#احداث</span>
+                <span className="font-semibold text-neutral-800 dark:text-neutral-200">@nmbd</span>
+                <span className="text-neutral-500 dark:text-neutral-400 text-sm">منذ 4 دقائق في</span>
+                <span className="text-neutral-600 dark:text-neutral-300">#احداث</span>
               </div>
-              <p className="text-gray-700 mb-2">
+              <p className="text-neutral-700 dark:text-neutral-300 mb-2">
                تدعوكم الحركة الوطنية للبناء والتنمية لحضور المؤتمر العام الأول - 
 نطرح فيه ملامح مشروعنا، ونفتح النقاش حول التحديات الراهنة وآفاق العمل المشترك
               </p>
