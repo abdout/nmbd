@@ -9,7 +9,7 @@ import { siteConfig } from "./constant"
 import { cn } from "@/lib/utils"
 import { Icons } from "./icons"
 import { MobileNav } from "./mobile-nav"
-import { useCurrentUser } from "@/hooks/use-current-user"
+import { useCurrentUser } from "@/components/auth/use-current-user"
 
 interface MainNavProps {
   items?: MainNavItem[]
@@ -35,7 +35,7 @@ export function MainNav({ items, children }: MainNavProps) {
 
   return (
     <div className="flex gap-6 md:gap-10 antialiased font-sans">
-      <Link href="/platform" className="hidden items-center space-x-2 md:flex">
+      <Link href="/dashboard" className="hidden items-center space-x-2 md:flex">
         {/* <Icons.logo /> */}
         <svg
           width="48"
