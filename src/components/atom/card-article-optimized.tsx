@@ -61,15 +61,15 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
                                 <Image
                                     src={convertToImageKitPath(item.image)}
                                     alt={item.title}
-                                    fill
-                                    sizes="(max-width: 768px) 33vw, 25vw"
-                                    transformation={[
-                                        { quality: 80 },
-                                        { format: "auto" }
-                                    ]}
-                                    style={{ objectFit: "cover" }}
+                                    width={0}
+                                    height={0}
+                                    style={{ 
+                                        width: '100%', 
+                                        height: '100%', 
+                                        objectFit: "cover" 
+                                    }}
                                     loading="lazy"
-                                    convertPath={false}
+                                    urlEndpoint="https://ik.imagekit.io/your_imagekit_id"
                                 />
                             </div>
                             <div className="w-2/3 flex flex-col justify-between md:py-2 py-0">
@@ -96,7 +96,7 @@ export const ArticleHoverEffect = ({ items, className }: HoverEffectProps) => {
 export function convertToImageKitPath(imagePath: string): string {
     // If the path already starts with 'http', it's an external URL, use web proxy format
     if (imagePath.startsWith('http')) {
-        return `/${imagePath}`;
+        return `${imagePath}`;
     }
     
     // For local paths, we need to transform them according to the mapping rule

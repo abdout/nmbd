@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   /* config options here */
   images: {
     domains: ['ik.imagekit.io'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.imagekit.io',
+      },
+    ],
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
