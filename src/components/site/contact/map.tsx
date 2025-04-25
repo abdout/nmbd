@@ -53,7 +53,7 @@ const OFFICES: Record<OfficeId, Office> = {
 };
 
 const MapPage = () => {
-  const [selectedOffice, setSelectedOffice] = useState(OFFICES.riyadh);
+  const [selectedOffice, setSelectedOffice] = useState(OFFICES.khartoum);
 
   const handleGetDirections = () => 
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedOffice.coordinates.lat},${selectedOffice.coordinates.lng}`);
