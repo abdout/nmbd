@@ -59,7 +59,7 @@ export default function ImageKitExample() {
               height={300}
               className="rounded-md"
               transformations={[
-                { effectGray: true },
+                { grayscale: true },
                 { radius: "20" }
               ]}
             />
