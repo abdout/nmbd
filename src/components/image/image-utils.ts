@@ -33,7 +33,7 @@ export function getOptimizedImageUrl(
   if (quality) defaultTransformations.push({ quality });
   if (format) defaultTransformations.push({ format });
   if (blur) defaultTransformations.push({ blur: blur.toString() });
-  if (grayscale) defaultTransformations.push({ effectGray: true });
+  if (grayscale) defaultTransformations.push({ grayscale: true });
 
   const allTransformations = [...defaultTransformations, ...transformations];
 
