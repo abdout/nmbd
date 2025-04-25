@@ -40,7 +40,7 @@ export default function ImageKitExample() {
               width={400}
               height={300}
               className="rounded-md"
-              debug={false} {/* Explicitly disable debug mode */}
+              debug={false} /* Explicitly disable debug mode */
             />
           </div>
         </div>
