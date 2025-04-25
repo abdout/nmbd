@@ -1,6 +1,6 @@
 'use client';
 
-import { ForwardedRef, forwardRef } from 'react';
+import { ForwardedRef, forwardRef, ReactEventHandler } from 'react';
 import OptimizedImage from './optimum-image';
 import { type ImageProps } from 'next/image';
 
@@ -61,6 +61,21 @@ const MigratedImage = forwardRef(function MigratedImage(
     ? [{ origImage: 'true' }]
     : [...defaultTransformations, ...transformations];
 
+  // Adapt Next.js event handlers to OptimizedImage event handlers
+  const handleLoad = onLoad ? () => {
+    if (onLoad) {
+      // Call without passing event since OptimizedImage's onLoad doesn't accept parameters
+      (onLoad as Function)();
+    }
+  } : undefined;
+
+  const handleError = onError ? (error: Error | unknown) => {
+    if (onError) {
+      // Call with error object
+      (onError as Function)(error);
+    }
+  } : undefined;
+
   return (
     <OptimizedImage
       ref={ref}
@@ -79,8 +94,8 @@ const MigratedImage = forwardRef(function MigratedImage(
       placeholder={placeholder as 'blur' | 'empty' | undefined}
       blurDataURL={blurDataURL}
       transformations={allTransformations}
-      onLoad={onLoad}
-      onError={onError}
+      onLoad={handleLoad}
+      onError={handleError}
     />
   );
 });
