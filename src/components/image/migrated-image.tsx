@@ -45,7 +45,7 @@ const MigratedImage = forwardRef(function MigratedImage(
   
   // Set default transformations
   const defaultTransformations = [
-    { quality: String(quality) },
+    { quality: Number(quality) },
     { format: 'auto' }
   ];
   
@@ -63,7 +63,7 @@ const MigratedImage = forwardRef(function MigratedImage(
       height={typeof height === 'number' ? height : undefined}
       className={className}
       priority={priority}
-      quality={quality}
+      quality={Number(quality)}
       fill={fill}
       sizes={sizes}
       loading={loadingStrategy as 'lazy' | 'eager'}
