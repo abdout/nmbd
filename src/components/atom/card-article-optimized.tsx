@@ -103,7 +103,7 @@ export function convertToImageKitPath(imagePath: string): string {
     // Assuming the same directory structure is maintained in ImageKit
     const transformedPath = imagePath.replace(/\/(\d+)\.jpg/g, (match, number) => {
         // Convert each digit to corresponding letter (1 -> a, 2 -> b, etc.)
-        const letters = number.split('').map(digit => {
+        const letters = number.split('').map((digit: string) => {
             const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
             return String.fromCharCode(charCode);
         }).join('');
