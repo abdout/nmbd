@@ -63,9 +63,9 @@ export const {
         isNewUser
       });
     },
-    async error(error) {
-      console.error("Auth error event:", error);
-    }
+    // async error(error) {
+    //   console.error("Auth error event:", error);
+    // }
   },
   callbacks: {
     async signIn({ user, account }) {
@@ -124,7 +124,7 @@ export const {
       const existingAccount = await getAccountByUserId(existingUser.id)
 
       token.isOAuth = !!existingAccount
-      token.name = existingUser.username
+      token.name = existingUser.name
       token.email = existingUser.email
       token.role = existingUser.role
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
