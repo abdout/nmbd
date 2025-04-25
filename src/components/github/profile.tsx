@@ -118,7 +118,6 @@ export default function GitHubProfile() {
             <div className="flex items-center space-x-2 text-sm">
               <Link href="#" className="flex items-center text-[#8b949e] hover:text-[#58a6ff]">
                 <svg
-                  text="muted"
                   aria-hidden="true"
                   height="16"
                   viewBox="0 0 16 16"
@@ -139,7 +138,7 @@ export default function GitHubProfile() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center text-[#8b949e]">
                 <svg className="mr-2 h-4 w-4 fill-current" viewBox="0 0 16 16">
-                  <path d="M11.536 3.464a5 5 0 0 1 0 7.072L8 14.07l-3.536-3.535a5 5 0 1 1 7.072-7.072v.001zm1.06 8.132a6.5 6.5 0 1 0-9.192 0l3.535 3.536a1.5 1.5 0 0 0 2.122 0l3.535-3.536zM8 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                  <path d="M11.536 3.464a5 5 0 0 1 0 7.072L8 14.07l-3.536-3.535a5 5 0 1 1 7.072-7.072v.001zm1.06 8.132a6.5 6.5 0 1 0-9.192 0l3.535 3.536a1.5 1.5 0 0 0 2.122 0l3.535-3.536zM8 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"></path>
                 </svg>
                 Delhi
               </div>
