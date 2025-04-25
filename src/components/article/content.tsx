@@ -87,14 +87,16 @@ export function ArticleCard({ article }: { article: Article }) {
                 debug={false}
                 convertPath={!isImageKitUrl(article.image)}
                 onLoad={() => console.log("[ArticleCard] Article image loaded successfully:", article.image)}
-                onError={(e) => {
+                onError={(e: Error | unknown) => {
                   console.error("[ArticleCard] Article image failed to load:", article.image, e);
                   // Try direct loading as fallback
-                  const imgElement = e.target as HTMLImageElement;
-                  if (imgElement && article.image) {
-                    console.log("[ArticleCard] Attempting fallback direct image load");
-                    // If it's not already an ImageKit URL, try using it directly
-                    imgElement.src = article.image;
+                  if (e && typeof e === 'object' && 'target' in e) {
+                    const imgElement = e.target as HTMLImageElement;
+                    if (imgElement && article.image) {
+                      console.log("[ArticleCard] Attempting fallback direct image load");
+                      // If it's not already an ImageKit URL, try using it directly
+                      imgElement.src = article.image;
+                    }
                   }
                 }}
               />
