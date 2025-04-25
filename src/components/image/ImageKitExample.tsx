@@ -60,7 +60,7 @@ export default function ImageKitExample() {
               className="rounded-md"
               transformations={[
                 { grayscale: true },
-                { radius: "20" }
+                { radius: 20 }
               ]}
             />
           </div>
