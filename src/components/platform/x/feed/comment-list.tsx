@@ -1,7 +1,7 @@
 // components/CommentList.tsx
 
 "use client";
-import { useCurrentUser } from "@/components/auth/hooks/use-current-user";
+import { useCurrentUser } from "@/components/auth/use-current-user";
 import { Comment, User } from "@prisma/client";
 import Image from "next/image";
 import { useOptimistic, useState } from "react";
@@ -45,7 +45,7 @@ const CommentList = ({ comments, postId }: CommentListProps) => {
       postId: postId,
       user: {
         id: user.id,
-        username: user.username || "Sending...",
+        username: user.name || "Sending...",
         image: user.image || "/x/noAvatar.png",
         name: user.name || "",
         // Add any other fields you need
