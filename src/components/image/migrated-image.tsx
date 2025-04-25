@@ -1,6 +1,6 @@
 'use client';
 
-import { ForwardedRef, forwardRef, ReactEventHandler } from 'react';
+import React from 'react';
 import OptimizedImage from './optimum-image';
 import { type ImageProps } from 'next/image';
 
@@ -13,42 +13,37 @@ import { type ImageProps } from 'next/image';
  * 
  * This is a migration helper and should eventually be replaced with direct OptimizedImage usage.
  */
-const MigratedImage = forwardRef(function MigratedImage(
-  props: ImageProps & { 
-    transformations?: any[];
-    convertPath?: boolean;
-    debug?: boolean;
-  },
-  ref: ForwardedRef<HTMLImageElement>
-) {
-  const {
-    src,
-    alt,
-    width,
-    height,
-    quality = 80,
-    priority = false,
-    placeholder,
-    blurDataURL,
-    className,
-    style,
-    sizes,
-    fill,
-    loading,
-    unoptimized,
-    transformations = [],
-    convertPath = true,
-    debug = false,
-    // Extract other props that might not be compatible with OptimizedImage
-    onLoadingComplete,
-    onLoad,
-    onError,
-    loader,
-    lazyBoundary,
-    lazyRoot,
-    ...safeRest
-  } = props;
-
+export default function MigratedImage({
+  src,
+  alt,
+  width,
+  height,
+  quality = 80,
+  priority = false,
+  placeholder,
+  blurDataURL,
+  className,
+  style,
+  sizes,
+  fill,
+  loading,
+  unoptimized,
+  transformations = [],
+  convertPath = true,
+  debug = false,
+  onLoadingComplete,
+  onLoad,
+  onError,
+  // Explicitly ignore props not supported by OptimizedImage
+  loader,
+  lazyBoundary,
+  lazyRoot,
+  ...rest
+}: Omit<ImageProps, 'loader' | 'lazyBoundary' | 'lazyRoot'> & {
+  transformations?: any[];
+  convertPath?: boolean;
+  debug?: boolean;
+}) {
   // Convert style to individual props where possible
   const objectFit = style?.objectFit;
   const objectPosition = style?.objectPosition;
@@ -67,28 +62,33 @@ const MigratedImage = forwardRef(function MigratedImage(
     ? [{ origImage: 'true' }]
     : [...defaultTransformations, ...transformations];
 
-  // Adapt Next.js event handlers to OptimizedImage event handlers
+  // Safely get numeric width and height
+  const safeWidth = typeof width === 'number' ? width : undefined;
+  const safeHeight = typeof height === 'number' ? height : undefined;
+
+  // Safely get string src
+  const safeSrc = typeof src === 'string' ? src : '';
+
+  // Handle event callbacks
   const handleLoad = onLoad ? () => {
-    if (onLoad) {
-      // Call without passing event since OptimizedImage's onLoad doesn't accept parameters
-      (onLoad as Function)();
+    if (typeof onLoad === 'function') {
+      onLoad({} as any);
     }
   } : undefined;
 
-  const handleError = onError ? (error: Error | unknown) => {
-    if (onError) {
-      // Call with error object
-      (onError as Function)(error);
+  const handleError = onError ? (error: unknown) => {
+    if (typeof onError === 'function') {
+      onError({} as any);
     }
   } : undefined;
 
+  // Only include props that OptimizedImage accepts
   return (
     <OptimizedImage
-      ref={ref}
-      src={typeof src === 'string' ? src : ''}
+      src={safeSrc}
       alt={alt}
-      width={typeof width === 'number' ? width : undefined}
-      height={typeof height === 'number' ? height : undefined}
+      width={safeWidth}
+      height={safeHeight}
       className={className}
       priority={priority}
       quality={Number(quality)}
@@ -106,6 +106,4 @@ const MigratedImage = forwardRef(function MigratedImage(
       onError={handleError}
     />
   );
-});
-
-export default MigratedImage; 
+} 
