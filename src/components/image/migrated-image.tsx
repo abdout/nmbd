@@ -34,10 +34,7 @@ export default function MigratedImage({
   onLoadingComplete,
   onLoad,
   onError,
-  // Explicitly ignore props not supported by OptimizedImage
-  loader,
-  lazyBoundary,
-  lazyRoot,
+  // Do not destructure omitted props explicitly since they're not in the type
   ...rest
 }: Omit<ImageProps, 'loader' | 'lazyBoundary' | 'lazyRoot'> & {
   transformations?: any[];
