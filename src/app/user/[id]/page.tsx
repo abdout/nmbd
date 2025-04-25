@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { getUserById } from "@/components/auth/data/user";
+import { getUserById } from "@/components/auth/user";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
