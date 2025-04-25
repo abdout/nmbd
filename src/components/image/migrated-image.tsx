@@ -33,7 +33,14 @@ const MigratedImage = forwardRef(function MigratedImage(
     loading,
     unoptimized,
     transformations = [],
-    ...rest
+    // Extract other props that might not be compatible with OptimizedImage
+    onLoadingComplete,
+    onLoad,
+    onError,
+    loader,
+    lazyBoundary,
+    lazyRoot,
+    ...safeRest
   } = props;
 
   // Convert style to individual props where possible
@@ -72,7 +79,8 @@ const MigratedImage = forwardRef(function MigratedImage(
       placeholder={placeholder as 'blur' | 'empty' | undefined}
       blurDataURL={blurDataURL}
       transformations={allTransformations}
-      {...rest}
+      onLoad={onLoad}
+      onError={onError}
     />
   );
 });
