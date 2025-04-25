@@ -3,6 +3,24 @@
 import { auth } from "@/auth";
 import Post from "./post";
 import { db } from "@/lib/db";
+import { Prisma, User } from "@prisma/client";
+
+// Define a type for the post with its relations
+type PostWithRelations = Prisma.PostGetPayload<{
+  include: {
+    user: true;
+    likes: {
+      select: {
+        userId: true;
+      };
+    };
+    _count: {
+      select: {
+        comments: true;
+      };
+    };
+  };
+}>;
 
 // Simple server component to load posts
 const Feed = async ({ userId }: { userId?: string }) => {
@@ -68,32 +86,12 @@ const Feed = async ({ userId }: { userId?: string }) => {
     console.log("====== POSTS QUERY ======");
     console.log("Attempting to fetch posts from database...");
     
-    // If userId is provided, filter by that, otherwise get all posts
-    const queryOptions = userId ? {
-      where: {
-        userId: userId
-      },
+    // Correctly type the query options with Prisma.PostFindManyArgs
+    const queryOptions: Prisma.PostFindManyArgs = {
+      where: userId ? { userId } : undefined,
       take: 10,
       orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        user: true,
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
-      },
-    } : {
-      take: 10,
-      orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc' as Prisma.SortOrder
       },
       include: {
         user: true,
@@ -110,12 +108,9 @@ const Feed = async ({ userId }: { userId?: string }) => {
       },
     };
     
-    console.log("Using query options:", JSON.stringify({
-      ...queryOptions,
-      where: userId ? { userId } : undefined
-    }, null, 2));
+    console.log("Using query options:", JSON.stringify(queryOptions, null, 2));
     
-    const posts = await db.post.findMany(queryOptions);
+    const posts = await db.post.findMany(queryOptions) as PostWithRelations[];
     
     console.log(`✅ POSTS QUERY: Found ${posts.length} posts`);
     
