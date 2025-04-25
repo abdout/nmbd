@@ -28,11 +28,11 @@ export function getOptimizedImageUrl(
 
   const defaultTransformations: Transformation[] = [];
 
-  if (width) defaultTransformations.push({ width: width.toString() });
-  if (height) defaultTransformations.push({ height: height.toString() });
-  if (quality) defaultTransformations.push({ quality: quality.toString() });
+  if (width) defaultTransformations.push({ width });
+  if (height) defaultTransformations.push({ height });
+  if (quality) defaultTransformations.push({ quality });
   if (format) defaultTransformations.push({ format });
-  if (blur) defaultTransformations.push({ blur: blur.toString() });
+  if (blur) defaultTransformations.push({ blur });
   if (grayscale) defaultTransformations.push({ grayscale: true });
 
   const allTransformations = [...defaultTransformations, ...transformations];
@@ -113,7 +113,7 @@ export function convertToImageKitPath(imagePath: string): string {
   
   // Handle JPG files
   transformedPath = transformedPath.replace(/\/(\d+)\.jpg/g, (match, number) => {
-    const letters = number.split('').map(digit => {
+    const letters = number.split('').map((digit: string) => {
       const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
       return String.fromCharCode(charCode);
     }).join('');
@@ -123,7 +123,7 @@ export function convertToImageKitPath(imagePath: string): string {
   
   // Handle PNG files
   transformedPath = transformedPath.replace(/\/(\d+)\.png/g, (match, number) => {
-    const letters = number.split('').map(digit => {
+    const letters = number.split('').map((digit: string) => {
       const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
       return String.fromCharCode(charCode);
     }).join('');
@@ -133,7 +133,7 @@ export function convertToImageKitPath(imagePath: string): string {
   
   // Handle AVIF files
   transformedPath = transformedPath.replace(/\/(\d+)\.avif/g, (match, number) => {
-    const letters = number.split('').map(digit => {
+    const letters = number.split('').map((digit: string) => {
       const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
       return String.fromCharCode(charCode);
     }).join('');
@@ -143,7 +143,7 @@ export function convertToImageKitPath(imagePath: string): string {
   
   // Handle WEBP files
   transformedPath = transformedPath.replace(/\/(\d+)\.webp/g, (match, number) => {
-    const letters = number.split('').map(digit => {
+    const letters = number.split('').map((digit: string) => {
       const charCode = 'a'.charCodeAt(0) + parseInt(digit, 10) - 1;
       return String.fromCharCode(charCode);
     }).join('');
