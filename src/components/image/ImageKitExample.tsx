@@ -74,7 +74,7 @@ export default function ImageKitExample() {
           </p>
           <div className="border p-4 rounded-lg">
             <OptimizedImage
-              src="/https://picsum.photos/400/300"
+              src="https://picsum.photos/400/300"
               alt="External image example"
               width={400}
               height={300}
