@@ -30,7 +30,7 @@ export function getOptimizedImageUrl(
 
   if (width) defaultTransformations.push({ width: width.toString() });
   if (height) defaultTransformations.push({ height: height.toString() });
-  if (quality) defaultTransformations.push({ quality });
+  if (quality) defaultTransformations.push({ quality: quality.toString() });
   if (format) defaultTransformations.push({ format });
   if (blur) defaultTransformations.push({ blur: blur.toString() });
   if (grayscale) defaultTransformations.push({ grayscale: true });
