@@ -110,11 +110,11 @@ export default function EventCard() {
         <div className="mt-12 border-t pt-4 border-neutral-200 dark:border-neutral-700">
           <div className="flex items-start gap-4 mb-8 w-[70%]">
             <Image 
-              src="/video/nmbd.jpg" 
+              src="/nmbd-logo.png" 
               alt="logo" 
               width={40} 
               height={40} 
-              className="rounded-full object-cover w-10 h-10"
+              className="rounded-full object-cover w-10 h-10 bg-yellow-400 p-1.5"
               priority
               quality={100}
             />
@@ -122,7 +122,7 @@ export default function EventCard() {
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-semibold text-neutral-800 dark:text-neutral-200">@nmbd</span>
                 <span className="text-neutral-500 dark:text-neutral-400 text-sm">منذ 4 دقائق في</span>
-                <span className="text-neutral-600 dark:text-neutral-300">#احداث</span>
+                <span className="text-blue-600 dark:text-neutral-300">#أحداث</span>
               </div>
               <p className="text-neutral-700 dark:text-neutral-300 mb-2">
                تدعوكم الحركة الوطنية للبناء والتنمية لحضور المؤتمر العام الأول - 
