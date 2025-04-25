@@ -14,7 +14,11 @@ import { type ImageProps } from 'next/image';
  * This is a migration helper and should eventually be replaced with direct OptimizedImage usage.
  */
 const MigratedImage = forwardRef(function MigratedImage(
-  props: ImageProps & { transformations?: any[] },
+  props: ImageProps & { 
+    transformations?: any[];
+    convertPath?: boolean;
+    debug?: boolean;
+  },
   ref: ForwardedRef<HTMLImageElement>
 ) {
   const {
@@ -33,6 +37,8 @@ const MigratedImage = forwardRef(function MigratedImage(
     loading,
     unoptimized,
     transformations = [],
+    convertPath = true,
+    debug = false,
     // Extract other props that might not be compatible with OptimizedImage
     onLoadingComplete,
     onLoad,
@@ -94,6 +100,8 @@ const MigratedImage = forwardRef(function MigratedImage(
       placeholder={placeholder as 'blur' | 'empty' | undefined}
       blurDataURL={blurDataURL}
       transformations={allTransformations}
+      convertPath={convertPath}
+      debug={debug}
       onLoad={handleLoad}
       onError={handleError}
     />
