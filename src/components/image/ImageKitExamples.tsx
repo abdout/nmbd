@@ -50,8 +50,8 @@ export default function ImageKitExamples() {
             { height: 300 },
             { quality: 80 },
             { format: 'webp' },
-            { effectGray: true },
-            { radius: '15' }
+            { grayscale: true },
+            { radius: 15 }
           ]}
           className="border border-border"
         />
