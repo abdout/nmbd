@@ -119,27 +119,27 @@ export function Sidebar() {
   
   const sidebarItems = [
     {
-      href: '/platform',
+      href: '/dashboard',
       icon: <HomeIcon className="h-5 w-5" />,
       label: 'الرئيسية'
     },
     {
-      href: '/platform/messages',
+      href: '/dashboard/messages',
       icon: <MessageIcon className="h-5 w-5" />,
       label: 'الرسائل'
     },
     {
-      href: '/platform/notifications',
+      href: '/dashboard/notifications',
       icon: <NotificationIcon className="h-[18px] w-[18px]" />,
       label: 'الاشعارات'
     },
     {
-      href: '/platform/profile',
+      href: '/dashboard/profile',
       icon: <UserIcon className="h-5 w-5" />,
       label: 'الملف'
     },
     {
-      href: '/platform/settings',
+      href: '/dashboard/settings',
       icon: <SettingsIcon className="h-[18px] w-[18px]" />,
       label: 'الضبط'
     }
@@ -155,8 +155,8 @@ export function Sidebar() {
             icon={item.icon}
             label={item.label}
             active={
-              item.href === '/platform' 
-                ? pathname === '/platform' 
+              item.href === '/dashboard' 
+                ? pathname === '/dashboard' 
                 : pathname.startsWith(item.href)
             }
           />

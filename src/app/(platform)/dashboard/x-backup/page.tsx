@@ -7,9 +7,9 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import ForYou from '@/components/platform/x/for-you';
-// import Tranding from '@/components/platform/x/for-you/tranding';
-// import FollowFriend from '@/components/platform/x/for-you/friend';
-// import FollowActivity from '@/components/platform/x/for-you/activity';
+import Tranding from '@/components/platform/x/for-you/tranding';
+import FollowFriend from '@/components/platform/x/for-you/friend';
+import FollowActivity from '@/components/platform/x/for-you/activity';
 import AddPost from '@/components/platform/x/post/add-post';
 import ClientFeed from '@/components/platform/x/feed/client-feed';
 // import { useRouter } from 'next/navigation';
@@ -32,11 +32,23 @@ export default function Page() {
 
   return (
     <div className="flex h-full text-center">
-    
+      <div className='flex  gap-2 p-4'>
+      <div className='flex flex-col gap-6 p-4'>
+        <AddPost />
+        <div>
+          {/* Debug info */}
+          <div className="text-xs text-gray-400 mb-2 text-left">User ID: {userId || "Not logged in"}</div>
+          <ClientFeed userId={userId} />
+        </div>
+      </div>
+      <div className='flex justify-end gap-2 p-4'>
+        <ForYou />
+      </div>
+      </div>
      
      
       
-      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[80%] md:max-w-[60%] pr-20" onInteractOutside={() => setIsDialogOpen(false)}>
           <DialogHeader>
             <h1 className="font-heading font-bold text-start text-3xl leading-normal sm:text-2xl md:text-3xl">
@@ -60,7 +72,7 @@ export default function Page() {
             </div>
           </div>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </div>
   );
 }
