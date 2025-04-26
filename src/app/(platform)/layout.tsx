@@ -6,19 +6,19 @@ import { MemberProvider } from "@/components/platform/member/context";
 import { UploadProvider } from "@/components/upload/context";
 import { ProjectProvider } from "@/components/platform/project/context";
 import { TaskProvider } from "@/components/platform/task/context";
-// import { auth } from "@/auth";
-// import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 interface AppLayoutProps {
   children: React.ReactNode
 }
 
-// const session = await auth();
+const session = await auth();
   
-//   // If not authenticated, redirect to login
-//   if (!session) {
-//     redirect('/login?callbackUrl=/dashboard');
-//   }
+  // If not authenticated, redirect to login
+  if (!session) {
+    redirect('/login?callbackUrl=/dashboard');
+  }
 
 export default function AppLayout({ children }: AppLayoutProps) {
   return (
