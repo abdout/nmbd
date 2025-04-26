@@ -1,9 +1,9 @@
-import GitHubProfile from '@/components/github/profile'
+import TwitterProfile from '@/components/twitter/profile'
 import React from 'react'
 
 const page = () => {
   return (
-    <GitHubProfile />
+    <TwitterProfile />
   )
 }
 
