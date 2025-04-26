@@ -1,7 +1,7 @@
 // components/CommentList.tsx
 
 "use client";
-import { useCurrentUser } from "@/components/auth/use-current-user";
+import { useCurrentUser } from "@/components/auth/hooks/use-current-user";
 import { Comment, User } from "@prisma/client";
 import Image from "next/image";
 import { useOptimistic, useState } from "react";

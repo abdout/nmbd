@@ -53,7 +53,10 @@ export async function createArticle(
     // Create the article
     console.log("[createArticle] Creating article in database");
     const article = await db.article.create({
-      data: validatedData,
+      data: {
+        ...validatedData,
+        slug: validatedData.slug || validatedData.title.toLowerCase().replace(/\s+/g, '-'),
+      },
     });
     
     console.log("[createArticle] Article created successfully:", {
