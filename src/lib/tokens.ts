@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
-import { getTwoFactorTokenByEmail } from "@/components/auth/2f-token";
+import { getTwoFactorTokenByEmail } from "@/components/auth/data/two-factor-token";
 import { db } from "@/lib/db";
-import { getPasswordResetTokenByEmail } from "@/components/auth/password-token";
-import { getVerificationTokenByEmail } from "@/components/auth/verificiation-token";
+import { getPasswordResetTokenByEmail } from "@/components/auth/data/password-reset-token";
+import { getVerificationTokenByEmail } from "@/components/auth/data/verificiation-token";
 
 
 
