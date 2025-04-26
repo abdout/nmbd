@@ -72,10 +72,10 @@ function Modal({ content, sm = false }: Props) {
           />
           <div className="fixed inset-0 w-full h-screen z-50 flex justify-center items-center">
             <motion.div 
-              className={`relative z-50 bg-background overflow-auto ${
+              className={`relative z-50 bg-background ${
                 sm 
                   ? 'm-4 p-8 max-w-2xl w-[24rem] h-[29rem] sm:text-sm' 
-                  : 'w-full h-full p-4 sm:p-8'
+                  : 'w-full h-screen overflow-hidden p-4 sm:p-8'
               }`}
               initial="hidden"
               animate="visible"

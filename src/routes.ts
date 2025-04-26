@@ -19,6 +19,10 @@ export const publicRoutes = [
   "/github",
   "/upload",
   "/api/upload",
+  '/project',
+  '/project/[id]',
+  "/api/project",
+  "/api/project/[id]"
 ];
 
 /**

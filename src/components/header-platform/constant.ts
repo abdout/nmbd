@@ -169,7 +169,7 @@ export const marketingConfig: MarketingConfig = {
 
     {
       title: "ورقة",
-      href: "/paper",
+      href: "/wikipaper",
     },
 
     {

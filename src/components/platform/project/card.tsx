@@ -34,7 +34,7 @@ const getStatusColor = (status: string): string => {
 // ProjectCard Component
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     return (
-        <Card className='border border-gray-400 hover:border-yellow-400 max-w-full md:w-48 h-52 reveal'>
+        <Card className='border border-gray-400 hover:border-yellow-400 max-w-full md:w-52 h-52 reveal'>
             <CardHeader>
                 <strong className="font-semibold">{project.title}</strong>
                 <p className="line-clamp-2 overflow-hidden text-ellipsis">
