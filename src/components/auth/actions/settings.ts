@@ -1,16 +1,15 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 import { AuthError } from "next-auth";
-
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
-import { SettingsSchema } from "./validation";
-import { getUserByEmail, getUserById } from "./user";
+import { SettingsSchema } from "../schemas";
+import { getUserByEmail, getUserById } from "../data/user";
 import { db } from "@/lib/db";
-import { auth, signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "../../../auth";
 import { revalidatePath } from "next/cache";
 
 export const settings = async (
@@ -60,20 +59,36 @@ export const settings = async (
   }
 
   if (values.password && values.newPassword && dbUser.password) {
-    const passwordsMatch = await bcrypt.compare(
+    // Split the stored password to get salt and hash
+    const [storedSalt, storedHash] = dbUser.password.split(":");
+    
+    // Hash the provided password with stored salt
+    const hashResult = crypto.pbkdf2Sync(
       values.password,
-      dbUser.password,
-    );
+      storedSalt,
+      1000,
+      64,
+      "sha512"
+    ).toString("hex");
+
+    const passwordsMatch = hashResult === storedHash;
 
     if (!passwordsMatch) {
       return { error: "Incorrect password!" };
     }
 
-    const hashedPassword = await bcrypt.hash(
+    // Generate new salt and hash for new password
+    const newSalt = crypto.randomBytes(16).toString("hex");
+    const newHash = crypto.pbkdf2Sync(
       values.newPassword,
-      10,
-    );
-    values.password = hashedPassword;
+      newSalt,
+      1000,
+      64,
+      "sha512"
+    ).toString("hex");
+
+    // Combine new salt and hash
+    values.password = `${newSalt}:${newHash}`;
     values.newPassword = undefined;
   }
 

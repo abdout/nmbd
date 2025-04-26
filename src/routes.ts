@@ -10,19 +10,12 @@ export const publicRoutes = [
   "/client",
   "/server",
   "/setting",
-  "/video",
-  "/video/[id]",
-  "/paper",
-  "/paper/[id]",
+  "/timeline",
   "/article",
-  "/article/[id]",
-  "/github",
-  "/upload",
-  "/api/upload",
-  '/project',
-  '/project/[id]',
-  "/api/project",
-  "/api/project/[id]"
+  "/father",
+  "/author",
+  
+  
 ];
 
 /**
@@ -35,7 +28,9 @@ export const authRoutes = [
   "/register",
   "/error",
   "/reset",
-  "/new-password"
+  "/new-password",
+  "/join"
+  
 ];
 
 /**
@@ -49,4 +44,4 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+export const DEFAULT_LOGIN_REDIRECT = "/platform";

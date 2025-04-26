@@ -6,23 +6,12 @@ import { FormProvider } from '@/components/onboarding/form-context';
 import { Toaster } from 'sonner';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
-
-
-export default async function OnboardingLayout({
+export default function OnboardingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  
-  // If not authenticated, redirect to login
-  if (!session) {
-    redirect('/login?callbackUrl=/dashboard');
-  }
-
   const pathname = usePathname();
   const isReviewPage = pathname === '/onboarding/review';
   const [isMobile, setIsMobile] = useState(false);

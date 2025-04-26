@@ -1,16 +1,14 @@
 "use server";
 
 import * as z from "zod";
-import bcrypt from "bcryptjs";
-
-
+import crypto from "node:crypto";
 import { db } from "@/lib/db";
-import { NewPasswordSchema } from "./validation";
-import { getPasswordResetTokenByToken } from "./password-token";
-import { getUserByEmail } from "./user";
+import { NewPasswordSchema } from "../schemas";
+import { getPasswordResetTokenByToken } from "../data/password-reset-token";
+import { getUserByEmail } from "../data/user";
 
 export const newPassword = async (
-  values: z.infer<typeof NewPasswordSchema> ,
+  values: z.infer<typeof NewPasswordSchema>,
   token?: string | null,
 ) => {
   if (!token) {
@@ -40,14 +38,23 @@ export const newPassword = async (
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: "Email does not exist!" }
+    return { error: "Email does not exist!" };
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hashedPassword = crypto.pbkdf2Sync(
+    password,
+    salt,
+    1000,
+    64,
+    "sha512"
+  ).toString("hex");
 
   await db.user.update({
     where: { id: existingUser.id },
-    data: { password: hashedPassword },
+    data: {
+      password: hashedPassword
+    },
   });
 
   await db.passwordResetToken.delete({

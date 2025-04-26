@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "./logout-action";
+import { logout } from "./actions/logout";
 
 
 

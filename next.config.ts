@@ -6,7 +6,14 @@ const nextConfig: NextConfig = {
   
   // Image optimization settings
   images: {
-    domains: ['ik.imagekit.io', 'imagekit.io'],
+    domains: [
+      'ik.imagekit.io',
+      'imagekit.io',
+      'images.unsplash.com', 
+      'res.cloudinary.com', 
+      'lh3.googleusercontent.com',
+      'platform-lookaside.fbsbx.com'
+    ],
     remotePatterns: [
       {
         protocol: 'https',

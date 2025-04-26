@@ -8,6 +8,7 @@ export const SettingsSchema = z.object({
   email: z.optional(z.string().email()),
   password: z.optional(z.string().min(6)),
   newPassword: z.optional(z.string().min(6)),
+  salt: z.optional(z.string()),
 })
   .refine((data) => {
     if (data.password && !data.newPassword) {
@@ -16,7 +17,7 @@ export const SettingsSchema = z.object({
 
     return true;
   }, {
-    message: "كلمة المرور الجديدة مطلوبة!",
+    message: "كلمة المرور الجديدة مطلوبة",
     path: ["newPassword"]
   })
   .refine((data) => {
@@ -26,13 +27,13 @@ export const SettingsSchema = z.object({
 
     return true;
   }, {
-    message: "كلمة المرور مطلوبة!",
+    message: "كلمة المرور مطلوبة",
     path: ["password"]
   })
 
 export const NewPasswordSchema = z.object({
   password: z.string().min(6, {
-    message: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+    message: "يجب أن يكون على الأقل 6 أحرف",
   }),
 });
 
@@ -57,7 +58,7 @@ export const RegisterSchema = z.object({
     message: "البريد الإلكتروني مطلوب",
   }),
   password: z.string().min(6, {
-    message: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+    message: "يجب أن يكون على الأقل 6 أحرف",
   }),
   name: z.string().min(1, {
     message: "الاسم مطلوب",

@@ -9,56 +9,76 @@ import {
 
 const { auth } = NextAuth(authConfig)
 
-// Middleware using Next.js 14/15 syntax
 export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
-  const pathname = nextUrl.pathname
-  
-  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
-  
-  // Check if the path matches any public route, including dynamic routes
-  const isPublicRoute = publicRoutes.some(route => {
-    // For exact matches
-    if (route === pathname) return true;
-    
-    // For dynamic routes
-    if (route.includes('[id]')) {
-      const routePattern = route.replace('[id]', '[^/]+');
-      const regex = new RegExp(`^${routePattern.replace(/\//g, '\\/')}$`);
-      return regex.test(pathname);
-    }
-    
-    return false;
+  // Check if the request is for an image or static asset
+  const isImageRequest = nextUrl.pathname.startsWith('/_next/image')
+  const isStaticAsset = 
+    nextUrl.pathname.startsWith('/_next/static') || 
+    nextUrl.pathname.startsWith('/public') || 
+    nextUrl.pathname.includes('.jpg') ||
+    nextUrl.pathname.includes('.jpeg') ||
+    nextUrl.pathname.includes('.png') ||
+    nextUrl.pathname.includes('.svg') ||
+    nextUrl.pathname.includes('.gif')
+
+  // Allow all image and static asset requests to pass through
+  if (isImageRequest || isStaticAsset) {
+    console.log("[Middleware] Allowing image or static asset:", nextUrl.pathname);
+    return;
+  }
+
+  console.log("[Middleware] Request Details:", {
+    path: nextUrl.pathname,
+    isLoggedIn,
+    sessionData: req.auth,
+    timestamp: new Date().toISOString()
   });
-  
-  const isAuthRoute = authRoutes.includes(pathname)
+
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
+    console.log("[Middleware] API Auth Route:", nextUrl.pathname);
     return
   }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
+      console.log("[Middleware] Authenticated user on auth route - redirecting to:", DEFAULT_LOGIN_REDIRECT);
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
+    console.log("[Middleware] Unauthenticated user on auth route - allowing");
     return
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    const callbackUrl = pathname + nextUrl.search
+    console.log("[Middleware] Unauthorized access - redirecting to login:", {
+      from: nextUrl.pathname,
+      isPublic: isPublicRoute
+    });
+    
+    const callbackUrl = nextUrl.pathname + nextUrl.search
     const encodedCallbackUrl = encodeURIComponent(callbackUrl)
+    const loginUrl = `/login?callbackUrl=${encodedCallbackUrl}`
 
-    return Response.redirect(new URL(
-      `/login?callbackUrl=${encodedCallbackUrl}`,
-      nextUrl
-    ))
+    console.log("[Middleware] Redirect URL:", loginUrl);
+    return Response.redirect(new URL(loginUrl, nextUrl))
   }
 
   return
 })
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    // Match all paths except:
+    // 1. API auth routes (/api/auth/*)
+    // 2. Static files (/_next/static/*)
+    // 3. Image files (/_next/image*)
+    // 4. Public assets (favicon.ico, fonts, etc.)
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|fonts).*)',
+  ],
 }
