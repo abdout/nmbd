@@ -50,8 +50,10 @@ export const ResetForm = () => {
   return (
     <CardWrapper
       headerLabel=""
-      backButtonLabel="Back to login"
+      backButtonLabel="العودة إلى تسجيل الدخول"
       backButtonHref="/login"
+      showSocial={false}
+      showHorizontalLine={false}
     >
       <Form {...form}>
         <form 
@@ -69,7 +71,7 @@ export const ResetForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Email"
+                      placeholder="البريد الإلكتروني"
                       type="email"
                     />
                   </FormControl>
@@ -85,7 +87,7 @@ export const ResetForm = () => {
             type="submit"
             className="w-full h-12 tracking-wide text-[15.5px] text-[#fcfcfc]"
           >
-            Reset password
+            إعادة تعيين كلمة المرور
           </Button>
         </form>
       </Form>

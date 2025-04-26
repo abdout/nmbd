@@ -18,6 +18,7 @@ interface CardWrapperProps {
   backButtonLabel: string;
   backButtonHref: string;
   showSocial?: boolean;
+  showHorizontalLine?: boolean;
 };
 
 export const CardWrapper = ({
@@ -25,7 +26,8 @@ export const CardWrapper = ({
   headerLabel,
   backButtonLabel,
   backButtonHref,
-  showSocial
+  showSocial,
+  showHorizontalLine = true
 }: CardWrapperProps) => {
   return (
     <Card className="w-[350px] border-none shadow-none text-black">
@@ -34,8 +36,8 @@ export const CardWrapper = ({
           <Social />
         </CardFooter>
       )}
-      <hr className="mx-7 pb-4 items-center justify-center" />
-      <CardHeader className="-mt-14">
+      {showHorizontalLine && <hr className="mx-7 pb-4 items-center justify-center" />}
+      <CardHeader className={`${!showHorizontalLine ? 'mt-0' : '-mt-14'}`}>
        
         <Header label={headerLabel} />
       </CardHeader>
@@ -45,11 +47,9 @@ export const CardWrapper = ({
       
       <CardFooter className="text-black !important">
         <BackButton
-          
           label={backButtonLabel}
           href={backButtonHref}
-          
-          
+          className="text-foreground"
         />
       </CardFooter>
     </Card>

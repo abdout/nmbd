@@ -4,26 +4,32 @@ import * as z from "zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 
-
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  // FormLabel,
   FormMessage,  
 } from "@/components/ui/form";
-import { CardWrapper } from "@/components/auth/card-wrapper"
 import { Button } from "@/components/ui/button";
-import { RegisterSchema } from "./schemas";
-import { register } from "./actions/register";
-import { FormError } from "./form-error";
-import { FormSuccess } from "./form-success";
-
-
-export const RegisterForm = () => {
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "@/components/ui/card";
+import { RegisterSchema } from "@/components/auth/schemas";
+import { register } from "@/components/auth/actions/register";
+import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
+import { Social } from "@/components/auth/social";
+export const RegisterForm = ({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -51,84 +57,94 @@ export const RegisterForm = () => {
   };
 
   return (
-    <CardWrapper
-      headerLabel=""
-      backButtonLabel="لديك حساب بالفعل؟"
-      backButtonHref="/login"
-      showSocial
-      
-    >
-      <Form {...form}>
-        <form 
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8"
-        >
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  {/* <FormLabel>Name</FormLabel> */}
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="اسم المستخدم"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  {/* <FormLabel>Email</FormLabel> */}
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="البريد الإلكتروني"
-                      type="email"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  {/* <FormLabel>Password</FormLabel> */}
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="كلمة المرور"
-                      type="password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full h-12 text-[16px] text-[#fcfcfc]"
-          >
-            التسجيل
-          </Button>
-        </form>
-      </Form>
-    </CardWrapper>
+    <div className={cn("flex flex-col gap-6 min-w-[200px] md:min-w-[350px]", className)} {...props}>
+      <Card className="border-none shadow-none">
+        <CardHeader className="text-center" />
+        <CardContent>
+          <Social />
+        </CardContent>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                  أو المتابعة باستخدام
+                </span>
+              </div>
+
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="الاسم"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="البريد الإلكتروني"
+                          type="email"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="كلمة المرور"
+                          type="password"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormError message={error} />
+                <FormSuccess message={success} />
+
+                <Button 
+                  disabled={isPending} 
+                  type="submit" 
+                  className="w-full h-11 text-base"
+                >
+                  التسجيل
+                </Button>
+              </div>
+
+              <div className="text-center text-sm">
+                <Link href="/login" className="hover:underline underline-offset-4">
+                  هل لديك حساب بالفعل؟
+                </Link>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
