@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { ARABIC_MONTH_NAMES } from '@/components/article/constant';
 import Loading from '@/components/atom/loading';
+import { useSession } from 'next-auth/react';
 
 export default function AllArticlesPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function AllArticlesPage() {
   const [articles, setArticles] = React.useState<Article[]>([]);
   const [editingArticleId, setEditingArticleId] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { data: session } = useSession();
   
   React.useEffect(() => {
     const fetchArticles = async () => {
@@ -174,19 +176,21 @@ export default function AllArticlesPage() {
       />
       
       <div className="max-w-5xl mx-auto -mt-14">
-        <div className="flex justify-between items-center my-6">
-          <Button variant='outline' onClick={() => {
-            setEditingArticleId(null);
-            openModal(null);
-          }}>
-            إضافة مقال
-          </Button>
+        <div className="flex justify-between items-center mt-4">
+          {session && (
+            <Button variant='outline' onClick={() => {
+              setEditingArticleId(null);
+              openModal(null);
+            }}>
+              إضافة مقال
+            </Button>
+          )}
         </div>
         
         <ArticleHoverEffect 
           items={formattedArticles} 
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          onEdit={session ? handleEdit : undefined}
+          onDelete={session ? handleDelete : undefined}
           onShare={handleShare}
         />
         

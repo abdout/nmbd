@@ -8,26 +8,52 @@ import { buttonVariants } from "@/components/ui/button";
 import { videos } from '@/components/template/video/constant';
 import { VideoItem } from '@/components/template/video/type';
 
+// Local loading component
+const VideoLoading = () => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center">
+        <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+      </div>
+    </div>
+  );
+};
+
 export default function VideoPage() {
   const params = useParams();
   const [video, setVideo] = useState<VideoItem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    if (!params.id) return;
+    const fetchVideo = async () => {
+      setIsLoading(true);
+      
+      if (!params.id) return;
+      
+      const videoId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+      const foundVideo = videos.find(v => v.link === videoId);
+      
+      if (!foundVideo) {
+        notFound();
+        return;
+      }
+      
+      // Simulate a small delay to show loading state
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setVideo(foundVideo);
+      setIsLoading(false);
+    };
     
-    const videoId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
-    const foundVideo = videos.find(v => v.link === videoId);
-    
-    if (!foundVideo) {
-      notFound();
-      return;
-    }
-    
-    setVideo(foundVideo);
+    fetchVideo();
   }, [params.id]);
   
+  if (isLoading) {
+    return <VideoLoading />;
+  }
+  
   if (!video) {
-    return <div className="container mx-auto py-10 px-4">Loading...</div>;
+    return notFound();
   }
   
   return (

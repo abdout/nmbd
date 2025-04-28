@@ -7,6 +7,17 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import OptimizedImage from '@/components/image/optimum-image';
 
+// Local loading component
+const PaperLoading = () => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center">
+        <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+      </div>
+    </div>
+  );
+};
+
 // Get the testimonials data - in a real app, this would be in a shared data file
 const testimonials = [
   {
@@ -48,8 +59,12 @@ const testimonials = [
 export default function PaperPage() {
   const params = useParams();
   const [paper, setPaper] = useState<typeof testimonials[0] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
+    const fetchPaper = async () => {
+      setIsLoading(true);
+      
     if (!params.id) return;
     
     const idString = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
@@ -59,12 +74,23 @@ export default function PaperPage() {
       notFound();
       return;
     }
+      
+      // Simulate a small delay to show loading state
+      await new Promise(resolve => setTimeout(resolve, 500));
     
     setPaper(testimonials[id]);
+      setIsLoading(false);
+    };
+    
+    fetchPaper();
   }, [params.id]);
   
+  if (isLoading) {
+    return <PaperLoading />;
+  }
+  
   if (!paper) {
-    return <div className="container mx-auto py-10 px-4">Loading...</div>;
+    return notFound();
   }
   
   return (

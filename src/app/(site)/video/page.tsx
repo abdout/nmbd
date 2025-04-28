@@ -1,17 +1,47 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Head from '@/components/atom/site-heading';
 import HoverEffect from '@/components/atom/card-video';
 import { videos } from '@/components/template/video/constant';
+import { VideoItem } from '@/components/template/video/type';
 import Link from 'next/link';
 import { YoutubeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const metadata = {
-  title: 'All Videos | Public Party',
-  description: 'Browse all videos published by Public Party',
+// Local loading component
+const VideosLoading = () => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center">
+        <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+      </div>
+    </div>
+  );
 };
 
 export default function AllVideosPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoItems, setVideoItems] = useState<VideoItem[]>([]);
+  
+  useEffect(() => {
+    const loadVideos = async () => {
+      setIsLoading(true);
+      
+      // Simulate a network request
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setVideoItems(videos);
+      setIsLoading(false);
+    };
+    
+    loadVideos();
+  }, []);
+
+  if (isLoading) {
+    return <VideosLoading />;
+  }
+
   return (
     <div className="container mx-auto px-4">
       <Head 

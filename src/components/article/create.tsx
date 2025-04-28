@@ -12,6 +12,7 @@ import { ArticleFormValues } from "./type";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { Combobox, ComboboxItem } from "./combobox";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z.string().min(1, "العنوان مطلوب"),
@@ -50,6 +51,8 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(!!editArticleId);
   const isEditMode = !!editArticleId;
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const toggleStep = () => setStep(step === 1 ? 2 : 1);
 
@@ -62,7 +65,47 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
       body: "",
       author: "",
     },
+    mode: "onChange"
   });
+
+  // Get form state for validation
+  const { formState } = form;
+  const { isValid, errors } = formState;
+
+  // Check if first step fields are valid
+  const isFirstStepValid = !errors.title && !errors.description && !errors.author && !errors.image;
+
+  // Check if all fields are valid
+  const isFormValid = isValid && !isImageUploading;
+
+  // Handle proceeding to next step with validation
+  const handleNextStep = () => {
+    // Trigger validation for first step fields
+    form.trigger(['title', 'description', 'author', 'image']).then((isValid) => {
+      if (isValid) {
+        setStep(2);
+      } else {
+        // Collect all error messages
+        const errorMessages = [];
+        if (errors.author) errorMessages.push("الكاتب");
+        if (errors.title) errorMessages.push("العنوان");
+        if (errors.description) errorMessages.push("الوصف");
+        if (errors.image) errorMessages.push("الصورة");
+        
+        // Create a combined message
+        let message = "";
+        if (errorMessages.length > 0) {
+          message = `${errorMessages.join(" و ")} مطلوبين`;
+          
+          // Display toast with the error message
+          toast.error(message, {
+            position: "bottom-right",
+            duration: 3000
+          });
+        }
+      }
+    });
+  };
 
   // Load article data if in edit mode
   useEffect(() => {
@@ -113,13 +156,28 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
 
   // Handle image upload completion
   const handleImageUpload = (imageData: { url: string }) => {
+    setImageError(null);
     setUploadedImage(imageData.url);
     form.setValue("image", imageData.url);
+    setIsImageUploading(false);
   };
 
-  // Function to simulate automatic upload when file is selected
+  // Handle image upload error
+  const handleImageError = (errorMessage: string) => {
+    setImageError(errorMessage);
+    setIsImageUploading(false);
+    // Keep the temporary preview but mark it as failed
+  };
+
+  // Function to handle file selection and auto-upload
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      setImageError(null);
+      // Create a temporary preview URL for immediate display
+      const tempPreviewUrl = URL.createObjectURL(e.target.files[0]);
+      setUploadedImage(tempPreviewUrl);
+      setIsImageUploading(true);
+      
       // Get the file input from ImageUploader
       const fileInput = document.querySelector('.custom-uploader input[type="file"]') as HTMLInputElement;
       if (fileInput) {
@@ -137,8 +195,15 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
           const uploadButton = document.querySelector('.custom-uploader button:last-child') as HTMLButtonElement;
           if (uploadButton) {
             uploadButton.click();
+          } else {
+            // If button isn't found, handle the error
+            setImageError("فشل تحميل الصورة - الرجاء المحاولة مرة أخرى");
+            setIsImageUploading(false);
           }
         }, 100);
+      } else {
+        setImageError("فشل العثور على منطقة التحميل - الرجاء تحديث الصفحة");
+        setIsImageUploading(false);
       }
       
       // Clear this input's value so the same file can be selected again
@@ -187,6 +252,45 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
     }
   };
 
+  // Handle submitting the form with validation
+  const handleFormSubmit = async (data: ArticleFormValues) => {
+    // Check for image uploading
+    if (isImageUploading) {
+      toast.error("الرجاء الانتظار حتى يتم رفع الصورة", {
+        position: "bottom-right",
+        duration: 3000
+      });
+      return;
+    }
+    
+    // Check for validation errors before submitting
+    if (!isFormValid) {
+      // Collect all error messages
+      const errorMessages = [];
+      if (errors.author) errorMessages.push("الكاتب");
+      if (errors.title) errorMessages.push("العنوان");
+      if (errors.description) errorMessages.push("الوصف");
+      if (errors.image) errorMessages.push("الصورة");
+      if (errors.body) errorMessages.push("المحتوى");
+      
+      // Create a combined message
+      let message = "";
+      if (errorMessages.length > 0) {
+        message = `${errorMessages.join(" و ")} مطلوبين`;
+        
+        // Display toast with the error message
+        toast.error(message, {
+          position: "bottom-right",
+          duration: 3000
+        });
+      }
+      return;
+    }
+    
+    // Proceed with form submission
+    await handleSubmit(data);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -197,22 +301,10 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="absolute top-4 right-16 z-50">
-        <Button
-          type="button"
-          size="icon"
-          variant="outline"
-          className="rounded-full"
-          onClick={toggleStep}
-        >
-          <Icon icon={step === 1 ? "ic:sharp-arrow-forward" : "ic:sharp-arrow-back"} width={25} />
-        </Button>
-      </div>
-      
       <div className="transform -translate-y-8">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={form.handleSubmit(handleFormSubmit)}
             className="w-[90%] min-w-[360px] md:min-w-[500px] lg:min-w-[600px] flex flex-col justify-center items-center gap-6 relative mx-auto"
           >
             {error && (
@@ -223,8 +315,27 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
             
             {step === 1 && (
               <div className="flex flex-col md:flex-row md:gap-8 w-full">
-                {/* Left column: Title and Description */}
-                <div className="flex flex-col gap-6 w-full md:w-2/3">
+                {/* Left column: Title, Author and Description */}
+                <div className="flex flex-col gap-5 w-full md:w-3/5">
+                  <FormField
+                    control={form.control}
+                    name="author"
+                    render={({ field }) => (
+                      <FormItem className="w-[57.5%]">
+                        <FormControl>
+                          <Combobox
+                            items={authorItems}
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="اختر الكاتب"
+                            dir="rtl"
+                          />
+                        </FormControl>
+                        <FormMessage className="hidden" />
+                      </FormItem>
+                    )}
+                  />
+                  
                   <FormField
                     control={form.control}
                     name="title"
@@ -233,7 +344,7 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                         <FormControl>
                           <Input className="w-full" placeholder="العنوان" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="hidden" />
                       </FormItem>
                     )}
                   />
@@ -245,42 +356,24 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                       <FormItem>
                         <FormControl>
                           <Textarea 
-                            className="h-20 md:h-24 w-full" 
+                            className="h-16 md:h-20 w-full" 
                             placeholder="الوصف" 
                             {...field} 
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="hidden" />
                       </FormItem>
                     )}
                   />
                 </div>
                 
-                {/* Right column: Author and Image */}
-                <div className="flex flex-col gap-6 w-full md:w-1/3 mt-6 md:mt-0">
-                  <FormField
-                    control={form.control}
-                    name="author"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Combobox
-                            items={authorItems}
-                            value={field.value}
-                            onChange={field.onChange}
-                            placeholder="اختر الكاتب"
-                            dir="rtl"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="w-full">
-                    <div className="border border-input rounded-md overflow-hidden bg-background relative h-40">
+                {/* Right column: Image */}
+                <div className="flex flex-col gap-6 w-full md:w-2/5 mt-6 md:mt-0">
+                  <div className="w-full h-full">
+                    <div className="border border-input rounded-md overflow-hidden bg-background relative h-full min-h-[150px]">
                       <ImageUploader 
                         onUploadComplete={handleImageUpload}
+                        onError={handleImageError}
                         className="custom-uploader"
                       />
                       <input
@@ -307,8 +400,33 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                           <img 
                             src={uploadedImage} 
                             alt="صورة المقال" 
-                            className="max-w-full max-h-full object-contain"
+                            className="w-full h-full object-cover"
                           />
+                          
+                          {/* Loading overlay */}
+                          {isImageUploading && (
+                            <div className="absolute inset-0 bg-background/90 flex items-center justify-center">
+                              <div className="flex flex-col items-center">
+                                <div className="w-6 h-6 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Error overlay */}
+                          {imageError && (
+                            <div className="absolute inset-0 bg-red-500/40 flex items-center justify-center">
+                              <div className="bg-white p-3 rounded-md text-center max-w-[90%]">
+                                <p className="text-red-600 text-sm">{imageError}</p>
+                                <button 
+                                  type="button"
+                                  onClick={() => setImageError(null)}
+                                  className="mt-2 text-xs bg-gray-100 px-2 py-1 rounded"
+                                >
+                                  إغلاق
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -336,17 +454,23 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                         min-height: 100% !important;
                         opacity: 0;
                       }
-                      /* Hide the preview image from the uploader component */
+                      /* Hide the preview image from the uploader component - we will show our own preview */
                       .custom-uploader img {
                         display: none !important;
                       }
-                      /* Hide the buttons */
+                      /* Hide the buttons from view but keep them in the DOM for functionality */
                       .custom-uploader button {
-                        display: none !important;
+                        opacity: 0 !important;
+                        position: absolute !important;
+                        pointer-events: auto !important;
                       }
-                      /* Hide the action buttons container */
+                      /* Auto-upload styling */
                       .custom-uploader > div > div:last-child {
-                        display: none !important;
+                        height: 0 !important;
+                        overflow: hidden !important;
+                        pointer-events: auto !important;
+                        position: absolute !important;
+                        opacity: 0 !important;
                       }
                     `}</style>
                     
@@ -355,7 +479,7 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                       name="image"
                       render={() => (
                         <FormItem>
-                          <FormMessage />
+                          <FormMessage className="hidden" />
                         </FormItem>
                       )}
                     />
@@ -365,7 +489,7 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
             )}
             
             {step === 2 && (
-              <div className="flex flex-col gap-6 w-full pt-14">
+              <div className="flex flex-col gap-6 w-full">
                 <FormField
                   control={form.control}
                   name="body"
@@ -378,22 +502,57 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
                           {...field} 
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="hidden" />
                     </FormItem>
                   )}
                 />
-                
-                <Button
-                  type="submit"
-                  className="mt-2 h-10 font-medium text-base w-28"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 
-                    (isEditMode ? "...جاري التحديث" : "...جاري الإنشاء") : 
-                    (isEditMode ? "تحديث المقال" : "إنشاء مقال")}
-                </Button>
               </div>
             )}
+            
+            {/* Navigation and submit buttons */}
+            <div className="flex justify-between w-full mt-4">
+              {step === 1 ? (
+                <div className="flex gap-3">
+                  <Button
+                    type="submit"
+                    className="h-9 font-medium"
+                    disabled={isSubmitting || !isFormValid}
+                  >
+                    {isSubmitting ? 
+                      (isEditMode ? "...جاري التحديث" : "...جاري الإنشاء") : 
+                      (isEditMode ? "تحديث المقال" : "إنشاء مقال")}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="h-9 font-medium"
+                    variant="outline"
+                  >
+                    التالي
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-3">
+                  <Button
+                    type="submit"
+                    className="h-9 font-medium"
+                    disabled={isSubmitting || !isFormValid}
+                  >
+                    {isSubmitting ? 
+                      (isEditMode ? "...جاري التحديث" : "...جاري الإنشاء") : 
+                      (isEditMode ? "تحديث المقال" : "إنشاء مقال")}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="h-9 font-medium"
+                    variant="outline"
+                  >
+                    السابق
+                  </Button>
+                </div>
+              )}
+            </div>
           </form>
         </Form>
       </div>

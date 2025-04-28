@@ -73,59 +73,59 @@ export const ArticleHoverEffect = ({
                 <ContextMenu key={item?.link}>
                     <ContextMenuTrigger>
                         <div
-                            className="relative group block p-2 h-full w-full"
-                            onMouseEnter={() => setHoveredIndex(idx)}
-                            onMouseLeave={() => setHoveredIndex(null)}
-                        >
-                            <AnimatePresence>
-                                {hoveredIndex === idx && (
-                                    <motion.span
-                                        className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block rounded-lg"
-                                        layoutId="hoverBackground"
-                                        initial={{ opacity: 0 }}
-                                        animate={{
-                                            opacity: 1,
-                                            transition: { duration: 0.15 },
-                                        }}
-                                        exit={{
-                                            opacity: 0,
-                                            transition: { duration: 0.15, delay: 0.2 },
-                                        }}
-                                    />
-                                )}
-                            </AnimatePresence>
+                    className="relative group block p-2 h-full w-full"
+                    onMouseEnter={() => setHoveredIndex(idx)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                >
+                    <AnimatePresence>
+                        {hoveredIndex === idx && (
+                            <motion.span
+                                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block rounded-lg"
+                                layoutId="hoverBackground"
+                                initial={{ opacity: 0 }}
+                                animate={{
+                                    opacity: 1,
+                                    transition: { duration: 0.15 },
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    transition: { duration: 0.15, delay: 0.2 },
+                                }}
+                            />
+                        )}
+                    </AnimatePresence>
                             <Link href={item?.link}>
-                                <ArticleCard>
-                                    <div className="flex gap-6">
-                                        <div className="md:w-1/3 w-[30%] relative md:h-[140px] h-[80px] overflow-hidden rounded-lg">
-                                            <OptimizedImage
-                                                src={item.image}
-                                                alt={item.title}
-                                                fill={true}
-                                                sizes="(max-width: 768px) 33vw, 25vw"
-                                                objectFit="cover"
-                                                loading="lazy"
-                                                convertPath={false}
-                                                transformations={[
-                                                    { quality: 80 },
-                                                    { format: "auto" }
-                                                ]}
-                                            />
-                                        </div>
-                                        <div className="w-2/3 flex flex-col justify-between md:py-2 py-0">
-                                            <div className="md:space-y-3 space-y-1">
-                                                <ArticleTitle>{item.title}</ArticleTitle>
-                                                <ArticleDescription>{item.description}</ArticleDescription>
-                                            </div>
-                                            <p className="flex md:items-center items-start md:gap-2 gap-1 md:text-sm text-xs pt-2 md:pt-0 ">
-                                                <span>{item.author}</span>
+                    <ArticleCard>
+                        <div className="flex gap-6">
+                            <div className="md:w-1/3 w-[30%] relative md:h-[140px] h-[80px] overflow-hidden rounded-lg">
+                                <OptimizedImage
+                                    src={item.image}
+                                    alt={item.title}
+                                    fill={true}
+                                    sizes="(max-width: 768px) 33vw, 25vw"
+                                    objectFit="cover"
+                                    loading="lazy"
+                                    convertPath={false}
+                                    transformations={[
+                                        { quality: 80 },
+                                        { format: "auto" }
+                                    ]}
+                                />
+                            </div>
+                            <div className="w-2/3 flex flex-col justify-between md:py-2 py-0">
+                                <div className="md:space-y-3 space-y-1">
+                                    <ArticleTitle>{item.title}</ArticleTitle>
+                                    <ArticleDescription>{item.description}</ArticleDescription>
+                                </div>
+                                <p className="flex md:items-center items-start md:gap-2 gap-1 md:text-sm text-xs pt-2 md:pt-0 ">
+                                    <span>{item.author}</span>
                                                 <span className="text-lg font-bold mx-1">·</span>
-                                                <span>{item.date}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </ArticleCard>
-                            </Link>
+                                    <span>{item.date}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </ArticleCard>
+                </Link>
                         </div>
                     </ContextMenuTrigger>
                     
