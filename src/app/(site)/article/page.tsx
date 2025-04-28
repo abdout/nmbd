@@ -14,35 +14,44 @@ import CreateArticle from '@/components/article/create';
 import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { ARABIC_MONTH_NAMES } from '@/components/article/constant';
+import Loading from '@/components/atom/loading';
 
 export default function AllArticlesPage() {
   const router = useRouter();
   const { modal, openModal, closeModal } = useModal();
   const [articles, setArticles] = React.useState<Article[]>([]);
   const [editingArticleId, setEditingArticleId] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   
   React.useEffect(() => {
     const fetchArticles = async () => {
-      // Fetch articles from database
-      const dbArticles = await getAllArticles();
-      
-      // If there are no DB articles, fall back to static articles for demo purposes
-      // In production, you would remove this fallback
-      const articlesData = dbArticles.length > 0 
-        ? dbArticles 
-        : staticArticles.map((article, index) => ({
-            id: `static-${index + 1}`,
-            title: article.title,
-            slug: `article-${index + 1}`,
-            description: article.description,
-            image: article.image,
-            body: "This is the full article content that will be displayed on the article page.",
-            author: article.author,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          }));
-          
-      setArticles(articlesData);
+      setIsLoading(true);
+      try {
+        // Fetch articles from database
+        const dbArticles = await getAllArticles();
+        
+        // If there are no DB articles, fall back to static articles for demo purposes
+        // In production, you would remove this fallback
+        const articlesData = dbArticles.length > 0 
+          ? dbArticles 
+          : staticArticles.map((article, index) => ({
+              id: `static-${index + 1}`,
+              title: article.title,
+              slug: `article-${index + 1}`,
+              description: article.description,
+              image: article.image,
+              body: "This is the full article content that will be displayed on the article page.",
+              author: article.author,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }));
+            
+        setArticles(articlesData);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     
     fetchArticles();
@@ -151,6 +160,10 @@ export default function AllArticlesPage() {
       )
     );
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="container mx-auto px-4">

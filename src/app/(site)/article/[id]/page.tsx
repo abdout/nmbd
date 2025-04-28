@@ -10,6 +10,7 @@ import { Article } from '@/components/article/type';
 import OptimizedImage from '@/components/image/optimum-image';
 import { getArticleBySlug } from '@/components/article/action';
 import { ARABIC_MONTH_NAMES } from '@/components/article/constant';
+import Loading from '@/components/atom/loading';
 
 export default function ArticlePage() {
   const params = useParams();
@@ -72,7 +73,7 @@ export default function ArticlePage() {
   }, [params.id]);
   
   if (isLoading) {
-    return <div className="container mx-auto py-10 px-4">Loading...</div>;
+    return <Loading />;
   }
   
   if (!article) {
