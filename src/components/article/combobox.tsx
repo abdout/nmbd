@@ -54,7 +54,10 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn(
+            "w-full justify-between h-10 text-base md:text-sm", 
+            className
+          )}
           dir={dir}
         >
           {value
@@ -65,7 +68,11 @@ export function Combobox({
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" dir={dir}>
         <Command dir={dir}>
-          <CommandInput placeholder={searchPlaceholder} className="h-9" dir={dir} />
+          <CommandInput 
+            placeholder={searchPlaceholder} 
+            className="h-10 text-base md:text-sm" 
+            dir={dir} 
+          />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
