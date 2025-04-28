@@ -71,6 +71,7 @@ export async function createArticle(
     return {
       status: "success",
       message: "Article created successfully",
+      data: article
     };
   } catch (error) {
     console.error("[createArticle] Failed to create article:", error);
@@ -135,7 +136,7 @@ export async function updateArticle(
     }
 
     // Update the article
-    await db.article.update({
+    const updatedArticle = await db.article.update({
       where: { id },
       data: validatedData,
     });
@@ -147,6 +148,7 @@ export async function updateArticle(
     return {
       status: "success",
       message: "Article updated successfully",
+      data: updatedArticle
     };
   } catch (error) {
     console.error("Failed to update article:", error);

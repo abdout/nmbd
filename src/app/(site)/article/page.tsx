@@ -12,6 +12,7 @@ import { useModal } from '@/components/atom/modal/context';
 import Modal from '@/components/atom/modal/modal';
 import CreateArticle from '@/components/article/create';
 import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
 
 export default function AllArticlesPage() {
   const router = useRouter();
@@ -126,6 +127,20 @@ export default function AllArticlesPage() {
   
   const editingArticle = editingArticleId ? articles.find(article => article.id === editingArticleId) : null;
 
+  // Handle newly created article
+  const handleArticleCreated = (newArticle: Article) => {
+    setArticles(prevArticles => [newArticle, ...prevArticles]);
+  };
+
+  // Handle updated article
+  const handleArticleUpdated = (updatedArticle: Article) => {
+    setArticles(prevArticles => 
+      prevArticles.map(article => 
+        article.id === updatedArticle.id ? updatedArticle : article
+      )
+    );
+  };
+
   return (
     <div className="container mx-auto px-4">
       <Head 
@@ -136,7 +151,12 @@ export default function AllArticlesPage() {
       
       <div className="max-w-5xl mx-auto -mt-14">
         <div className="flex justify-between items-center my-6">
-          <CreateArticleButton />
+          <Button variant='outline' onClick={() => {
+            setEditingArticleId(null);
+            openModal(null);
+          }}>
+            إضافة مقال
+          </Button>
         </div>
         
         <ArticleHoverEffect 
@@ -155,8 +175,27 @@ export default function AllArticlesPage() {
         )}
       </div>
       
-      {modal.open && editingArticle && (
-        <Modal content={<CreateArticle onClose={closeModal} />} />
+      {modal.open && (
+        <Modal content={
+          editingArticleId ? (
+            <CreateArticle 
+              onClose={() => {
+                closeModal();
+                setEditingArticleId(null);
+              }} 
+              editArticleId={editingArticleId}
+              onArticleUpdated={handleArticleUpdated}
+            />
+          ) : (
+            <CreateArticle 
+              onClose={() => {
+                closeModal();
+                setEditingArticleId(null);
+              }} 
+              onArticleCreated={handleArticleCreated} 
+            />
+          )
+        } />
       )}
     </div>
   );

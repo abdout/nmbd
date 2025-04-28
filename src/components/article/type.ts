@@ -24,6 +24,7 @@ export type ArticleAction = "edit" | "delete";
 export type ActionState = {
   status: "idle" | "loading" | "success" | "error";
   message?: string;
+  data?: Article;
 };
 
 // Image data returned from image upload

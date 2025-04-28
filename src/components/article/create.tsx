@@ -5,13 +5,14 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { createArticle } from "./action";
+import { useState, useEffect } from "react";
+import { createArticle, getArticleBySlug, updateArticle } from "./action";
 import ImageUploader from "@/components/upload/ImageUploader";
 import { ArticleFormValues } from "./type";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { Combobox, ComboboxItem } from "./combobox";
+import { db } from "@/lib/db";
 
 const formSchema = z.object({
   title: z.string().min(1, "العنوان مطلوب"),
@@ -32,14 +33,24 @@ const authorItems: ComboboxItem[] = [
 
 interface CreateArticleProps {
   onClose: () => void;
+  onArticleCreated?: (newArticle: any) => void;
+  onArticleUpdated?: (updatedArticle: any) => void;
+  editArticleId?: string;
 }
 
-const CreateArticle: React.FC<CreateArticleProps> = ({ onClose }) => {
+const CreateArticle: React.FC<CreateArticleProps> = ({ 
+  onClose, 
+  onArticleCreated,
+  onArticleUpdated,
+  editArticleId 
+}) => {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(!!editArticleId);
+  const isEditMode = !!editArticleId;
 
   const toggleStep = () => setStep(step === 1 ? 2 : 1);
 
@@ -53,6 +64,39 @@ const CreateArticle: React.FC<CreateArticleProps> = ({ onClose }) => {
       author: "",
     },
   });
+
+  // Load article data if in edit mode
+  useEffect(() => {
+    const loadArticle = async () => {
+      if (editArticleId) {
+        try {
+          const article = await db.article.findUnique({
+            where: { id: editArticleId },
+          });
+          
+          if (article) {
+            form.reset({
+              title: article.title,
+              description: article.description,
+              image: article.image,
+              body: article.body,
+              author: article.author,
+            });
+            setUploadedImage(article.image);
+          }
+        } catch (error) {
+          console.error("Failed to load article for editing:", error);
+          setError("Failed to load article data");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (editArticleId) {
+      loadArticle();
+    }
+  }, [editArticleId, form]);
 
   // Helper to generate a slug from title
   const generateSlug = (title: string) => {
@@ -110,14 +154,32 @@ const CreateArticle: React.FC<CreateArticleProps> = ({ onClose }) => {
     try {
       // Auto-generate slug
       const slug = generateSlug(data.title);
-      const result = await createArticle({ ...data, slug });
+      
+      let result;
+      if (isEditMode && editArticleId) {
+        // Update existing article
+        result = await updateArticle(editArticleId, { ...data, slug });
+      } else {
+        // Create new article
+        result = await createArticle({ ...data, slug });
+      }
+      
       if (result.status === "error") {
         setError(result.message || "حدث خطأ غير معروف");
         setIsSubmitting(false);
         return;
       }
+      
       form.reset();
       setUploadedImage(null);
+      
+      // If callback exists, call it with the article data
+      if (!isEditMode && onArticleCreated && result.data) {
+        onArticleCreated(result.data);
+      } else if (isEditMode && onArticleUpdated && result.data) {
+        onArticleUpdated(result.data);
+      }
+      
       router.refresh();
       onClose();
     } catch (err) {
@@ -126,6 +188,14 @@ const CreateArticle: React.FC<CreateArticleProps> = ({ onClose }) => {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading article data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -311,7 +381,9 @@ const CreateArticle: React.FC<CreateArticleProps> = ({ onClose }) => {
                 className="mt-6 h-12 font-medium text-sm w-72 mx-auto"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "...جاري الإنشاء" : "إنشاء مقال"}
+                {isSubmitting ? 
+                  (isEditMode ? "...جاري التحديث" : "...جاري الإنشاء") : 
+                  (isEditMode ? "تحديث المقال" : "إنشاء مقال")}
               </Button>
             </div>
           )}
