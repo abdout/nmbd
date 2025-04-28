@@ -28,7 +28,7 @@ export function AnimatedTestimonialsDemo() {
                 "مدرسة الاقتصاد التشاركي قريبة من المزاج السوداني في السودان، يوجد قيمة التضامن ولكن بدلاً من التضامن في الاستهلاك فقط، دعونا نتضامن في الإنتاج أيضًا",
             name: "الاقتصاد التشاركي",
             designation: "الامانة الاقتصادية",
-            src: "/paper/sharing-economy.jpg",
+            src: "/video/f.png",
         },
         {
             quote:

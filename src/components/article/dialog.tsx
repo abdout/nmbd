@@ -11,6 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Article, ArticleFormValues } from "./type";
 import ArticleForm from "./form";
+import { useModal } from "@/components/atom/modal/context";
+import Modal from "@/components/atom/modal/modal";
+import CreateArticle from "./create";
 
 interface ArticleDialogProps {
   mode: "create" | "edit";
@@ -75,14 +78,15 @@ export function ArticleDialog({
 }
 
 export function CreateArticleButton() {
+  const { modal, openModal, closeModal } = useModal();
   return (
-    <ArticleDialog
-      mode="create"
-      trigger={
-        <Button className="bg-primary text-white">
-          إضافة مقال جديد
-        </Button>
-      }
-    />
+    <>
+      <Button variant='outline' onClick={() => openModal(null)}>
+        إضافة مقال
+      </Button>
+      {modal.open && (
+        <Modal content={<CreateArticle onClose={closeModal} />} />
+      )}
+    </>
   );
 }

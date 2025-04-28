@@ -8,6 +8,7 @@ import { ModalProvider } from "@/components/atom/modal/context";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "../auth";
 import { ImageKitWrapper } from "@/components/image/image-kit";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -86,6 +87,7 @@ export default async function RootLayout({
               {children}
             </div>
           </ImageKitWrapper>
+          <Toaster position="bottom-right" expand={true} richColors />
         </ModalProvider>
         </ThemeProvider>
       </body>
