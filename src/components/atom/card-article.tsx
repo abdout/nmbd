@@ -119,7 +119,7 @@ export const ArticleHoverEffect = ({
                                             </div>
                                             <p className="flex md:items-center items-start md:gap-2 gap-1 md:text-sm text-xs pt-2 md:pt-0 ">
                                                 <span>{item.author}</span>
-                                                <span className="">·</span>
+                                                <span className="text-lg font-bold mx-1">·</span>
                                                 <span>{item.date}</span>
                                             </p>
                                         </div>

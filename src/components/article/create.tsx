@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
-import { createArticle, getArticleBySlug, updateArticle } from "./action";
+import { createArticle, getArticleById, updateArticle } from "./action";
 import ImageUploader from "@/components/upload/ImageUploader";
 import { ArticleFormValues } from "./type";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { Combobox, ComboboxItem } from "./combobox";
-import { db } from "@/lib/db";
 
 const formSchema = z.object({
   title: z.string().min(1, "العنوان مطلوب"),
@@ -70,9 +69,8 @@ const CreateArticle: React.FC<CreateArticleProps> = ({
     const loadArticle = async () => {
       if (editArticleId) {
         try {
-          const article = await db.article.findUnique({
-            where: { id: editArticleId },
-          });
+          // Use the getArticleById server action instead of getArticleBySlug
+          const article = await getArticleById(editArticleId);
           
           if (article) {
             form.reset({

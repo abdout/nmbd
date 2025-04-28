@@ -39,3 +39,8 @@ export interface ImageData {
   height?: number;
   format?: string;
 }
+
+// Type for Arabic month names
+export type ArabicMonths = {
+  [key: number]: string;
+};

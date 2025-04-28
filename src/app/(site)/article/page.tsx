@@ -6,13 +6,14 @@ import { getAllArticles, deleteArticle } from '@/components/article/action';
 import { articles as staticArticles } from '@/components/template/article/constant';
 import ArticleHoverEffect from '@/components/atom/card-article';
 import { CreateArticleButton } from '@/components/article/dialog';
-import { Article } from '@/components/article/type';
+import { Article, ArabicMonths } from '@/components/article/type';
 import { useRouter } from 'next/navigation';
 import { useModal } from '@/components/atom/modal/context';
 import Modal from '@/components/atom/modal/modal';
 import CreateArticle from '@/components/article/create';
 import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
+import { ARABIC_MONTH_NAMES } from '@/components/article/constant';
 
 export default function AllArticlesPage() {
   const router = useRouter();
@@ -48,15 +49,25 @@ export default function AllArticlesPage() {
   }, []);
 
   // Transform articles to match ArticleHoverEffect expected format
-  const formattedArticles = articles.map((article: Article) => ({
-    id: article.id,
-    title: article.title,
-    description: article.description,
-    link: `/article/${article.slug}`,
-    image: article.image,
-    date: new Date(article.createdAt).toLocaleDateString(),
-    author: article.author,
-  }));
+  const formattedArticles = articles.map((article: Article) => {
+    // Format date to Arabic style (Month-Day-Year)
+    const date = new Date(article.createdAt);
+    const year = date.getFullYear();
+    const day = date.getDate();
+    
+    const month = ARABIC_MONTH_NAMES[date.getMonth() as keyof ArabicMonths];
+    const formattedDate = `${day} ${month} ${year}`;
+    
+    return {
+      id: article.id,
+      title: article.title,
+      description: article.description,
+      link: `/article/${article.slug}`,
+      image: article.image,
+      date: formattedDate,
+      author: article.author,
+    };
+  });
   
   const handleEdit = (id: string) => {
     setEditingArticleId(id);

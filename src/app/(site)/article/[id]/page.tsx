@@ -9,11 +9,21 @@ import { articles as staticArticles } from '@/components/template/article/consta
 import { Article } from '@/components/article/type';
 import OptimizedImage from '@/components/image/optimum-image';
 import { getArticleBySlug } from '@/components/article/action';
+import { ARABIC_MONTH_NAMES } from '@/components/article/constant';
 
 export default function ArticlePage() {
   const params = useParams();
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Format date in Arabic style
+  const formatDate = (dateInput: Date | string) => {
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    const day = date.getDate();
+    const month = ARABIC_MONTH_NAMES[date.getMonth() as keyof typeof ARABIC_MONTH_NAMES];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
   
   useEffect(() => {
     const fetchArticle = async () => {
@@ -103,8 +113,8 @@ export default function ArticlePage() {
             <h1>{article.title}</h1>
             <div className="flex items-center text-sm text-gray-600 gap-2">
               <span>{article.author}</span>
-              <span className="mx-2">•</span>
-              <span>{new Date(article.createdAt instanceof Date ? article.createdAt : new Date(article.createdAt)).toLocaleDateString()}</span>
+              <span className="text-lg font-bold mx-1">•</span>
+              <span>{formatDate(article.createdAt)}</span>
             </div>
           </header>
           

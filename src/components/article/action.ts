@@ -83,6 +83,20 @@ export async function createArticle(
 }
 
 /**
+ * Get an article by ID
+ */
+export async function getArticleById(id: string) {
+  try {
+    return await db.article.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Failed to get article by ID:", error);
+    return null;
+  }
+}
+
+/**
  * Get an article by slug
  */
 export async function getArticleBySlug(slug: string) {
