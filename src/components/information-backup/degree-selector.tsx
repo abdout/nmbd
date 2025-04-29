@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { UseFormSetValue } from "react-hook-form";
-import { EducationSchema } from "../education/validation";
+import { InformationSchema } from "./validation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useRef } from "react";
 
 interface DegreeSelectorProps {
-  setValue: UseFormSetValue<EducationSchema>;
+  setValue: UseFormSetValue<InformationSchema>;
   educationLevel: string;
   setEducationLevel: (level: string) => void;
 }
@@ -16,11 +16,7 @@ const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeS
   // Set default to student if not already set
   useEffect(() => {
     if (!educationLevel) {
-      // Set both the education level and initialize student fields
       setValue('educationLevel', 'student');
-      setValue('studentInstitution', ''); // Initialize student fields
-      setValue('studentFaculty', '');
-      setValue('studentProgram', '');
       setEducationLevel('student');
     }
   }, [educationLevel, setValue, setEducationLevel]);
@@ -49,20 +45,9 @@ const DegreeSelector = ({ setValue, educationLevel, setEducationLevel }: DegreeS
 
   const handleValueChange = (value: string) => {
     setValue('educationLevel', value);
-    
-    // Clear previous degree fields when changing levels
-    if (value === 'student') {
-      setValue('studentInstitution', '');
-      setValue('studentFaculty', '');
-      setValue('studentProgram', '');
-    } else {
-      // Clear student fields when switching to other degrees
-      setValue('studentInstitution', undefined);
-      setValue('studentFaculty', undefined);
-      setValue('studentProgram', undefined);
-    }
-    
     setEducationLevel(value);
+    
+    // Trigger scroll to the selected degree component
     scrollToDegreeComponent(value);
   };
 

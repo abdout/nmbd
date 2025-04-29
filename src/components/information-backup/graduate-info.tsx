@@ -1,13 +1,13 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
-import { EducationSchema } from "./validation";
+import { InformationSchema } from "./validation";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface GraduateInfoProps {
-  register: UseFormRegister<EducationSchema>;
-  errors: FieldErrors<EducationSchema>;
-  setValue: UseFormSetValue<EducationSchema>;
+  register: UseFormRegister<InformationSchema>;
+  errors: FieldErrors<InformationSchema>;
+  setValue: UseFormSetValue<InformationSchema>;
   educationLevel: string;
   completionYearItems: { value: string; label: string }[];
   bachelorCompletionYearItems: { value: string; label: string }[];
@@ -44,64 +44,6 @@ const GraduateInfo = ({
     return null;
   }
 
-  // Helper function to determine which institution field to use based on education level
-  const getInstitutionField = () => {
-    switch (educationLevel) {
-      case 'diploma':
-        return 'diplomaInstitution';
-      case 'bachelor':
-        return 'bachelorInstitution';
-      case 'master':
-        return 'masterInstitution';
-      case 'phd':
-        return 'phdInstitution';
-      case 'professor':
-        return 'professorInstitution';
-      default:
-        return 'diplomaInstitution';
-    }
-  };
-
-  // Helper function to determine which major field to use based on education level
-  const getMajorField = () => {
-    switch (educationLevel) {
-      case 'diploma':
-        return 'diplomaMajor';
-      case 'bachelor':
-        return 'bachelorMajor';
-      case 'master':
-        return 'masterMajor';
-      case 'phd':
-        return 'phdMajor';
-      case 'professor':
-        return 'professorMajor';
-      default:
-        return 'diplomaMajor';
-    }
-  };
-
-  // Helper function to determine which completion year field to use based on education level
-  const getCompletionYearField = () => {
-    switch (educationLevel) {
-      case 'diploma':
-        return 'diplomaCompletionYear';
-      case 'bachelor':
-        return 'bachelorCompletionYear';
-      case 'master':
-        return 'masterCompletionYear';
-      case 'phd':
-        return 'phdCompletionYear';
-      case 'professor':
-        return 'professorCompletionYear';
-      default:
-        return 'diplomaCompletionYear';
-    }
-  };
-
-  const institutionField = getInstitutionField();
-  const majorField = getMajorField();
-  const completionYearField = getCompletionYearField();
-
   return (
     <div className="w-full" dir="rtl">
       <div className="flex flex-col mt-4">
@@ -112,10 +54,10 @@ const GraduateInfo = ({
           <Input
             className="w-full"
             placeholder="اسم المؤسسة التعليمية"
-            {...register(institutionField)}
+            {...register('institution')}
           />
-          {errors[institutionField] && (
-            <p className="text-xs text-red-500 mt-1">{errors[institutionField]?.message}</p>
+          {errors.institution && (
+            <p className="text-xs text-red-500 mt-1">{errors.institution.message}</p>
           )}
         </div>
 
@@ -125,10 +67,10 @@ const GraduateInfo = ({
           <Input
             className="w-full"
             placeholder="التخصص"
-            {...register(majorField)}
+            {...register('major')}
           />
-          {errors[majorField] && (
-            <p className="text-xs text-red-500 mt-1">{errors[majorField]?.message}</p>
+          {errors.major && (
+            <p className="text-xs text-red-500 mt-1">{errors.major.message}</p>
           )}
         </div>
 
@@ -160,12 +102,12 @@ const GraduateInfo = ({
           {/* Hidden field for form validation */}
           <input 
             type="hidden" 
-            {...register(completionYearField)}
+            {...register('yearOfCompletion')}
             value={selectedCompletionYear?.value || ''}
           />
           
-          {errors[completionYearField] && (
-            <p className="text-xs text-red-500 mt-1">{errors[completionYearField]?.message}</p>
+          {errors.yearOfCompletion && (
+            <p className="text-xs text-red-500 mt-1">{errors.yearOfCompletion.message}</p>
           )}
         </div>
 
@@ -305,7 +247,7 @@ const GraduateInfo = ({
           </>
         )}
 
-        {/* PhD information - shown for professor only */}
+        {/* PhD information - shown only for professor */}
         {educationLevel === 'professor' && (
           <>
             <div className="mb-4">

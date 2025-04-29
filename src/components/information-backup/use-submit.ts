@@ -1,10 +1,10 @@
 import { useTransition } from "react";
 import { UseFormHandleSubmit, FieldErrors } from "react-hook-form";
 import { useRouter, usePathname } from "next/navigation";
+import { toast } from "sonner";
 import { InformationSchema } from "./validation";
 import { createInformation, updateInformation } from "./action";
 import { getNextRoute } from '../utils';
-import { SuccessToast, ErrorToast } from "@/components/atom/toast";
 
 interface UseSubmitProps {
   handleSubmit: UseFormHandleSubmit<InformationSchema>;
@@ -57,21 +57,19 @@ export function useSubmit({
         let arabicFieldName = '';
         switch(field) {
           case 'fullName': arabicFieldName = 'الاسم الكامل'; break;
-          case 'birthYear': arabicFieldName = 'سنة الميلاد'; break;
           case 'birthCountry': arabicFieldName = 'دولة الميلاد'; break;
           case 'birthState': arabicFieldName = 'ولاية الميلاد'; break;
           case 'birthLocality': arabicFieldName = 'محلية الميلاد'; break;
-          case 'currentLocality': arabicFieldName = 'المحلية الحالية'; break;
+          case 'birthYear': arabicFieldName = 'سنة الميلاد'; break;
+          case 'birthMonth': arabicFieldName = 'شهر الميلاد'; break;
           case 'currentCountry': arabicFieldName = 'الدولة الحالية'; break;
           case 'currentState': arabicFieldName = 'الولاية الحالية'; break;
-          case 'currentAdminUnit': arabicFieldName = 'الوحدة الإدارية الحالية'; break;
-          case 'currentNeighborhood': arabicFieldName = 'الحي الحالي'; break;
-          case 'originalLocality': arabicFieldName = 'المحلية الأصلية'; break;
-          case 'originalCountry': arabicFieldName = 'الدولة الأصلية'; break;
-          case 'maritalStatus': arabicFieldName = 'الحالة الاجتماعية'; break;
-          case 'gender': arabicFieldName = 'الجنس'; break;
-          case 'religion': arabicFieldName = 'الديانة'; break;
-          case 'nationalityId': arabicFieldName = 'الرقم الوطني'; break;
+          case 'currentLocality': arabicFieldName = 'المحلية الحالية'; break;
+          case 'currentAdminUnit': arabicFieldName = 'الوحدة الإدارية'; break;
+          case 'currentNeighborhood': arabicFieldName = 'الحي'; break;
+          case 'educationLevel': arabicFieldName = 'المستوى التعليمي'; break;
+          case 'educationField': arabicFieldName = 'مجال الدراسة'; break;
+          case 'educationSpecialization': arabicFieldName = 'التخصص'; break;
           default: arabicFieldName = field;
         }
         
@@ -79,10 +77,19 @@ export function useSubmit({
       }
     });
     
-    // Use our centralized error toast
-    ErrorToast(errorMessage);
+    // Show toast with detailed error message and red styling
+    toast.error(errorMessage, {
+      style: {
+        background: 'rgb(239 68 68)',
+        color: 'white',
+        border: 'none',
+        textAlign: 'right',
+        direction: 'rtl'
+      },
+      duration: 5000 // Show for 5 seconds to give user time to read
+    });
     
-    // Log all error fields to console for debugging
+    // Log all error fields to console
     errorFields.forEach(field => {
       const fieldError = errors[field as keyof typeof errors];
       if (fieldError) {
@@ -105,6 +112,21 @@ export function useSubmit({
       return;
     }
     
+    // Ensure birthYear and birthMonth are strings before submission
+    const processedFormData = {
+      ...formData,
+      birthYear: formData.birthYear?.toString() || '',
+      birthMonth: formData.birthMonth?.toString() || ''
+    };
+    
+    // Save to localStorage for persistence between page visits
+    try {
+      localStorage.setItem('informationFormData', JSON.stringify(processedFormData));
+      console.log('Saved form data to localStorage');
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+    
     startTransition(async () => {
       try {
         console.log('Starting form submission transition');
@@ -112,47 +134,54 @@ export function useSubmit({
           console.log('Setting isSubmitting to true');
           setIsSubmitting(true);
         }
+        
+        const minimalData = {
+          ...processedFormData,
+        };
+
+        console.log("Submitting minimal data:", minimalData);
+        console.log('Form submission type:', type);
 
         if (type === "create") {
           console.log('Creating information...');
           try {
-            const result = await createInformation(formData);
+            const result = await createInformation({ success: false, error: false }, minimalData);
             console.log('Create information result:', result);
 
             if (result.success) {
               console.log('Information created successfully');
-              SuccessToast(); // Use our centralized success toast
+              toast.success("تم تحديث البيانات بنجاح");
               router.push(getNextRoute(pathname));
             } else {
               console.error('Failed to create information');
-              ErrorToast(result.error || "خطأ في حفظ البيانات");
+              toast.error(result.error || "Failed to create information");
             }
           } catch (error) {
             console.error('Error during creation:', error);
-            ErrorToast("حدث خطأ أثناء تقديم النموذج");
+            toast.error("An error occurred during form submission");
           }
         } else {
           console.log('Updating information...');
           try {
-            const result = await updateInformation(formData);
+            const result = await updateInformation({ success: false, error: false }, minimalData);
             console.log('Update information result:', result);
 
             if (result.success) {
               console.log('Information updated successfully');
-              SuccessToast(); // Use our centralized success toast
+              toast.success("تم تحديث البيانات بنجاح");
               router.push(getNextRoute(pathname));
             } else {
               console.error('Failed to update information');
-              ErrorToast(result.error || "خطأ في تحديث البيانات");
+              toast.error(result.error || "Failed to update information");
             }
           } catch (error) {
             console.error('Error during update:', error);
-            ErrorToast("حدث خطأ أثناء تقديم النموذج");
+            toast.error("An error occurred during form submission");
           }
         }
       } catch (error) {
         console.error("Form submission error:", error);
-        ErrorToast("حدث خطأ أثناء تقديم النموذج");
+        toast.error("An error occurred while submitting the form");
       } finally {
         console.log('Form submission completed');
         if (setIsSubmitting) {
