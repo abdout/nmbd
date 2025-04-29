@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { InformationSchema } from "../information/validation";
+import { EducationSchema } from "./validation";
 import SelectPopover, { Item } from "../information/select-popover";
 
 interface EducationProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
-  setValue: UseFormSetValue<InformationSchema>;
-  watch: UseFormWatch<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
+  setValue: UseFormSetValue<EducationSchema>;
+  watch: UseFormWatch<EducationSchema>;
 }
 
 const Education = ({
@@ -19,22 +19,23 @@ const Education = ({
   // Education level state
   const [selectedEducationLevel, setSelectedEducationLevel] = useState<Item | null>(null);
   const [selectedStudentYear, setSelectedStudentYear] = useState<Item | null>(null);
-  const [selectedYearOfCompletion, setSelectedYearOfCompletion] = useState<Item | null>(null);
+  const [selectedDiplomaCompletionYear, setSelectedDiplomaCompletionYear] = useState<Item | null>(null);
   const [selectedBachelorCompletionYear, setSelectedBachelorCompletionYear] = useState<Item | null>(null);
   const [selectedMasterCompletionYear, setSelectedMasterCompletionYear] = useState<Item | null>(null);
   const [selectedPhdCompletionYear, setSelectedPhdCompletionYear] = useState<Item | null>(null);
+  const [selectedProfessorCompletionYear, setSelectedProfessorCompletionYear] = useState<Item | null>(null);
 
   // Watch values
   const educationLevel = watch('educationLevel');
 
   // Education options
   const educationLevels: Item[] = [
-    { label: 'طالب', value: 'STUDENT' },
-    { label: 'دبلوم', value: 'DIPLOMA' },
-    { label: 'بكالوريوس', value: 'BACHELOR' },
-    { label: 'ماجستير', value: 'MASTER' },
-    { label: 'دكتوراه', value: 'PHD' },
-    { label: 'بروفيسور', value: 'PROFESSOR' },
+    { label: 'طالب', value: 'student' },
+    { label: 'دبلوم', value: 'diploma' },
+    { label: 'بكالوريوس', value: 'bachelor' },
+    { label: 'ماجستير', value: 'master' },
+    { label: 'دكتوراه', value: 'phd' },
+    { label: 'بروفيسور', value: 'professor' },
   ];
 
   // Student years
@@ -65,20 +66,24 @@ const Education = ({
       setSelectedEducationLevel(item);
       
       // Reset other fields based on selected level
-      if (item.value !== 'STUDENT') {
+      if (item.value !== 'student') {
         setSelectedStudentYear(null);
         setValue('studentYear', '');
+        setValue('studentInstitution', '');
+        setValue('studentFaculty', '');
       }
       
       // Reset completion years when changing education level
-      setSelectedYearOfCompletion(null);
+      setSelectedDiplomaCompletionYear(null);
       setSelectedBachelorCompletionYear(null);
       setSelectedMasterCompletionYear(null);
       setSelectedPhdCompletionYear(null);
-      setValue('yearOfCompletion', '');
+      setSelectedProfessorCompletionYear(null);
+      setValue('diplomaCompletionYear', '');
       setValue('bachelorCompletionYear', '');
       setValue('masterCompletionYear', '');
       setValue('phdCompletionYear', '');
+      setValue('professorCompletionYear', '');
     } else {
       setValue('educationLevel', '');
       setSelectedEducationLevel(null);
@@ -96,14 +101,14 @@ const Education = ({
     }
   };
 
-  // Handle year of completion selection
-  const handleYearOfCompletionSelect = (item: Item | null) => {
+  // Handle diploma completion year selection
+  const handleDiplomaCompletionYearSelect = (item: Item | null) => {
     if (item) {
-      setValue('yearOfCompletion', item.value);
-      setSelectedYearOfCompletion(item);
+      setValue('diplomaCompletionYear', item.value);
+      setSelectedDiplomaCompletionYear(item);
     } else {
-      setValue('yearOfCompletion', '');
-      setSelectedYearOfCompletion(null);
+      setValue('diplomaCompletionYear', '');
+      setSelectedDiplomaCompletionYear(null);
     }
   };
 
@@ -137,6 +142,17 @@ const Education = ({
     } else {
       setValue('phdCompletionYear', '');
       setSelectedPhdCompletionYear(null);
+    }
+  };
+
+  // Handle professor completion year selection
+  const handleProfessorCompletionYearSelect = (item: Item | null) => {
+    if (item) {
+      setValue('professorCompletionYear', item.value);
+      setSelectedProfessorCompletionYear(item);
+    } else {
+      setValue('professorCompletionYear', '');
+      setSelectedProfessorCompletionYear(null);
     }
   };
 
@@ -184,32 +200,31 @@ const Education = ({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             سنة التخرج
           </label>
-          <input type="hidden" {...register('yearOfCompletion')} value={selectedYearOfCompletion?.value || ''} />
+          <input type="hidden" {...register('diplomaCompletionYear')} value={selectedDiplomaCompletionYear?.value || ''} />
           <SelectPopover
             items={generateCompletionYears()}
-            selectedItem={selectedYearOfCompletion}
-            setSelectedItem={handleYearOfCompletionSelect}
+            selectedItem={selectedDiplomaCompletionYear}
+            setSelectedItem={handleDiplomaCompletionYearSelect}
             label="سنة التخرج"
           />
-          {errors.yearOfCompletion && (
-            <p className="mt-1 text-sm text-red-600">{errors.yearOfCompletion.message}</p>
+          {errors.diplomaCompletionYear && (
+            <p className="mt-1 text-sm text-red-600">{errors.diplomaCompletionYear.message}</p>
           )}
         </div>
       )}
 
-      {/* Bachelor Level */}
-      {(educationLevel === 'بكالوريوس' || educationLevel === 'ماجستير' || 
-        educationLevel === 'دكتوراه' || educationLevel === 'بروفيسور') && (
+      {/* Bachelor Completion Year */}
+      {educationLevel === 'بكالوريوس' && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            سنة تخرج البكالوريوس
+            سنة التخرج
           </label>
           <input type="hidden" {...register('bachelorCompletionYear')} value={selectedBachelorCompletionYear?.value || ''} />
           <SelectPopover
             items={generateCompletionYears()}
             selectedItem={selectedBachelorCompletionYear}
             setSelectedItem={handleBachelorCompletionYearSelect}
-            label="سنة تخرج البكالوريوس"
+            label="سنة التخرج"
           />
           {errors.bachelorCompletionYear && (
             <p className="mt-1 text-sm text-red-600">{errors.bachelorCompletionYear.message}</p>
@@ -217,19 +232,18 @@ const Education = ({
         </div>
       )}
 
-      {/* Master Level */}
-      {(educationLevel === 'ماجستير' || educationLevel === 'دكتوراه' || 
-        educationLevel === 'بروفيسور') && (
+      {/* Master Completion Year */}
+      {educationLevel === 'ماجستير' && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            سنة تخرج الماجستير
+            سنة التخرج
           </label>
           <input type="hidden" {...register('masterCompletionYear')} value={selectedMasterCompletionYear?.value || ''} />
           <SelectPopover
             items={generateCompletionYears()}
             selectedItem={selectedMasterCompletionYear}
             setSelectedItem={handleMasterCompletionYearSelect}
-            label="سنة تخرج الماجستير"
+            label="سنة التخرج"
           />
           {errors.masterCompletionYear && (
             <p className="mt-1 text-sm text-red-600">{errors.masterCompletionYear.message}</p>
@@ -237,21 +251,40 @@ const Education = ({
         </div>
       )}
 
-      {/* PhD Level */}
-      {(educationLevel === 'دكتوراه' || educationLevel === 'بروفيسور') && (
+      {/* PhD Completion Year */}
+      {educationLevel === 'دكتوراه' && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            سنة تخرج الدكتوراه
+            سنة التخرج
           </label>
           <input type="hidden" {...register('phdCompletionYear')} value={selectedPhdCompletionYear?.value || ''} />
           <SelectPopover
             items={generateCompletionYears()}
             selectedItem={selectedPhdCompletionYear}
             setSelectedItem={handlePhdCompletionYearSelect}
-            label="سنة تخرج الدكتوراه"
+            label="سنة التخرج"
           />
           {errors.phdCompletionYear && (
             <p className="mt-1 text-sm text-red-600">{errors.phdCompletionYear.message}</p>
+          )}
+        </div>
+      )}
+
+      {/* Professor Completion Year */}
+      {educationLevel === 'بروفيسور' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            سنة التخرج
+          </label>
+          <input type="hidden" {...register('professorCompletionYear')} value={selectedProfessorCompletionYear?.value || ''} />
+          <SelectPopover
+            items={generateCompletionYears()}
+            selectedItem={selectedProfessorCompletionYear}
+            setSelectedItem={handleProfessorCompletionYearSelect}
+            label="سنة التخرج"
+          />
+          {errors.professorCompletionYear && (
+            <p className="mt-1 text-sm text-red-600">{errors.professorCompletionYear.message}</p>
           )}
         </div>
       )}
