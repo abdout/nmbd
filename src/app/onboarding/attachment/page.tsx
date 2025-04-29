@@ -13,7 +13,7 @@ export default async function AttachmentPage() {
           type={userData ? "update" : "create"} 
           data={userData ? {
             ...userData,
-            image: userData.image || undefined,
+            image: userData.image || '',
             cv: userData.cv || undefined,
             portfolio: userData.portfolio || undefined,
             additionalFile: userData.additionalFile || undefined
