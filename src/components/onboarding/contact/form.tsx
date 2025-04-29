@@ -1,13 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { contactSchema, ContactSchema } from "./validation";
 import { createContact, updateContact } from "./action";
 import { useActionState } from "react";
 import { useEffect, useCallback } from "react";
-import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,18 +17,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
+import { SuccessToast, ErrorToast, showValidationErrorToast } from '@/components/atom/toast';
 
 type ContactField = keyof Omit<ContactSchema, 'id'>;
 
-const tabsData: Array<{icon: React.ReactNode, name: ContactField, label: string, placeholder: string}> = [
-  { icon: <FaTiktok size={26} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
-  { icon: <FaInstagram size={26} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
-  { icon: <FaLinkedin size={26} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username' },
-  { icon: <FaTelegram size={26} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username' },
-  { icon: <FaFacebook size={26} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username' },
-  { icon: <FaTwitter size={26} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username' },
-  { icon: <FaWhatsapp size={26} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890' },
-  { icon: <FaPhone size={23} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890' },
+const tabsData: Array<{icon: React.ReactElement, name: ContactField, label: string, placeholder: string, showOnMobile?: boolean}> = [
+  // { icon: <FaTiktok size={26} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
+  // { icon: <FaInstagram size={26} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
+  { icon: <FaLinkedin size={40} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username', showOnMobile: false },
+  
+  { icon: <FaFacebook size={70} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username', showOnMobile: false },
+  { icon: <FaTwitter size={70} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username', showOnMobile: true },
+  { icon: <FaTelegram size={70} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username', showOnMobile: true },
+  { icon: <FaWhatsapp size={70} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890', showOnMobile: true },
+  { icon: <FaPhone size={60} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890', showOnMobile: true },
 ];
 
 const ContactForm = ({
@@ -40,13 +41,25 @@ const ContactForm = ({
   data?: ContactSchema;
 }) => {
   const { formRef, setCurrentFormId } = useFormContext();
+  const [activeTab, setActiveTab] = useState<string>("phone");
   
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<ContactSchema>({
     resolver: zodResolver(contactSchema),
+    defaultValues: data || {
+      phone: '',
+      whatsapp: '',
+      twitter: '',
+      facebook: '',
+      linkedin: '',
+      telegram: '',
+      instagram: '',
+      tiktok: '',
+    }
   });
 
   const [isPending, startTransition] = useTransition();
@@ -78,24 +91,31 @@ const ContactForm = ({
     startTransition(() => {
       formAction(data);
     });
+  }, (errors) => {
+    // Show error toast for validation errors
+    if (errors.phone) {
+      showValidationErrorToast(errors.phone.message || "رقم الهاتف مطلوب");
+    } else if (errors.whatsapp) {
+      showValidationErrorToast(errors.whatsapp.message || "طريقة اتصال اضافية مطلوبة");
+    }
   });
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const onSubmitSuccess = useCallback(() => {
-    toast.success(`تم ${type === "create" ? "إنشاء" : "تحديث"} الاتصال بنجاح!`);
-    router.push(getNextRoute(pathname));
-  }, [router, pathname, type]);
-
   useEffect(() => {
     if (state.success) {
-      toast.success("تم حفظ البيانات بنجاح");
-      onSubmitSuccess();
+      // Show success toast using the centralized component
+      SuccessToast();
+      
+      // Navigate to next route with slight delay
+      setTimeout(() => {
+        router.push(getNextRoute(pathname));
+      }, 300);
     } else if (state.error) {
-      toast.error("فشل حفظ البيانات");
+      ErrorToast("فشل حفظ البيانات");
     }
-  }, [state, onSubmitSuccess]);
+  }, [state, router, pathname]);
 
   useEffect(() => {
     setCurrentFormId('contact');
@@ -112,7 +132,11 @@ const ContactForm = ({
         <input type="hidden" {...register('id')} defaultValue={data.id} />
       )}
 
-      <Tabs defaultValue="phone" dir="rtl">
+      <Tabs 
+        defaultValue="phone" 
+        dir="rtl"
+        onValueChange={(value) => setActiveTab(value)}
+      >
         {tabsData.map(({ name, label, placeholder }) => (
           <TabsContent key={name} value={name}>
             <Card>
@@ -126,22 +150,23 @@ const ContactForm = ({
                   defaultValue={data?.[name] || ''}
                   placeholder={placeholder}
                   aria-invalid={errors[name] ? "true" : "false"}
-                  className="w-full items-center justify-center  border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full items-center justify-center border rounded-md"
                 />
-                {errors[name] && (
-                  <span className="text-sm text-red-500">
-                    {errors[name]?.message}
-                  </span>
-                )}
               </CardContent>
             </Card>
           </TabsContent>
         ))}
         <div className="flex items-center justify-center mb-4">
-          <TabsList className="grid grid-cols-4 md:grid-cols-8 items-center justify-center gap-4 md:gap-1 bg-background">
-            {tabsData.slice().reverse().map(({ icon, name }) => (
-              <TabsTrigger key={name} value={name} className="p-1 flex justify-center">
-                {icon}
+          <TabsList className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-6 md:gap-4 bg-background">
+            {tabsData.slice().reverse().map(({ icon, name, showOnMobile }) => (
+              <TabsTrigger 
+                key={name} 
+                value={name} 
+                className={`p-1 flex justify-center hover:bg-transparent focus:bg-transparent data-[state=active]:bg-transparent focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none ${!showOnMobile ? 'hidden md:flex' : ''}`}
+              >
+                {React.cloneElement(icon as React.ReactElement<{className?: string}>, {
+                  className: `transition-colors ${activeTab === name ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`
+                })}
               </TabsTrigger>
             ))}
           </TabsList>

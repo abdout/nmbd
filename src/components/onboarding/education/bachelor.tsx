@@ -1,18 +1,17 @@
 'use client';
 import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
-import { InformationSchema } from "./validation";
-import SelectPopover, { Item } from "./select-popover";
+import { EducationSchema } from "./validation";
+import SelectPopover, { Item } from "../information/select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
-import { institutions, bachelorMajors, generateCompletionYears } from "./constant";
+import { institutions, bachelorMajors, generateCompletionYears } from "../information/constant";
 import { useFocusField } from "../useFocusField";
 
-
 interface BachelorProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
-  setValue: UseFormSetValue<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
+  setValue: UseFormSetValue<EducationSchema>;
   onComplete?: () => void;
 }
 
@@ -41,52 +40,34 @@ const Bachelor = ({
   const [selectedInstitution, setSelectedInstitution] = useState<Item | null>(null);
   const [selectedBachelorYear, setSelectedBachelorYear] = useState<Item | null>(null);
   const [selectedMajor, setSelectedMajor] = useState<Item | null>(null);
-  const [
-    // bachelorCompleted
-    , setBachelorCompleted] = useState(false);
+  const [, setBachelorCompleted] = useState(false);
 
-  // Use the focus field hook for the three fields
   const { getFieldStyle, getContainerClass, setFocusedField } = 
     useFocusField<'institution' | 'major' | 'year'>();
 
-  // Register all fields required by React Hook Form
+  // Register fields with React Hook Form
   useEffect(() => {
-    register('bachelorInstitution', { required: "يرجى اختيار الجامعة" });
-    register('bachelorMajor', { required: "يرجى اختيار التخصص" });
-    register('bachelorCompletionYear', { required: "يرجى اختيار السنة" });
+    register('bachelorInstitution');
+    register('bachelorMajor');
+    register('bachelorCompletionYear');
   }, [register]);
 
   // Handle institution selection
   const handleInstitutionSelect = (item: Item | null) => {
-    if (item) {
-      setValue('bachelorInstitution', item.label);
-      setSelectedInstitution(item);
-    } else {
-      setValue('bachelorInstitution', '');
-      setSelectedInstitution(null);
-    }
+    setValue('bachelorInstitution', item?.label || '');
+    setSelectedInstitution(item);
   };
 
   // Handle bachelor completion year selection
   const handleBachelorYearSelect = (item: Item | null) => {
-    if (item) {
-      setValue('bachelorCompletionYear', item.value);
-      setSelectedBachelorYear(item);
-    } else {
-      setValue('bachelorCompletionYear', undefined);
-      setSelectedBachelorYear(null);
-    }
+    setValue('bachelorCompletionYear', item?.value || '');
+    setSelectedBachelorYear(item);
   };
 
   // Handle major selection
   const handleMajorSelect = (item: Item | null) => {
-    if (item) {
-      setValue('bachelorMajor', item.label);
-      setSelectedMajor(item);
-    } else {
-      setValue('bachelorMajor', '');
-      setSelectedMajor(null);
-    }
+    setValue('bachelorMajor', item?.label || '');
+    setSelectedMajor(item);
   };
 
   // Define the hierarchical steps for bachelor selection
@@ -116,29 +97,21 @@ const Bachelor = ({
 
   // Handle completion of the hierarchical selection
   const handleComplete = (selections: Record<string, Option>) => {
-    // Map the selections to the form values
     setValue('bachelorInstitution', selections.institution?.label || '');
     setValue('bachelorMajor', selections.major?.label || '');
     setValue('bachelorCompletionYear', selections.completionYear?.value || '');
     
-    // Set component as completed
     setBachelorCompleted(true);
     
-    // Check if all fields are filled
-    if (
-      selections.institution?.value &&
-      selections.major?.value &&
-      selections.completionYear?.value
-    ) {
-      // Call onComplete callback if provided
-      if (onComplete) {
-        setTimeout(() => {
-          onComplete();
-        }, 300);
-      }
+    if (selections.institution?.value &&
+        selections.major?.value &&
+        selections.completionYear?.value &&
+        onComplete) {
+      setTimeout(() => {
+        onComplete();
+      }, 300);
     }
     
-    // Maintain the original event dispatch for backward compatibility
     const event = new CustomEvent('educationFieldCompleted', {
       detail: {
         componentType: 'bachelor',
@@ -148,7 +121,6 @@ const Bachelor = ({
     document.dispatchEvent(event);
   };
 
-  // Custom animation timing configurations
   const timing = {
     transitionDelay: 250,
     dropdownDelay: 600
@@ -157,15 +129,6 @@ const Bachelor = ({
   return (
     <div className="space-y-4">
       <p className="text-sm font-semibold mb-2">بيانات البكالوريوس:</p>
-      
-      {/* Show error messages */}
-      {(errors.bachelorInstitution || errors.bachelorMajor || errors.bachelorCompletionYear) && (
-        <div className="text-red-500 text-sm mb-2">
-          {errors.bachelorInstitution && <p>{errors.bachelorInstitution.message}</p>}
-          {errors.bachelorMajor && <p>{errors.bachelorMajor.message}</p>}
-          {errors.bachelorCompletionYear && <p>{errors.bachelorCompletionYear.message}</p>}
-        </div>
-      )}
       
       {/* Desktop UI (md screens and above) with focus motion */}
       <div className="hidden md:block">
@@ -181,9 +144,6 @@ const Bachelor = ({
               onFocus={() => setFocusedField('institution')}
               onBlur={() => setFocusedField(null)}
             />
-            {errors.bachelorInstitution && (
-              <span className="text-red-500 text-sm">{errors.bachelorInstitution.message}</span>
-            )}
           </div>
 
           {/* Major */}
@@ -197,9 +157,6 @@ const Bachelor = ({
               onFocus={() => setFocusedField('major')}
               onBlur={() => setFocusedField(null)}
             />
-            {errors.bachelorMajor && (
-              <span className="text-red-500 text-sm">{errors.bachelorMajor.message}</span>
-            )}
           </div>
 
           {/* Year of Completion */}
@@ -213,9 +170,6 @@ const Bachelor = ({
               onFocus={() => setFocusedField('year')}
               onBlur={() => setFocusedField(null)}
             />
-            {errors.bachelorCompletionYear && (
-              <span className="text-red-500 text-sm">{errors.bachelorCompletionYear.message}</span>
-            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
-import { InformationSchema } from "./validation";
+import { InformationSchema } from "../information/validation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 

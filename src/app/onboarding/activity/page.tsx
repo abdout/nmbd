@@ -2,6 +2,7 @@ import { currentUser } from "@/lib/auth";
 import ActivityForm from "@/components/onboarding/activity/form";
 import { Suspense } from "react";
 import { db } from "@/lib/db";
+import Loading from "@/components/atom/loading";
 
 async function getActivityData() {
   try {
@@ -45,7 +46,7 @@ export default async function ActivityPage() {
 
   return (
     <div className="w-full flex items-center justify-center">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <ActivityForm user={userData} />
       </Suspense>
     </div>

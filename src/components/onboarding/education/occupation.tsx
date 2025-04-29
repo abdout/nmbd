@@ -1,17 +1,19 @@
-import React from 'react';
 import { Input } from "@/components/ui/input";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { InformationSchema } from "./validation";
 import { FocusContainer } from "@/components/onboarding/focus-container";
+import { EducationSchema } from "./validation";
 
 interface OccupationProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
   educationLevel: string;
 }
 
-const Occupation = ({ register, errors, educationLevel }: OccupationProps) => {
-  // Don't render for students
+const Occupation = ({
+  register,
+  errors,
+  educationLevel
+}: OccupationProps) => {
   if (educationLevel === 'student') {
     return null;
   }
@@ -25,14 +27,14 @@ const Occupation = ({ register, errors, educationLevel }: OccupationProps) => {
             {/* Current occupation/rank */}
             <div className={getClassName('company', 'occupation')}>
               <Input
-                id="currentOccupation"
+                id="employmentSector"
                 placeholder="المنصب الحالي"
-                {...register('currentOccupation')}
+                {...register('employmentSector')}
                 onFocus={handleFocus('occupation')}
                 onBlur={handleBlur}
               />
-              {errors.currentOccupation && (
-                <span className="text-red-500 text-sm">{errors.currentOccupation.message}</span>
+              {errors.employmentSector && (
+                <span className="text-red-500 text-sm">{errors.employmentSector.message}</span>
               )}
             </div>
 

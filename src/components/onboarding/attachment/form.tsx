@@ -16,6 +16,7 @@ import { useFormContext } from '@/components/onboarding/form-context';
 import { getNextRoute } from '../utils';
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { getImagePath } from "@/lib/utils";
+import { ErrorToast, SuccessToast } from "@/components/atom/toast";
 
 // Helper function to convert PDF URL to preview URL
 const getPdfPreviewUrl = (url: string) => {
@@ -43,6 +44,7 @@ const AttachmentForm = ({
     setValue,
     handleSubmit,
     watch,
+    formState: { errors }
   } = useForm<AttachmentSchema>({
     resolver: zodResolver(attachmentSchema),
     defaultValues: data,
@@ -62,7 +64,7 @@ const AttachmentForm = ({
   const pathname = usePathname();
 
   const onSubmitSuccess = () => {
-    toast.success(`تم ${type === "create" ? "رفع" : "تحديث"} الملفات بنجاح!`);
+    SuccessToast();
     router.push(getNextRoute(pathname));
   };
 
@@ -73,6 +75,12 @@ const AttachmentForm = ({
     startTransition(() => {
       formAction(data);
     });
+  }, (validationErrors) => {
+    // Show toast for validation errors instead of inline errors
+    if (validationErrors.image) {
+      ErrorToast(validationErrors.image.message || "الصورة الشخصية مطلوبة");
+    }
+    return false;
   });
 
   useEffect(() => {
@@ -83,7 +91,7 @@ const AttachmentForm = ({
     if (state.success) {
       onSubmitSuccess();
     } else if (state.error) {
-      toast.error("حدث خطأ ما!");
+      ErrorToast("حدث خطأ ما!");
     }
   }, [state, onSubmitSuccess]);
 
@@ -115,7 +123,7 @@ const AttachmentForm = ({
             {({ open }: { open: () => void }) => (
               <div
                 onClick={() => open()}
-                className="relative flex items-center justify-center w-24 h-24 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
+                className="relative flex items-center justify-center w-36 h-28 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
               >
                 {formValues[name] ? (
                   // Only the profile picture (صورة شخصية) should be treated as an image
@@ -179,10 +187,6 @@ const AttachmentForm = ({
           </CldUploadWidget>
         ))}
       </div>
-
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
 
       <button
         id="submit-attachment"

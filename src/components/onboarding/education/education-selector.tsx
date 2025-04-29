@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { InformationSchema } from "./validation";
-import SelectPopover, { Item } from "./select-popover";
+import { InformationSchema } from "../information/validation";
+import SelectPopover, { Item } from "../information/select-popover";
 import Student from "./student";
 import Diploma from "./diploma";
 import Bachelor from "./bachelor";

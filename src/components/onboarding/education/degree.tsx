@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useCallback } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
-import { InformationSchema } from "./validation";
+import { EducationSchema } from "./validation";
 import Student from "./student";
 import Diploma from "./diploma";
 import Bachelor from "./bachelor";
@@ -12,9 +12,9 @@ import Occupation from "./occupation";
 import { useAutoScroll } from "./use-auto-scroll";
 
 interface DegreeProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
-  setValue: UseFormSetValue<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
+  setValue: UseFormSetValue<EducationSchema>;
   educationLevel: string;
 }
 

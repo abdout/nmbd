@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchUserForReview, completeOnboarding, type UserReviewData } from '../../../components/onboarding/review/action';
 import { 
-  LoadingState, 
   ErrorState, 
   SuccessDialog,
   ReviewContainer
 } from '@/components/onboarding/review';
+import Loading from '@/components/atom/loading';
+import fireConfetti from '@/components/atom/confetti';
 
 export default function ReviewPage() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function ReviewPage() {
       const result = await completeOnboarding();
 
       if (result.success) {
+        fireConfetti();
         setShowDialog(true);
       } else {
         setError(result.error || "حدث خطأ أثناء إكمال عملية التسجيل");
@@ -64,7 +66,7 @@ export default function ReviewPage() {
   };
 
   if (isLoading) {
-    return <LoadingState />;
+    return <Loading />;
   }
 
   if (error) {

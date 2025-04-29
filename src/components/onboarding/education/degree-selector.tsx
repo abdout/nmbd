@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { UseFormSetValue } from "react-hook-form";
-import { EducationSchema } from "../education/validation";
+import { EducationSchema } from "./validation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useRef } from "react";
 

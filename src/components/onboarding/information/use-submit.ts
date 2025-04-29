@@ -1,10 +1,10 @@
 import { useTransition } from "react";
 import { UseFormHandleSubmit, FieldErrors } from "react-hook-form";
 import { useRouter, usePathname } from "next/navigation";
-import { toast } from "sonner";
 import { InformationSchema } from "./validation";
 import { createInformation, updateInformation } from "./action";
 import { getNextRoute } from '../utils';
+import { SuccessToast, ErrorToast } from "@/components/atom/toast";
 
 interface UseSubmitProps {
   handleSubmit: UseFormHandleSubmit<InformationSchema>;
@@ -77,19 +77,10 @@ export function useSubmit({
       }
     });
     
-    // Show toast with detailed error message and red styling
-    toast.error(errorMessage, {
-      style: {
-        background: 'rgb(239 68 68)',
-        color: 'white',
-        border: 'none',
-        textAlign: 'right',
-        direction: 'rtl'
-      },
-      duration: 5000 // Show for 5 seconds to give user time to read
-    });
+    // Use our centralized error toast
+    ErrorToast(errorMessage);
     
-    // Log all error fields to console
+    // Log all error fields to console for debugging
     errorFields.forEach(field => {
       const fieldError = errors[field as keyof typeof errors];
       if (fieldError) {
@@ -150,15 +141,15 @@ export function useSubmit({
 
             if (result.success) {
               console.log('Information created successfully');
-              toast.success("تم تحديث البيانات بنجاح");
+              SuccessToast(); // Use our centralized success toast
               router.push(getNextRoute(pathname));
             } else {
               console.error('Failed to create information');
-              toast.error(result.error || "Failed to create information");
+              ErrorToast(result.error || "خطأ في حفظ البيانات");
             }
           } catch (error) {
             console.error('Error during creation:', error);
-            toast.error("An error occurred during form submission");
+            ErrorToast("حدث خطأ أثناء تقديم النموذج");
           }
         } else {
           console.log('Updating information...');
@@ -168,20 +159,20 @@ export function useSubmit({
 
             if (result.success) {
               console.log('Information updated successfully');
-              toast.success("تم تحديث البيانات بنجاح");
+              SuccessToast(); // Use our centralized success toast
               router.push(getNextRoute(pathname));
             } else {
               console.error('Failed to update information');
-              toast.error(result.error || "Failed to update information");
+              ErrorToast(result.error || "خطأ في تحديث البيانات");
             }
           } catch (error) {
             console.error('Error during update:', error);
-            toast.error("An error occurred during form submission");
+            ErrorToast("حدث خطأ أثناء تقديم النموذج");
           }
         }
       } catch (error) {
         console.error("Form submission error:", error);
-        toast.error("An error occurred while submitting the form");
+        ErrorToast("حدث خطأ أثناء تقديم النموذج");
       } finally {
         console.log('Form submission completed');
         if (setIsSubmitting) {

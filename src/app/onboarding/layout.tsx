@@ -14,6 +14,7 @@ export default function OnboardingLayout({
 }) {
   const pathname = usePathname();
   const isReviewPage = pathname === '/onboarding/review';
+  const isTermsPage = pathname === '/onboarding/terms';
   const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function OnboardingLayout({
             className: isMobile ? 'w-full' : ''
           }}
         />
-        {!isReviewPage && (
+        {isTermsPage && (
           <div className="flex-none mt-4 md:mt-0">
             <PageHeading
               title="حبابك عشرة"
@@ -62,7 +63,7 @@ export default function OnboardingLayout({
           </div>
         </div>
         
-        {!isReviewPage && (
+        {!isReviewPage && !isTermsPage && (
           <div className="flex-none w-full mt-auto flex flex-col gap-6 items-center justify-center">
             <StepNavigation />
             <ButtonNavigation />

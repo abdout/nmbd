@@ -40,12 +40,7 @@ const Birthdate = ({
       birthLocality: watch('birthLocality'),
       birthYear: watch('birthYear'),
       birthMonth: watch('birthMonth')
-    } : undefined,
-    toastStyle: {
-      background: 'rgb(239 68 68)',
-      color: 'white',
-      border: 'none'
-    }
+    } : undefined
   });
   
   // Use our custom selection handler hook

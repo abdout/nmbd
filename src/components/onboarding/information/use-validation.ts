@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { FieldErrors, FieldValues } from 'react-hook-form';
-import { toast } from 'sonner';
+import { ErrorToast } from '@/components/atom/toast';
 
 interface ValidationProps<T extends FieldValues> {
   errors: FieldErrors<T>;
@@ -8,7 +8,6 @@ interface ValidationProps<T extends FieldValues> {
   errorMessage: string;
   defaultValues?: Partial<T>;
   currentValues?: Partial<T>;
-  toastStyle?: Record<string, string>;
 }
 
 export function useFormValidation<T extends FieldValues>({ 
@@ -16,8 +15,7 @@ export function useFormValidation<T extends FieldValues>({
   errorFields, 
   errorMessage,
   defaultValues,
-  currentValues,
-  toastStyle = { background: 'rgb(239 68 68)', color: 'white', border: 'none' }
+  currentValues
 }: ValidationProps<T>) {
   const sectionRef = useRef<HTMLDivElement>(null);
   
@@ -48,7 +46,8 @@ export function useFormValidation<T extends FieldValues>({
     const hasErrors = errorFields.some(field => errors[field]);
     
     if (hasErrors && !checkForExistingData()) {
-      toast.error(errorMessage, { style: toastStyle });
+      // Use our centralized ErrorToast component
+      ErrorToast(errorMessage);
       
       if (sectionRef.current) {
         sectionRef.current.scrollIntoView({ 

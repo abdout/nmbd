@@ -1,18 +1,18 @@
 'use client';
 import { useState, useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
-import { InformationSchema } from "./validation";
-import SelectPopover, { Item } from "./select-popover";
+import { EducationSchema } from "./validation";
+import SelectPopover, { Item } from "../information/select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
-import { institutions, phdMajors, generateCompletionYears } from "./constant";
+import { institutions, phdMajors, generateCompletionYears } from "../information/constant";
 import { useFocusSelect } from "@/components/onboarding/use-focus";
-
+import { useFocusField } from "../useFocusField";
 
 interface PhDProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
-  setValue: UseFormSetValue<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
+  setValue: UseFormSetValue<EducationSchema>;
   onComplete?: () => void;
 }
 

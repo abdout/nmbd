@@ -1,8 +1,9 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ReviewDialogProps } from './type';
+import { useEffect, useState } from 'react';
 
 export function LoadingState() {
   return (
@@ -31,19 +32,58 @@ export function ErrorState({ error }: ErrorStateProps) {
 }
 
 export function SuccessDialog({ showDialog, setShowDialog, onClose }: ReviewDialogProps) {
+  const [animate, setAnimate] = useState(false);
+  
+  useEffect(() => {
+    if (showDialog) {
+      // Start animation once dialog is shown
+      setTimeout(() => {
+        setAnimate(true);
+      }, 100);
+      
+      // Automatically navigate after 3 seconds
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    } else {
+      setAnimate(false);
+    }
+  }, [showDialog, onClose]);
+  
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-heading text-center text-4xl">تم</DialogTitle>
-          <DialogDescription className="text-center pt-4">
-            شكراً. سيتم مراجعة طلبك خلال 7 أيام.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex justify-center mt-6">
-          <Button onClick={onClose}>
-            الصفحة الرئيسية
-          </Button>
+      <DialogContent className="sm:max-w-md h-60">
+        <div className="flex flex-col items-center justify-center">
+          <div className={`relative mb-4 flex items-center justify-center transition-all duration-500 ease-in-out ${animate ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}>
+            {/* Pulsing effect */}
+            <div className={`absolute h-16 w-16 rounded-full bg-green-500 opacity-20`}></div>
+            
+            {/* Green circle background with check inside */}
+            <div className="relative h-16 w-16 rounded-full bg-green-500 flex items-center justify-center">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-8 w-8" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="white" 
+                strokeWidth={3}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+          
+          <DialogHeader className={`transition-all duration-500 delay-300 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+            <DialogTitle className="font-heading text-center text-2xl"></DialogTitle>
+            <DialogDescription className="text-center text-xl pt-4">
+            <strong>شكرا على اتمام الطلب</strong> <br /> 
+            سيتم مراجعة طلبك خلال 7 أيام
+            </DialogDescription>
+          </DialogHeader>
+          
+          
         </div>
       </DialogContent>
     </Dialog>

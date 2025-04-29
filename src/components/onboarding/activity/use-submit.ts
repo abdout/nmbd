@@ -1,11 +1,11 @@
 import { useEffect, useTransition } from "react";
 import { UseFormHandleSubmit } from "react-hook-form";
 import { useRouter, usePathname } from "next/navigation";
-import { toast } from "sonner";
 import { useActionState } from "react";
 import { submitActivityForm } from "./action";
 import { ActivitySchema } from "./validation";
 import { getNextRoute } from "../utils";
+import { SuccessToast, ErrorToast } from "@/components/atom/toast";
 
 interface UseFormSubmitProps {
   handleSubmit: UseFormHandleSubmit<ActivitySchema>;
@@ -59,11 +59,11 @@ export function useSubmit({ handleSubmit, setIsSubmitting }: UseFormSubmitProps)
     
     if (state.success) {
       console.log("Form submission successful");
-      toast.success("تم حفظ معلومات النشاطات بنجاح");
+      SuccessToast(); // Use centralized success toast
       router.push(getNextRoute(pathname));
     } else if (state.error) {
       console.error("Form submission failed with error state", state.message || "Unknown error");
-      toast.error(state.message ? `خطأ: ${state.message}` : "حدث خطأ أثناء حفظ المعلومات");
+      ErrorToast(state.message ? `${state.message}` : "حدث خطأ أثناء حفظ المعلومات");
       setIsSubmitting(false);
     }
   }, [state, router, pathname, setIsSubmitting]);

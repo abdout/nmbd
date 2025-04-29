@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
 import { toast } from 'sonner';
+import { SuccessToast } from '@/components/atom/toast';
 
 const TermsPage = () => {
     const [accepted, setAccepted] = useState(false);
@@ -13,7 +14,7 @@ const TermsPage = () => {
     const handleCheckboxChange = (checked: boolean) => {
         setAccepted(checked);
         if (checked) {
-            toast.success("تم قبول الشروط");
+            SuccessToast();
             router.push('/onboarding/attachment');
         }
     };
@@ -32,7 +33,9 @@ const TermsPage = () => {
                     style: {
                         background: 'rgb(239 68 68)',
                         color: 'white',
-                        border: 'none'
+                        border: 'none',
+                        width: '220px',
+                        maxWidth: '220px'
                     }
                 });
                 return false;
@@ -47,11 +50,18 @@ const TermsPage = () => {
     }, [accepted]);
 
     return (
-        <form ref={formRef} className='w-[74%] md:w-[50%] overflow-hidden flex flex-col items-center justify-center'>
-            <p className='text-center justify-center'>
-                لا تستثني الحركة احداَ من عامة السودانين الصالحين في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى، ومن يتقي معوج المسلك وفاسد العمل.
+        <form ref={formRef} className='w-[80%] md:w-[50%] overflow-hidden flex flex-col items-center justify-center'>
+            <p className='text-center text-lg justify-center hidden md:block'>
+                لا تستثني الحركة احداَ من عامة السودانين الصالحين{' '}<br />
+                في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى،{' '}<br />
+                ومن يتقي معوج المسلك وفاسد العمل.
             </p>
-            <div className="flex items-center gap-2 pt-8">
+            <p className='text-center text-lg justify-center block md:hidden'>
+                لا تستثني الحركة احداَ من عامة السودانين الصالحين 
+                في ان تتقدم لهم بدعوتها، وهي كذلك تحرص على أن ينتمي لقياداتها وصفها من عرف عنه نظافة اليد، وصالح المسعى،
+                ومن يتقي معوج المسلك وفاسد العمل.
+            </p>
+            <div className="flex items-center h-20 gap-2 pt-8">
                 <Checkbox
                     id="terms"
                     checked={accepted}
@@ -59,9 +69,9 @@ const TermsPage = () => {
                 />
                 <label
                     htmlFor="terms"
-                    className="text-[13px] font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                    اقرأ <Link href="#" className='text-blue-600'>الارشادات</Link> و <Link href="#" className='text-blue-600'>الاوراق</Link> <span className='hidden md:inline'> قبل البدء</span> 
+                    اقرأ <Link href="/paper" className='text-blue-700'>الأوراق</Link> قبل البدء
                 </label>
             </div>
             <button id="submit-terms" type="submit" className="hidden" />

@@ -2,8 +2,8 @@ import { Input } from "@/components/ui/input";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { InformationSchema } from "./validation";
 import { useEffect, useRef } from "react";
-import { toast } from "sonner";
 import { FocusContainer } from "@/components/onboarding/focus-container";
+import { ErrorToast } from "@/components/atom/toast";
 
 interface NameProps {
   register: UseFormRegister<InformationSchema>;
@@ -17,16 +17,8 @@ const Name = ({ register, errors }: NameProps) => {
   // Watch for validation errors
   useEffect(() => {
     if (errors.fullname) {
-      // Show error in toast
-      toast.error(errors.fullname.message?.toString() || "يرجى إدخال الاسم الكامل", {
-        style: {
-          background: 'rgb(239 68 68)',
-          color: 'white',
-          border: 'none',
-          textAlign: 'right',
-          direction: 'rtl'
-        }
-      });
+      // Show error using our centralized toast component
+      ErrorToast(errors.fullname.message?.toString() || "يرجى إدخال الاسم الكامل");
       
       // Scroll to name section
       if (nameRef.current) {
@@ -63,7 +55,7 @@ const Name = ({ register, errors }: NameProps) => {
               onBlur={handleBlur}
               data-name-field="true"
             />
-            {/* Removed inline error display */}
+            {/* No inline error display */}
           </div>
           <div 
             className={getClassName('name')}
@@ -82,9 +74,7 @@ const Name = ({ register, errors }: NameProps) => {
               onBlur={handleBlur}
               data-name-field="true"
             />
-            {errors.name && (
-              <span className="text-red-500 text-sm">{errors.name.message}</span>
-            )}
+            {/* No inline error display */}
           </div>
         </>
       )}

@@ -7,6 +7,7 @@ export const onboardingRoutes = {
   ATTACHMENT: "/onboarding/attachment",
   CONTACT: "/onboarding/contact",
   INFORMATION: "/onboarding/information",
+  EDUCATION: "/onboarding/education",
   ACTIVITY: "/onboarding/activity",
   REVIEW: "/onboarding/review"
 } as const;
