@@ -81,12 +81,16 @@ model User {
 
   // Education & Work
   educationLevel       String?
-  institution          String?
-  yearOfCompletion     Int?
-  major                String?             
   
-  // Additional education fields
+  // Student information
   studentYear          Int?
+  studentInstitution   String?
+  studentFaculty       String?
+  
+  // Diploma information
+  diplomaInstitution   String?
+  diplomaMajor         String?
+  diplomaCompletionYear Int?
   
   // Bachelor's information
   bachelorInstitution  String?
@@ -112,10 +116,6 @@ model User {
   employmentSector     String?             
   workplaceAddress     String?
   companyName          String?
-
-  // Student Details
-  studentInstitution   String?
-  studentFaculty       String?
 
   // Activities 
   partyMember Boolean @default(false)

@@ -215,9 +215,6 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         
         // Education & Work
         educationLevel: true,
-        institution: true,
-        yearOfCompletion: true,
-        major: true,
         studentYear: true,
         
         // Bachelor's information

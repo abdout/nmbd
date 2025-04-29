@@ -1,9 +1,12 @@
 import { 
   COUNTRIES, STATES, LOCALITIES, NEIGHBORHOODS,
-  BIRTH_MONTHS,
+  BIRTH_MONTHS
+} from '../components/onboarding/information/constant';
+
+import {
   studentYears, faculties, diplomaMajors, bachelorMajors, 
   masterMajors, phdMajors, professorMajors
-} from '../components/onboarding/information/constant';
+} from '../components/onboarding/education/constant';
 
 /**
  * Simple utility to find Arab label for a value from a list of options

@@ -1,4 +1,5 @@
 import { Option } from "@/components/atom/auto-complete";
+import { Item } from "./select-popover";
 
 // Countries data for both location and birthdate components
 export const COUNTRIES: Option[] = [
@@ -80,7 +81,7 @@ export const LOCALITIES: Record<string, Option[]> = {
   ],
 };
 
-// Admin units (smaller administrative divisions) by locality - Used only in location component
+// Admin units (smaller administrative divisions) by locality
 export const ADMIN_UNITS: Record<string, Option[]> = {
   "khartoum_locality": [
     { value: "khartoum_downtown", label: "وسط الخرطوم" },
@@ -104,7 +105,7 @@ export const ADMIN_UNITS: Record<string, Option[]> = {
   ],
 };
 
-// Neighborhoods by admin unit - Used only in location component
+// Neighborhoods by admin unit
 export const NEIGHBORHOODS: Record<string, Option[]> = {
   "khartoum_downtown": [
     { value: "almogran", label: "المقرن" },
@@ -128,7 +129,7 @@ export const NEIGHBORHOODS: Record<string, Option[]> = {
   ],
 };
 
-// Birth months with Arabic names - Used only in birthdate component
+// Birth months with Arabic names
 export const BIRTH_MONTHS: Option[] = [
   { value: "1", label: "يناير" },
   { value: "2", label: "فبراير" },
@@ -144,7 +145,7 @@ export const BIRTH_MONTHS: Option[] = [
   { value: "12", label: "ديسمبر" }
 ];
 
-// Generate birth years (100 years from current year) - Helper function for birthdate component
+// Generate birth years (100 years from current year)
 export const generateBirthYears = (): Option[] => {
   return Array.from({ length: 100 }, (_, i) => {
     const year = new Date().getFullYear() - i;
@@ -152,8 +153,7 @@ export const generateBirthYears = (): Option[] => {
   });
 };
 
-import { Item } from "./select-popover";
-
+// Information fields
 export const INFORMATION_FIELDS = [
   { name: 'name', label: 'Name', type: 'text' },
   { name: 'fullname', label: 'Full Name', type: 'text' },
@@ -171,9 +171,6 @@ export const INFORMATION_FIELDS = [
   { name: 'currentNeighborhood', label: 'Current Neighborhood', type: 'text' },
   { name: 'originalLocality', label: 'Original Locality', type: 'text' },
   { name: 'originalCountry', label: 'Original Country', type: 'text' },
-  { name: 'educationLevel', label: 'Education Level', type: 'text' },
-  { name: 'institution', label: 'Institution', type: 'text' },
-  { name: 'yearOfCompletion', label: 'Year of Completion', type: 'number' },
   { name: 'currentOccupation', label: 'Current Occupation', type: 'text' },
   { name: 'employmentSector', label: 'Employment Sector', type: 'text' },
   { name: 'workplaceAddress', label: 'Workplace Address', type: 'text' },
@@ -181,108 +178,4 @@ export const INFORMATION_FIELDS = [
   { name: 'gender', label: 'Gender', type: 'text' },
   { name: 'religion', label: 'Religion', type: 'text' },
   { name: 'nationalityId', label: 'Nationality ID', type: 'text' },
-];
-
-// Educational institutions
-export const institutions: Item[] = [
-  { label: 'جامعة الخرطوم', value: 'khartoum_university' },
-  { label: 'جامعة القاهرة', value: 'cairo_university' },
-  { label: 'جامعة العلوم والتكنولوجيا', value: 'science_tech_university' },
-];
-
-// Student years
-export const studentYears: Item[] = [
-  { value: '1', label: 'الاولي' },
-  { value: '2', label: 'الثانية' },
-  { value: '3', label: 'الثالثة' },
-  { value: '4', label: 'الرابعة' },
-  { value: '5', label: 'الخامسة' },
-  { value: '6', label: 'السادسة' },
-];
-
-// Faculties
-export const faculties: Item[] = [
-  { label: 'كلية الطب', value: 'medicine' },
-  { label: 'كلية الهندسة', value: 'engineering' },
-  { label: 'كلية العلوم', value: 'science' },
-  { label: 'كلية الحقوق', value: 'law' },
-];
-
-// Majors by degree level
-export const diplomaMajors: Item[] = [
-  { label: 'علوم حاسوب', value: 'computer_science' },
-  { label: 'هندسة', value: 'engineering' },
-];
-
-export const bachelorMajors: Item[] = [
-  { label: 'علوم حاسوب', value: 'computer_science' },
-  { label: 'هندسة', value: 'engineering' },
-];
-
-export const masterMajors: Item[] = [
-  { label: 'علوم حاسوب', value: 'computer_science' },
-  { label: 'هندسة', value: 'engineering' },
-];
-
-export const phdMajors: Item[] = [
-  { label: 'علوم حاسوب', value: 'computer_science' },
-  { label: 'هندسة', value: 'engineering' },
-];
-
-export const professorMajors: Item[] = [
-  { label: 'علوم حاسوب', value: 'computer_science' },
-  { label: 'هندسة', value: 'engineering' },
-];
-
-// Occupations
-export const diplomaOccupations: Item[] = [
-  { label: 'مبرمج', value: 'programmer' },
-  { label: 'مهندس', value: 'engineer' },
-];
-
-export const bachelorOccupations: Item[] = [
-  { label: 'مبرمج', value: 'programmer' },
-  { label: 'مهندس', value: 'engineer' },
-];
-
-export const masterOccupations: Item[] = [
-  { label: 'مدير تقني', value: 'tech_manager' },
-  { label: 'مهندس أول', value: 'senior_engineer' },
-];
-
-export const phdOccupations: Item[] = [
-  { label: 'أستاذ مساعد', value: 'assistant_professor' },
-  { label: 'باحث', value: 'researcher' },
-];
-
-export const professorOccupations: Item[] = [
-  { label: 'أستاذ جامعي', value: 'university_professor' },
-  { label: 'عميد كلية', value: 'dean' },
-];
-
-// Academic ranks
-export const academicRanks: Item[] = [
-  { label: 'أستاذ', value: 'professor' },
-  { label: 'أستاذ مشارك', value: 'associate_professor' },
-  { label: 'أستاذ مساعد', value: 'assistant_professor' },
-];
-
-// Generate completion years array
-export const generateCompletionYears = (): Item[] => {
-  const currentYear = new Date().getFullYear();
-  const years: Item[] = [];
-  for (let year = currentYear; year >= currentYear - 50; year--) {
-    years.push({ label: year.toString(), value: year.toString() });
-  }
-  return years;
-};
-
-// Generate future years for students
-export const generateFutureYears = (): Item[] => {
-  const currentYear = new Date().getFullYear();
-  const years: Item[] = [];
-  for (let year = currentYear; year <= currentYear + 10; year++) {
-    years.push({ label: year.toString(), value: year.toString() });
-  }
-  return years;
-}; 
+]; 

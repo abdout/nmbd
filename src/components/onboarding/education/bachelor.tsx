@@ -5,7 +5,7 @@ import { EducationSchema } from "./validation";
 import SelectPopover, { Item } from "../information/select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
-import { institutions, bachelorMajors, generateCompletionYears } from "../information/constant";
+import { institutions, generateCompletionYears } from "./constant";
 import { useFocusField } from "../useFocusField";
 
 interface BachelorProps {
@@ -21,7 +21,10 @@ const INSTITUTIONS: Option[] = institutions.map(item => ({
   label: item.label
 }));
 
-const BACHELOR_MAJORS: Option[] = bachelorMajors.map(item => ({
+const BACHELOR_MAJORS: Option[] = [
+  { value: 'computer_science', label: 'علوم حاسوب' },
+  { value: 'engineering', label: 'هندسة' }
+].map(item => ({
   value: item.value,
   label: item.label
 }));
@@ -150,7 +153,7 @@ const Bachelor = ({
           <div className={getFieldStyle('major', 3)}>
             <input type="hidden" {...register('bachelorMajor')} value={selectedMajor?.label || ''} />
             <SelectPopover
-              items={bachelorMajors}
+              items={BACHELOR_MAJORS}
               selectedItem={selectedMajor}
               setSelectedItem={handleMajorSelect}
               label="التخصص"

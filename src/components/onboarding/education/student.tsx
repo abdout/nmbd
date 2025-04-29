@@ -5,7 +5,7 @@ import { EducationSchema } from "./validation";
 import SelectPopover, { Item } from "../information/select-popover";
 import { Option } from "@/components/atom/auto-complete";
 import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
-import { institutions, faculties, studentYears } from "../information/constant";
+import { institutions, faculties, studentYears } from "./constant";
 import { useFocusField } from "../useFocusField";
 
 interface StudentProps {

@@ -103,21 +103,6 @@ export function useSubmit({
       return;
     }
     
-    // Ensure birthYear and birthMonth are strings before submission
-    const processedFormData = {
-      ...formData,
-      birthYear: formData.birthYear?.toString() || '',
-      birthMonth: formData.birthMonth?.toString() || ''
-    };
-    
-    // Save to localStorage for persistence between page visits
-    try {
-      localStorage.setItem('informationFormData', JSON.stringify(processedFormData));
-      console.log('Saved form data to localStorage');
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
-    }
-    
     startTransition(async () => {
       try {
         console.log('Starting form submission transition');
@@ -125,18 +110,11 @@ export function useSubmit({
           console.log('Setting isSubmitting to true');
           setIsSubmitting(true);
         }
-        
-        const minimalData = {
-          ...processedFormData,
-        };
-
-        console.log("Submitting minimal data:", minimalData);
-        console.log('Form submission type:', type);
 
         if (type === "create") {
           console.log('Creating information...');
           try {
-            const result = await createInformation({ success: false, error: false }, minimalData);
+            const result = await createInformation(formData);
             console.log('Create information result:', result);
 
             if (result.success) {
@@ -154,7 +132,7 @@ export function useSubmit({
         } else {
           console.log('Updating information...');
           try {
-            const result = await updateInformation({ success: false, error: false }, minimalData);
+            const result = await updateInformation(formData);
             console.log('Update information result:', result);
 
             if (result.success) {

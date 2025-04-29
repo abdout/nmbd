@@ -4,8 +4,15 @@ import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import type { EducationSchema } from './validation';
+import { educationSchema } from './validation';
 
-export async function submitEducation(data: EducationSchema) {
+// Action result type
+interface ActionResult {
+  success: boolean;
+  error?: string;
+}
+
+export async function submitEducation(data: EducationSchema): Promise<ActionResult> {
   try {
     const user = await currentUser();
     if (!user?.id) {
@@ -15,9 +22,16 @@ export async function submitEducation(data: EducationSchema) {
       };
     }
 
+    // Validate form data
+    const validatedData = educationSchema.safeParse(data);
+    if (!validatedData.success) {
+      console.error('Validation error:', validatedData.error);
+      return { success: false, error: 'البيانات المدخلة غير صحيحة' };
+    }
+
     // Convert string values to numbers where needed
     const processedData = {
-      ...data,
+      ...validatedData.data,
       studentYear: data.studentYear ? parseInt(data.studentYear) : null,
       studentGraduationYear: data.studentGraduationYear ? parseInt(data.studentGraduationYear) : null,
       diplomaCompletionYear: data.diplomaCompletionYear ? parseInt(data.diplomaCompletionYear) : null,
@@ -47,5 +61,42 @@ export async function submitEducation(data: EducationSchema) {
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
     };
+  }
+}
+
+export async function getEducation() {
+  try {
+    const user = await currentUser();
+    if (!user?.id) return null;
+
+    const userData = await db.user.findUnique({
+      where: { id: user.id },
+      select: {
+        educationLevel: true,
+        studentYear: true,
+        studentInstitution: true,
+        studentFaculty: true,
+        diplomaInstitution: true,
+        diplomaMajor: true,
+        diplomaCompletionYear: true,
+        bachelorInstitution: true,
+        bachelorMajor: true,
+        bachelorCompletionYear: true,
+        masterInstitution: true,
+        masterMajor: true,
+        masterCompletionYear: true,
+        phdInstitution: true,
+        phdMajor: true,
+        phdCompletionYear: true,
+        professorInstitution: true,
+        professorMajor: true,
+        professorCompletionYear: true,
+      }
+    });
+
+    return userData;
+  } catch (error) {
+    console.error('Error getting education data:', error);
+    return null;
   }
 } 

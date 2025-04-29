@@ -215,10 +215,16 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         
         // Education & Work
         educationLevel: true,
-        institution: true,
-        yearOfCompletion: true,
-        major: true,
+        
+        // Student information
         studentYear: true,
+        studentInstitution: true,
+        studentFaculty: true,
+        
+        // Diploma information
+        diplomaInstitution: true,
+        diplomaMajor: true,
+        diplomaCompletionYear: true,
         
         // Bachelor's information
         bachelorInstitution: true,
@@ -235,15 +241,14 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         phdMajor: true,
         phdCompletionYear: true,
         
+        // Professor information
+        professorInstitution: true,
+        professorMajor: true,
+        professorCompletionYear: true,
+        
         // Work information
-        currentOccupation: true,
-        employmentSector: true,
         workplaceAddress: true,
         companyName: true,
-        
-        // Student Details
-        studentInstitution: true,
-        studentFaculty: true,
         
         // Activities
         partyMember: true,

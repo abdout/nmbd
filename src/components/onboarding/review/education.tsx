@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ReviewCardProps } from './type';
-import { studentYears } from '../information/constant';
+import { studentYears } from '../education/constant';
 
 export function EducationCard({ userData }: ReviewCardProps) {
   // Function to map year value to year label

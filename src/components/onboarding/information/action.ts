@@ -12,18 +12,10 @@ interface ActionResult {
   error?: string;
 }
 
-// ActionState for backwards compatibility
-export type ActionState = {
-  success: boolean;
-  error: boolean;
-  message?: string;
-};
-
 /**
  * Create new information record
  */
 export async function createInformation(
-  prevState: ActionState,
   formData: InformationSchema | FormData
 ): Promise<ActionResult> {
   try {
@@ -64,12 +56,6 @@ export async function createInformation(
       ...validatedData.data,
       birthMonth: validatedData.data.birthMonth ? parseInt(validatedData.data.birthMonth) : null,
       birthYear: validatedData.data.birthYear ? parseInt(validatedData.data.birthYear) : null,
-      studentYear: validatedData.data.studentYear ? parseInt(validatedData.data.studentYear) : null,
-      yearOfCompletion: validatedData.data.yearOfCompletion ? parseInt(validatedData.data.yearOfCompletion) : null,
-      bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
-      masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
-      phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
-      professorCompletionYear: validatedData.data.professorCompletionYear ? parseInt(validatedData.data.professorCompletionYear) : null,
     };
 
     // Create information record
@@ -77,13 +63,13 @@ export async function createInformation(
       where: { id: user.id },
       data: {
         ...data,
-        // Add hasCompletedInformation to schema.prisma for a proper fix
+        onboardingStep: 3 // Move to education step after completing information
       }
     });
 
     // Revalidate paths
     revalidatePath('/onboarding/information');
-    revalidatePath('/dashboard');
+    revalidatePath('/onboarding/education');
 
     return { success: true };
   } catch (error) {
@@ -92,7 +78,9 @@ export async function createInformation(
   }
 }
 
-// Read
+/**
+ * Get user information
+ */
 export async function getInformation() {
   try {
     const user = await currentUser();
@@ -101,10 +89,8 @@ export async function getInformation() {
     const userData = await db.user.findUnique({
       where: { id: user.id },
       select: {
-        // name: true,
         fullname: true,
         description: true,
-        // bio: true,
         birthCountry: true,
         birthState: true,
         birthLocality: true,
@@ -117,23 +103,16 @@ export async function getInformation() {
         currentNeighborhood: true,
         originalLocality: true,
         originalCountry: true,
-        educationLevel: true,
-        institution: true,
-        yearOfCompletion: true,
         currentOccupation: true,
         employmentSector: true,
         workplaceAddress: true,
         companyName: true,
-        // maritalStatus: true,
-        // gender: true,
-        // religion: true,
-        // nationalityId: true,
       }
     });
 
     return userData;
   } catch (error) {
-    console.error(error);
+    console.error('Error getting information:', error);
     return null;
   }
 }
@@ -142,7 +121,6 @@ export async function getInformation() {
  * Update existing information record
  */
 export async function updateInformation(
-  prevState: ActionState,
   formData: InformationSchema | FormData
 ): Promise<ActionResult> {
   try {
@@ -183,12 +161,6 @@ export async function updateInformation(
       ...validatedData.data,
       birthMonth: validatedData.data.birthMonth ? parseInt(validatedData.data.birthMonth) : null,
       birthYear: validatedData.data.birthYear ? parseInt(validatedData.data.birthYear) : null,
-      studentYear: validatedData.data.studentYear ? parseInt(validatedData.data.studentYear) : null,
-      yearOfCompletion: validatedData.data.yearOfCompletion ? parseInt(validatedData.data.yearOfCompletion) : null,
-      bachelorCompletionYear: validatedData.data.bachelorCompletionYear ? parseInt(validatedData.data.bachelorCompletionYear) : null,
-      masterCompletionYear: validatedData.data.masterCompletionYear ? parseInt(validatedData.data.masterCompletionYear) : null,
-      phdCompletionYear: validatedData.data.phdCompletionYear ? parseInt(validatedData.data.phdCompletionYear) : null,
-      professorCompletionYear: validatedData.data.professorCompletionYear ? parseInt(validatedData.data.professorCompletionYear) : null,
     };
 
     // Update information
@@ -208,19 +180,22 @@ export async function updateInformation(
   }
 }
 
-// Delete
-export async function deleteInformation() {
+/**
+ * Delete information record
+ */
+export async function deleteInformation(): Promise<ActionResult> {
   try {
     const user = await currentUser();
-    if (!user?.id) return { success: false, error: true };
+    if (!user?.id) {
+      return { success: false, error: 'User not found or not authenticated' };
+    }
 
+    // Delete information by setting all fields to null
     await db.user.update({
       where: { id: user.id },
       data: {
-        name: null,
         fullname: null,
         description: null,
-        bio: null,
         birthCountry: null,
         birthState: null,
         birthLocality: null,
@@ -233,23 +208,20 @@ export async function deleteInformation() {
         currentNeighborhood: null,
         originalLocality: null,
         originalCountry: null,
-        educationLevel: null,
-        institution: null,
-        yearOfCompletion: null,
         currentOccupation: null,
         employmentSector: null,
         workplaceAddress: null,
-        maritalStatus: null,
-        gender: null,
-        religion: null,
-        nationalityId: null,
+        companyName: null,
       }
     });
 
-    revalidatePath("/lab");
-    return { success: true, error: false };
+    // Revalidate paths
+    revalidatePath('/onboarding/information');
+    revalidatePath('/dashboard');
+
+    return { success: true };
   } catch (error) {
-    console.error(error);
-    return { success: false, error: true };
+    console.error('Error deleting information:', error);
+    return { success: false, error: 'حدث خطأ أثناء حذف البيانات' };
   }
 } 

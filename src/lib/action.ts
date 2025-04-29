@@ -68,8 +68,6 @@ export const createUser = async (
 
         // Education & Work
         educationLevel: data.educationLevel,
-        institution: data.institution,
-        yearOfCompletion: data.yearOfCompletion,
         currentOccupation: data.currentOccupation,
         employmentSector: data.employmentSector,
         workplaceAddress: data.workplaceAddress,
@@ -180,8 +178,6 @@ export const updateUser = async (
 
         // Education & Work
         educationLevel: data.educationLevel,
-        institution: data.institution,
-        yearOfCompletion: data.yearOfCompletion,
         currentOccupation: data.currentOccupation,
         employmentSector: data.employmentSector,
         workplaceAddress: data.workplaceAddress,
