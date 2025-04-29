@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { InformationSchema } from "../information/validation";
+import { EducationSchema } from "./validation";
 import SelectPopover, { Item } from "../information/select-popover";
 import Student from "./student";
 import Diploma from "./diploma";
@@ -10,10 +10,10 @@ import PhD from "./phd";
 import Professor from "./professor";
 
 interface EducationSelectorProps {
-  register: UseFormRegister<InformationSchema>;
-  errors: FieldErrors<InformationSchema>;
-  setValue: UseFormSetValue<InformationSchema>;
-  watch: UseFormWatch<InformationSchema>;
+  register: UseFormRegister<EducationSchema>;
+  errors: FieldErrors<EducationSchema>;
+  setValue: UseFormSetValue<EducationSchema>;
+  watch: UseFormWatch<EducationSchema>;
 }
 
 const EducationSelector = ({
@@ -46,10 +46,11 @@ const EducationSelector = ({
       // Reset other fields based on selection
       if (item.value === 'student') {
         // Clear all completion year fields except student fields
-        setValue('yearOfCompletion', '');
+        setValue('diplomaCompletionYear', '');
         setValue('bachelorCompletionYear', '');
         setValue('masterCompletionYear', '');
         setValue('phdCompletionYear', '');
+        setValue('professorCompletionYear', '');
       } else if (item.value === 'diploma') {
         // Clear student fields and advanced degree fields
         setValue('studentYear', '');
@@ -58,27 +59,30 @@ const EducationSelector = ({
         setValue('bachelorCompletionYear', '');
         setValue('masterCompletionYear', '');
         setValue('phdCompletionYear', '');
+        setValue('professorCompletionYear', '');
       } else if (item.value === 'bachelor') {
         // Clear student fields, diploma fields, and advanced degree fields
         setValue('studentYear', '');
         setValue('studentInstitution', '');
         setValue('studentFaculty', '');
-        setValue('yearOfCompletion', '');
+        setValue('diplomaCompletionYear', '');
         setValue('masterCompletionYear', '');
         setValue('phdCompletionYear', '');
+        setValue('professorCompletionYear', '');
       } else if (item.value === 'master') {
         // Clear student fields, diploma fields, and PhD fields
         setValue('studentYear', '');
         setValue('studentInstitution', '');
         setValue('studentFaculty', '');
-        setValue('yearOfCompletion', '');
+        setValue('diplomaCompletionYear', '');
         setValue('phdCompletionYear', '');
+        setValue('professorCompletionYear', '');
       } else if (item.value === 'phd' || item.value === 'professor') {
         // Clear student fields and diploma fields
         setValue('studentYear', '');
         setValue('studentInstitution', '');
         setValue('studentFaculty', '');
-        setValue('yearOfCompletion', '');
+        setValue('diplomaCompletionYear', '');
       }
     } else {
       setValue('educationLevel', '');
