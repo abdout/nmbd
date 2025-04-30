@@ -2,6 +2,7 @@ import ContactForm from "@/components/onboarding/contact/form";
 import { Suspense } from "react";
 import { getContact } from "@/components/onboarding/contact/action";
 import { ContactSchema } from "@/components/onboarding/contact/validation";
+import Loading from "@/components/atom/loading";
 
 export default async function ContactPage() {
   const userData = await getContact();
@@ -22,7 +23,7 @@ export default async function ContactPage() {
   
   return (
     <div className=" p-6">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <ContactForm 
           type={userData ? "update" : "create"} 
           data={transformedData} 

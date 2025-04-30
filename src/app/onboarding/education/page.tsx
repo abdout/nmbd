@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Form from "@/components/onboarding/education/form";
 import { getInformation } from "@/components/onboarding/education/action";
 import type { InformationSchema } from "@/components/onboarding/education/validation";
+import Loading from "@/components/atom/loading";
 
 export default async function InformationPage() {
   const userData = await getInformation();
@@ -15,7 +16,7 @@ export default async function InformationPage() {
   
   return (
     <div className="w-full md:w-[55%] mx-auto">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         {/* Original form kept as backup
         <InformationForm 
           type={userData ? "update" : "create"} 

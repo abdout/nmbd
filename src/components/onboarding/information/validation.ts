@@ -4,7 +4,7 @@ export const informationSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
   fullname: z.string()
-    .min(8, { message: "اكتب الاسم الكامل" })
+    .min(8, { message: "اكتب الاسم كامل بالعربية" })
     .regex(/^[\u0600-\u06FFa-zA-Z\s._-]*$/, { 
       message: "الاسم الكامل يمكن أن يحتوي على حروف عربية، إنجليزية وبعض الرموز" 
     })

@@ -3,8 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
-import { toast } from 'sonner';
-import { SuccessToast } from '@/components/atom/toast';
+import { SuccessToast, ErrorToast } from '@/components/atom/toast';
 
 const TermsPage = () => {
     const [accepted, setAccepted] = useState(false);
@@ -29,15 +28,7 @@ const TermsPage = () => {
         // Assign the function to the window object
         (window as CustomWindow).submitTermsForm = () => {
             if (!accepted) {
-                toast.error("يجب قبول الشروط للمتابعة", {
-                    style: {
-                        background: 'rgb(239 68 68)',
-                        color: 'white',
-                        border: 'none',
-                        width: '220px',
-                        maxWidth: '220px'
-                    }
-                });
+                ErrorToast("يجب قبول الشروط للمتابعة");
                 return false;
             }
             return true;

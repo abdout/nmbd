@@ -1,4 +1,3 @@
-
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import React from 'react'
@@ -26,16 +25,14 @@ const Hero = () => {
         </p>
         <div className="flex gap-4">
           <Link
-            href="/onboarding"
+            href="/onboarding/terms"
             className={cn(buttonVariants({ size: "lg" }), "text-white px-4 md:px-7") }
 
           >
             يديك معانا
           </Link>
           <Link
-            href='/#'
-            target="_blank"
-            rel="noreferrer"
+            href='/#testimonials'
             className={cn(buttonVariants({ variant: "outline", size: "lg" }), "px-4 md:px-7")}
           >
             اعرف أكثر
