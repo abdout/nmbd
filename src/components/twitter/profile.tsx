@@ -2,6 +2,7 @@ import Image from "next/image"
 import { MapPin, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getAttachment } from "@/components/onboarding/attachment/action"
+import Link from "next/link"
 
 export default async function TwitterProfile() {
   const attachment = await getAttachment();
@@ -9,34 +10,30 @@ export default async function TwitterProfile() {
 
   return (
     <div className="max-w-2xl mx-auto ">
-      {/* Banner Image */}
-      <div className="relative h-48 w-full">
-        <Image
-          src=""
-          alt="Profile banner"
-          fill
-          className="object-cover bg-yellow-400"
-          priority
-        />
-      </div>
+      {/* Banner */}
+      <div className="relative h-48 w-full bg-yellow-400"></div>
 
       {/* Profile Section */}
       <div className="px-5">
         {/* Profile Picture and Edit Button */}
         <div className="flex justify-between items-start">
-          <div className="relative -mt-16 border-4 border-background rounded-full h-32 w-32">
-            <Image
-              src={profileImage}
-              alt="Profile picture"
-              width={128}
-              height={128}
-              className="rounded-full object-cover bg-[#f8f3e3]"
-              quality={100}
-            />
+          <div className="relative -mt-16 h-32 w-32 overflow-hidden">
+            <div className="relative h-full w-full border-4 border-background rounded-full overflow-hidden">
+              <Image
+                src={profileImage}
+                alt="Profile picture"
+                fill
+                sizes="128px"
+                className="object-cover bg-[#f8f3e3]"
+                quality={100}
+              />
+            </div>
           </div>
-          <Button variant="outline" className="mt-4 rounded-full border border-primary hover:bg-[#e8f5fe] hover:bg-opacity-70">
-            تعديل
-          </Button>
+          <Link href="/dashboard/profile/edit">
+            <Button variant="outline" className="mt-4 rounded-full border border-primary hover:bg-[#e8f5fe] hover:bg-opacity-70">
+              تعديل
+            </Button>
+          </Link>
         </div>
 
         {/* Profile Info */}
