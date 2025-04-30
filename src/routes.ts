@@ -14,6 +14,8 @@ export const publicRoutes = [
   "/article",
   "/father",
   "/author",
+  
+  
 ];
 
 /**
@@ -28,6 +30,7 @@ export const authRoutes = [
   "/reset",
   "/new-password",
   "/join"
+  
 ];
 
 /**
@@ -41,24 +44,4 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
-
-/**
- * Routes that require authentication and specific onboarding step
- * @type {Object}
- */
-export const onboardingRoutes = {
-  INFORMATION: "/onboarding/information",
-  EDUCATION: "/onboarding/education",
-  ACTIVITY: "/onboarding/activity",
-  REVIEW: "/onboarding/review"
-};
-
-/**
- * Check if a route is an onboarding route
- * @param {string} path
- * @returns {boolean}
- */
-export const isOnboardingRoute = (path: string) => {
-  return Object.values(onboardingRoutes).includes(path);
-};
+export const DEFAULT_LOGIN_REDIRECT = "/platform";

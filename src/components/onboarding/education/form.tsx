@@ -2,28 +2,30 @@
 import { useState, useTransition, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { educationSchema } from "./validation";
-import type { EducationSchema } from "./validation";
+import { informationSchema } from "./validation";
+import type { InformationSchema } from "./validation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFormContext } from '@/components/onboarding/form-context';
-import DegreeSelector from "@/components/onboarding/education/degree-selector";
-import Degree from "@/components/onboarding/education/degree";
-import { submitEducation } from "./action";
-import { useRouter } from "next/navigation";
-import { onboardingRoutes } from "@/components/onboarding/type";
-import { ErrorToast, SuccessToast } from "@/components/atom/toast";
+import Name from "./name";
+import Location from "./location";
+import Birthdate from "./birthdate";
+import DegreeSelector from "./degree-selector";
+import Degree from "./degree";
+import { useSubmit } from './use-submit';
+import { useFormInit } from './use-init';
+import { useScrollLocationBirthdate } from './use-scroll-location-birthdate';
+
 
 // Add this at the top of the file, after the imports
 declare global {
   interface Window {
-    submitEducationForm?: () => boolean;
-    educationFormSubmitted?: boolean;
+    submitInformationForm?: () => boolean;
   }
 }
 
 interface FormProps {
   type: "create" | "update";
-  data?: any;
+  data?: InformationSchema;
 }
 
 // Simple media query hook
@@ -31,6 +33,7 @@ const useMediaQuery = (query: string): boolean => {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
+    // Default to false on server, true if window exists and we're on a device that can run JavaScript
     if (typeof window !== 'undefined') {
       const media = window.matchMedia(query);
       setMatches(media.matches);
@@ -46,22 +49,67 @@ const useMediaQuery = (query: string): boolean => {
   return matches;
 };
 
+// Simple deep equal function without external dependencies - commented out as it's currently unused
+// function deepEqual<T>(a: T, b: T): boolean {
+//   if (a === b) return true;
+//   
+//   if (a === null || b === null || 
+//       typeof a !== 'object' || typeof b !== 'object') {
+//     return false;
+//   }
+//   
+//   if (Array.isArray(a) && Array.isArray(b)) {
+//     if (a.length !== b.length) return false;
+//     for (let i = 0; i < a.length; i++) {
+//       if (!deepEqual(a[i], b[i])) return false;
+//     }
+//     return true;
+//   }
+//   
+//   const keysA = Object.keys(a);
+//   const keysB = Object.keys(b);
+//   
+//   if (keysA.length !== keysB.length) return false;
+//   
+//   for (const key of keysA) {
+//     if (!keysB.includes(key)) return false;
+//     if (!deepEqual(a[key], b[key])) return false;
+//   }
+//   
+//   return true;
+// }
+
 const Form = ({ type, data }: FormProps) => {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isPending] = useTransition();
   
+  // Always use the hook unconditionally at the top level
   const formContextValue = useFormContext();
+  
+  // Then safely handle the potential null case
   const formRef = formContextValue?.formRef;
   const setIsSubmitting = formContextValue?.setIsSubmitting;
   const setCurrentFormId = formContextValue?.setCurrentFormId;
   
+  // Set up local form ref that we'll sync with context
   const localFormRef = useRef<HTMLFormElement>(null);
   
-  // Initialize with student as default
+  // Education level state
   const [educationLevel, setEducationLevel] = useState<string>('student');
   
+  // Check if we're on a mobile device
   const isMobile = !useMediaQuery("(min-width: 768px)");
+  console.log('[FormDebug] isMobile:', isMobile);
+  
+  // Add isInitialRender ref at the top level of the component
+  const isInitialRender = useRef(true);
+  
+  // Update isInitialRender after the first render
+  useEffect(() => {
+    // Set isInitialRender to false after the first render
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    }
+  }, []);
 
   const {
     register,
@@ -70,109 +118,74 @@ const Form = ({ type, data }: FormProps) => {
     formState: { errors },
     watch,
     reset
-  } = useForm<EducationSchema>({
-    resolver: zodResolver(educationSchema),
-    defaultValues: {
-      ...data,
-      educationLevel: 'student', // Set default education level
-    },
+  } = useForm<InformationSchema>({
+    resolver: zodResolver(informationSchema),
+    defaultValues: data,
   });
 
-  // Initialize form with default values
-  useEffect(() => {
-    if (type === "create") {
-      // Set default values for student
-      setValue('educationLevel', 'student');
-      setValue('studentInstitution', '');
-      setValue('studentFaculty', '');
-      setValue('studentProgram', '');
-    } else if (data) {
-      reset(data);
-      setEducationLevel(data.educationLevel || 'student');
-    }
-  }, [type, data, setValue, reset]);
+  // Use our form initialization hook
+  const { } = useFormInit({
+    data,
+    reset,
+    setEducationLevel,
+    setCurrentFormId,
+    setValue
+  });
 
+  // Use our location-birthdate scroll hook
+  const isPrefilledData = !!data && !isInitialRender.current;
+  console.log('[FormDebug] isPrefilledData:', isPrefilledData, '!!data:', !!data, '!isInitialRender.current:', !isInitialRender.current);
+  
+  const { 
+    locationRef, 
+    birthdateRef,
+    locationComplete,
+    birthdateComplete
+  } = useScrollLocationBirthdate({
+    watch,
+    isPrefilledData
+  });
+  
+  // Log focus and scroll refs for debugging
   useEffect(() => {
-    if (formRef && localFormRef.current) {
-      formRef.current = localFormRef.current;
-    }
+    console.log('[FormDebug] Focus refs initialized:', {
+      locationRef: !!locationRef.current,
+      birthdateRef: !!birthdateRef.current,
+      locationComplete,
+      birthdateComplete
+    });
     
-    if (setCurrentFormId) {
-      setCurrentFormId("education-form");
-    }
-    
-    if (typeof window !== 'undefined') {
-      window.educationFormSubmitted = false;
-    }
-    
-    window.submitEducationForm = () => {
-      if (localFormRef.current) {
-        const submitButton = localFormRef.current.querySelector('#submit-education');
-        if (submitButton instanceof HTMLButtonElement) {
-          submitButton.click();
-          return true;
-        }
-      }
-      return false;
+    // Add a click handler to document to monitor user interactions
+    const documentClickHandler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      console.log('[FormDebug] Document click:', {
+        element: target.tagName,
+        className: target.className,
+        locationContains: locationRef.current?.contains(target),
+        birthdateContains: birthdateRef.current?.contains(target),
+        hasLocationDataAttr: !!target.closest('[data-location-field="true"]'),
+        hasBirthdateDataAttr: !!target.closest('[data-birthdate-field="true"]')
+      });
     };
+    
+    document.addEventListener('click', documentClickHandler);
     
     return () => {
-      delete window.submitEducationForm;
-      delete window.educationFormSubmitted;
+      document.removeEventListener('click', documentClickHandler);
     };
-  }, [formRef, setCurrentFormId]);
+  }, [locationRef.current, birthdateRef.current, locationComplete, birthdateComplete]);
 
-  useEffect(() => {
-    if (formSubmitted && !isPending) {
-      if (typeof window !== 'undefined') {
-        window.educationFormSubmitted = true;
-      }
-      
-      const timer = setTimeout(() => {
-        router.push(onboardingRoutes.ACTIVITY);
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [formSubmitted, isPending, router]);
+  // Set form reference for ButtonNavigation if context is available
+  if (formRef && localFormRef.current) {
+    formRef.current = localFormRef.current;
+  }
 
-  const onSubmit = handleSubmit(async (formData) => {
-    if (setIsSubmitting) {
-      setIsSubmitting(true);
-    }
-    
-    try {
-      startTransition(async () => {
-        const result = await submitEducation({
-          ...formData,
-          educationLevel
-        });
-        
-        if (result.success) {
-          SuccessToast();
-          setFormSubmitted(true);
-        } else {
-          ErrorToast(result.error || "حدث خطأ أثناء حفظ المعلومات");
-        }
-      });
-    } catch (error) {
-      console.error("Error submitting education form:", error);
-      ErrorToast("حدث خطأ أثناء حفظ المعلومات");
-    } finally {
-      if (setIsSubmitting) {
-        setIsSubmitting(false);
-      }
-    }
-  // }, (validationErrors) => {
-  //   // Only show validation error if fields are missing
-  //   const formValues = watch();
-  //   if (formValues.educationLevel === 'student') {
-  //     if (!formValues.studentInstitution || !formValues.studentFaculty || !formValues.studentProgram) {
-  //       ErrorToast("اكمل المعلومات المطلوبة");
-  //     }
-  //   } else {
-  //     ErrorToast("اكمل المعلومات المطلوبة");
-  //   }
+  // Use our custom submit hook
+  const { onSubmit } = useSubmit({ 
+    handleSubmit, 
+    errors, 
+    type, 
+    setIsSubmitting 
   });
 
   return (
@@ -184,28 +197,56 @@ const Form = ({ type, data }: FormProps) => {
     >
       <ScrollArea>
         <div dir="rtl" className="flex flex-col gap-6 px-6 w-full">
-          <div className="pt-6">
-            <DegreeSelector 
-              setValue={setValue} 
-              educationLevel={educationLevel} 
-              setEducationLevel={setEducationLevel} 
-            />      
-          </div>
-          {educationLevel && (
-            <div>
-              <Degree
-                register={register}
-                errors={{}}
-                setValue={setValue}
-                educationLevel={educationLevel}
-              />
+          {/* <div>
+            <Name register={register} errors={errors} />
+          </div> */}
+          
+          <div className="flex flex-col gap-6">
+            {/* <div dir="rtl" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative" ref={locationRef}>
+                <Location
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                  defaultValues={data}
+                />
+              </div>
+              
+              <div className="relative" ref={birthdateRef}>
+                <Birthdate
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                  defaultValues={data}
+                />
+              </div>
+            </div> */}
+
+            <div className="pt-6">
+              <DegreeSelector 
+                setValue={setValue} 
+                educationLevel={educationLevel} 
+                setEducationLevel={setEducationLevel} 
+              />      
             </div>
-          )}
+            {educationLevel && (
+              <div>
+                <Degree
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  educationLevel={educationLevel}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </ScrollArea>
 
       <button 
-        id="submit-education" 
+        id="submit-information" 
         type="submit" 
         disabled={isPending}
         style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}

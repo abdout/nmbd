@@ -3,16 +3,13 @@ import authConfig from "./auth.config"
 import { 
   apiAuthPrefix, 
   authRoutes, 
-  DEFAULT_LOGIN_REDIRECT,
-  publicRoutes,
-  onboardingRoutes,
-  isOnboardingRoute
+  DEFAULT_LOGIN_REDIRECT, 
+  publicRoutes 
 } from "./routes"
-import { db } from "@/lib/db"
 
 const { auth } = NextAuth(authConfig)
 
-export default auth(async (req) => {
+export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
@@ -43,7 +40,6 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
-  const isOnboarding = isOnboardingRoute(nextUrl.pathname)
 
   if (isApiAuthRoute) {
     console.log("[Middleware] API Auth Route:", nextUrl.pathname);
@@ -73,68 +69,8 @@ export default auth(async (req) => {
     return Response.redirect(new URL(loginUrl, nextUrl))
   }
 
-  // Handle onboarding routes
-  if (isOnboarding && isLoggedIn && req.auth?.user?.email) {
-    try {
-      const user = await db.user.findUnique({
-        where: { email: req.auth.user.email },
-        select: { onboardingStep: true }
-      });
-
-      if (!user) {
-        console.log("[Middleware] User not found in database");
-        return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-      }
-
-      const currentStep = user.onboardingStep || 1;
-      const requestedStep = getOnboardingStep(nextUrl.pathname);
-
-      // Only allow access to current or previous steps
-      if (requestedStep > currentStep) {
-        console.log("[Middleware] Invalid onboarding step - redirecting to appropriate step");
-        const redirectPath = getOnboardingPathByStep(currentStep);
-        return Response.redirect(new URL(redirectPath, nextUrl));
-      }
-    } catch (error) {
-      console.error("[Middleware] Error checking onboarding step:", error);
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-    }
-  }
-
-  return;
+  return
 })
-
-// Helper function to get onboarding step number from path
-function getOnboardingStep(path: string): number {
-  switch (path) {
-    case onboardingRoutes.INFORMATION:
-      return 1;
-    case onboardingRoutes.EDUCATION:
-      return 2;
-    case onboardingRoutes.ACTIVITY:
-      return 3;
-    case onboardingRoutes.REVIEW:
-      return 4;
-    default:
-      return 1;
-  }
-}
-
-// Helper function to get onboarding path by step number
-function getOnboardingPathByStep(step: number): string {
-  switch (step) {
-    case 1:
-      return onboardingRoutes.INFORMATION;
-    case 2:
-      return onboardingRoutes.EDUCATION;
-    case 3:
-      return onboardingRoutes.ACTIVITY;
-    case 4:
-      return onboardingRoutes.REVIEW;
-    default:
-      return onboardingRoutes.INFORMATION;
-  }
-}
 
 export const config = {
   matcher: [
