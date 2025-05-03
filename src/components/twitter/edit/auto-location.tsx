@@ -1,6 +1,6 @@
 'use client'
-import { AnimatedHierarchicalSelect, SelectionStep } from "../atom/hierarchical-select"
-import { Option } from "../atom/auto-complete"
+import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select"
+import { Option } from "@/components/atom/auto-complete"
 
 // Sample location data
 const COUNTRIES: Option[] = [

@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InformationSchema } from "./validation";
-import { AnimatedHierarchicalSelect, SelectionStep } from "../../atom/hierarchical-select";
+import { AnimatedHierarchicalSelect, SelectionStep } from "@/components/atom/hierarchical-select";
 import { useFormValidation } from "./use-validation";
 import { useSelect } from "./use-select";
 import { 
