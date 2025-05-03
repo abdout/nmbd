@@ -101,7 +101,7 @@ export async function getInformation() {
     const userData = await db.user.findUnique({
       where: { id: user.id },
       select: {
-        // name: true,
+        name: true,
         fullname: true,
         description: true,
         // bio: true,

@@ -103,7 +103,7 @@ const SidebarItem = ({ href, icon, label, active }: SidebarItemProps) => {
         className={cn(
           'flex items-center gap-2 p-2 rounded-md transition-colors w-32',
           active 
-            ? 'text-black hover:bg-muted' 
+            ? 'text-foreground hover:bg-muted' 
             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
         )}
       >
@@ -146,8 +146,8 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="h-full w-auto bg-background flex flex-col items-start -mt-2">
-      <div className="flex flex-col gap-1.5 items-start w-full">
+    <aside className="h-full w-auto bg-background flex flex-col items-start">
+      <div className="sticky top-8 flex flex-col gap-1 items-start w-full">
         {sidebarItems.map((item) => (
           <SidebarItem
             key={item.href}
