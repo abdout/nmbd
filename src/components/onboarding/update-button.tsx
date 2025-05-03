@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // import { useState, useEffect } from "react";
 import { FaChevronLeft } from "react-icons/fa";
-import { onboardingRoutes } from "@/components/onboarding/types";
+import { onboardingRoutes } from "@/components/onboarding/type";
 
 const steps = [
   onboardingRoutes.TERMS,
