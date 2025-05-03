@@ -4,11 +4,11 @@ import React from 'react';
 
 export default function SettingsPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
+    <div className="flex flex-col items-center h-full text-center">
       <h1 className="text-3xl font-bold mb-4">الإعدادات</h1>
       <p className="text-lg text-muted-foreground mb-8">ضبط خيارات المنصة والحساب</p>
       
-      <div className="border rounded-lg p-8 max-w-xl w-full shadow-sm">
+      <div className=" rounded-lg p-8 max-w-xl w-full ">
         <div className="flex flex-col gap-6">
           <div className="grid gap-4 text-start">
             <h3 className="text-lg font-medium">إعدادات الحساب</h3>

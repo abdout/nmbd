@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function NotificationsPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
+    <div className="flex flex-col items-center h-full text-center">
       <h1 className="text-3xl font-bold mb-4">الإشعارات</h1>
       <p className="text-lg text-muted-foreground mb-8">تتبع إشعاراتك وتحديثاتك</p>
       
