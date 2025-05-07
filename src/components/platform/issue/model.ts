@@ -1,10 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
-
-const taskSchema = new Schema(
+const issueSchema = new Schema(
   {
-    project: String,
-    task: String,
+    repository: String,
+    issue: String,
     club: String,
     status: String,
     priority: String,
@@ -19,6 +18,6 @@ const taskSchema = new Schema(
   }
 );
 
-const Task = mongoose.models.Task || mongoose.model("Task", taskSchema);
+const Issue = mongoose.models.Issue || mongoose.model("Issue", issueSchema);
 
-export default Task;
+export default Issue;

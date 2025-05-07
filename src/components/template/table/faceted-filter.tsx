@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Column } from '@tanstack/react-table';
-import { Button } from '../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandItem, CommandList, CommandEmpty, CommandInput } from '../ui/command';
+import { Button } from '../../ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { Command, CommandItem, CommandList, CommandEmpty, CommandInput } from '../../ui/command';
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { DropdownMenuSeparator } from '../ui/dropdown-menu';
+import { DropdownMenuSeparator } from '../../ui/dropdown-menu';
 
 interface DataTableFacetedFilterProps<TData> {
   column: Column<TData, unknown>;
@@ -13,7 +13,7 @@ interface DataTableFacetedFilterProps<TData> {
   onFilterChange: (filterValue: string) => void;
 }
 
-export const DataTableFacetedFilter = <TData,>({
+export const  DataTableFacetedFilter = <TData,>({
   
   title,
   options,

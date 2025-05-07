@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import { Icon } from "@iconify/react";
-import CreateProject from "./create";
+import CreateProject from "./form";
 
 export function ProjectDialog() {
     const [open, setOpen] = useState(false);

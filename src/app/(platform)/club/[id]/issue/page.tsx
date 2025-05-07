@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import { columns } from '@/components/platform/task/coloum';
-import { useTask } from '@/components/platform/task/context';
-import { Content } from '@/components/platform/task/content';
+import { columns } from '@/components/platform/issue/coloum';
+import { useTask } from '@/components/platform/issue/context';
+import { Content } from '@/components/platform/issue/content';
 
 const Task = () => {
   const { tasks } = useTask();

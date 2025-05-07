@@ -29,12 +29,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
-import { useFilter } from '../platform/member/useFilter'
+import { DataTableFacetedFilter } from '@/components/template/table/faceted-filter'
+import { useFilter } from '../../platform/member/useFilter'
 import { MixerHorizontalIcon } from "@radix-ui/react-icons"
 import { ShadcnDailog } from '@/components/atom/dailog'
 // import Create from '../root/article/create'
-import MemberChart from '../platform/member/chart'
+import MemberChart from '../../platform/member/chart'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

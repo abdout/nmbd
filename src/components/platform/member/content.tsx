@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
+import { DataTableFacetedFilter } from '@/components/template/table/faceted-filter'
 
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { useFilter } from './useFilter'

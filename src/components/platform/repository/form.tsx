@@ -4,90 +4,91 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useProject } from "./context";
 import { useState } from "react";
-// import { useUpload } from "@/components/upload/context";
 import SelectPopover from "@/components/atom/popover/popover";
 import { club, clubs } from "./constant";
 import Status from "./status";
 import { Icon } from "@iconify/react";
 import Indicator from "@/components/atom/modal/indicator";
+import { createRepository } from "./action";
+import { toast } from "sonner";
 
-interface FormData {
-  title: string;
-  desc: string;
-  club: string;
-  status: string;
-}
+export type StatusType = "pending" | "stuck" | "in_progress" | "done";
 
 const formSchema = z.object({
-  title: z.string(),
-  desc: z.string(),
-  club: z.string(),
-  status: z.string(),
+  title: z.string().min(1, "Title is required"),
+  desc: z.string().min(1, "Description is required"),
+  club: z.string().min(1, "Club is required"),
+  status: z.string().min(1, "Status is required"),
+  readme: z.string(),
+  roadmap: z.string(),
+  contributor: z.string(),
+  material: z.string(),
+  chat: z.string(),
 });
 
-interface CreateProps {
+type FormData = z.infer<typeof formSchema>;
+
+interface Props {
   onClose: () => void;
 }
 
-const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
-  const { refreshProjects } = useProject();
-  // const { image } = useUpload();
+const RepositoryForm: React.FC<Props> = ({ onClose }) => {
   const [step, setStep] = useState(1);
   const [selectedClub, setSelectedClub] = useState<club | null>(null);
-  // const [selectedStatus, setSelectedStatus] = useState<status | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const nextStep = () => setStep(prevStep => (prevStep < 4 ? prevStep + 1 : 4));
   const prevStep = () => setStep(prevStep => (prevStep > 1 ? prevStep - 1 : 1));
 
-  const form = useForm({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       desc: "",
       club: "",
-      status: "",
+      status: "pending",
+      readme: "",
+      roadmap: "",
+      contributor: "",
+      material: "",
+      chat: "",
     },
   });
 
   const handleSubmit = async (data: FormData) => {
-    console.log("Form submitted", data);
+    try {
+      setIsLoading(true);
+      const formData = {
+        ...data,
+        club: selectedClub?.value || data.club,
+      };
 
-    const postData = {
-      ...data,
-      club: selectedClub?.value, // Use the value of the selected lead
-      // status: selectedStatus?.value, // Use the value of the selected status
-      status: data.status,
-    };
-
-    const response = await fetch('/api/project', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(postData),
-    });
-    console.log(response);
-
-    if (response.ok) {
-      form.reset();
-      setSelectedClub(null);
-      // setSelectedStatus(null); 
-      refreshProjects();
-      onClose();
+      const result = await createRepository(formData);
+      
+      if (result.repository) {
+        toast.success("Repository created successfully");
+        form.reset();
+        setSelectedClub(null);
+        onClose();
+      }
+    } catch (error) {
+      toast.error("Failed to create repository");
+      console.error("Error creating repository:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen ">
-      <div className='felx pl-[30rem] pb-4 flex-col items-start justify-start gap-2 -mt-10'>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className='flex pl-[30rem] pb-4 flex-col items-start justify-start gap-2 -mt-10'>
         <h3>مشروع جديد</h3>
         <p className='text-sm font-light mt-2'>
-        الجزء الاكثر سحرا في كتب هاري بورتر, انهم في الاخير <br/> استعملوا المهارات التي تعلموها في المدرسة
+          الجزء الاكثر سحرا في كتب هاري بورتر, انهم في الاخير <br/> استعملوا المهارات التي تعلموها في المدرسة
         </p>
       </div>
-      <Form  {...form}>
+      <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="w-full max-w-md flex flex-col justify-center items-center gap-6 -mt-40 relative h-full"
@@ -98,6 +99,7 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
             variant='outline'
             className={`absolute top-1/2 left-[-10rem] transform -translate-y-1/2 rounded-full ${step === 1 ? 'opacity-50 pointer-events-none' : ''}`}
             onClick={prevStep}
+            disabled={isLoading}
           >
             <Icon icon="ic:sharp-arrow-back" width={25} />
           </Button>
@@ -107,6 +109,7 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
             variant='outline'
             className={`absolute top-1/2 right-[-10rem] transform -translate-y-1/2 rounded-full ${step === 4 ? 'opacity-50 pointer-events-none' : ''}`}
             onClick={nextStep}
+            disabled={isLoading}
           >
             <Icon icon="ic:sharp-arrow-forward" width={25} />
           </Button>
@@ -118,7 +121,7 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input className=" w-72" placeholder="الاسم" {...field} />
+                      <Input className="w-72" placeholder="الاسم" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,66 +140,84 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
                 )}
               />
             </div>
-
           )}
           {step === 2 && (
-            <>
-              <FormField
-                control={form.control}
-                name="club"
-                render={() => (
-                  <FormItem>
-                    <FormControl>
-                      <SelectPopover
-                        items={clubs}
-                        selectedItem={selectedClub}
-                        setSelectedItem={(item) => {
-                          setSelectedClub(item);
-                          form.setValue("club", item?.value ?? ""); // Update form state with the selected lead value
-                        }}
-                        label="+ الامانة"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
+            <FormField
+              control={form.control}
+              name="club"
+              render={() => (
+                <FormItem>
+                  <FormControl>
+                    <SelectPopover
+                      items={clubs}
+                      selectedItem={selectedClub}
+                      setSelectedItem={(item) => {
+                        setSelectedClub(item);
+                        form.setValue("club", item?.value ?? "");
+                      }}
+                      label="+ الامانة"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
           {step === 3 && (
-            <>
-              <FormField
-                control={form.control}
-                name="status"
-                render={() => (
-                  <FormItem>
-                    <FormControl>
-                      <Status
-                        status={form.watch("status")} // Watch form's status state
-                        setStatus={(status) => form.setValue("status", status)} // Update form state with selected status
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-
-              />
-            </>
+            <FormField
+              control={form.control}
+              name="status"
+              render={() => (
+                <FormItem>
+                  <FormControl>
+                    <Status
+                      status={form.watch("status") as StatusType}
+                      setStatus={(status) => form.setValue("status", status)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
           {step === 4 && (
             <>
+              <FormField
+                control={form.control}
+                name="readme"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input className="w-72" placeholder="README" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="roadmap"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input className="w-72" placeholder="Roadmap" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </>
           )}
           <div dir="ltr" className="absolute bottom-28">
-          <Indicator totalSteps={4} currentStep={step} />
-
+            <Indicator totalSteps={4} currentStep={step} />
           </div>
-         
+          
           <Button
             type="submit"
             className="absolute bottom-10 mt-6 h-12 font-medium text-sm w-72"
+            disabled={isLoading}
           >
-            انشاء مشروع
+            {isLoading ? "جاري الإنشاء..." : "انشاء مشروع"}
           </Button>
         </form>
       </Form>
@@ -204,4 +225,4 @@ const CreateProject: React.FC<CreateProps> = ({ onClose }) => {
   );
 };
 
-export default CreateProject;
+export default RepositoryForm;

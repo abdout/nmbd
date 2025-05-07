@@ -13,9 +13,9 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Icon } from '@iconify/react';
-import { member } from '../platform/member/type'
+import { member } from '../../platform/member/type'
 import Link from 'next/link'
-import { useMember } from '../platform/member/context'
+import { useMember } from '../../platform/member/context'
 
 interface ActionsProps {
   row: {

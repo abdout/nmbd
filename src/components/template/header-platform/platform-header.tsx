@@ -5,8 +5,8 @@ import React from 'react'
 import { MainNav } from './main-nav'
 import { marketingConfig } from './constant'
 import { ModeSwitcher } from './mode-switcher'
-import { CommandMenu } from '../template/header-shadcn/command-menu'
-import { UserButton } from '../auth/user-button'
+import { CommandMenu } from '@/components/template/header-shadcn/command-menu'
+import { UserButton } from '@/components/auth/user-button'
 
 const PlatformHeader = () => {
   return (

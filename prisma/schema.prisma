@@ -347,3 +347,36 @@ model Article {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Repository {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  desc        String
+  club        String
+  status      String
+  readme      String
+  roadmap     String
+  issues      Issue[]  // Relation to issues
+  contributor String
+  material    String
+  chat        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Issue {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  repository  Repository? @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  repositoryId String?    @db.ObjectId
+  issue       String?
+  club        String?
+  status      String?
+  priority    String?
+  duration    String?
+  desc        String?
+  label       String?
+  tag         String?
+  remark      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Column } from '@tanstack/react-table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Option } from '@/components/table/index'
+import { Option } from '@/components/template/table/index'
 
 interface DataTableFacetedFilterProps<TData> {
   column: Column<TData, unknown>

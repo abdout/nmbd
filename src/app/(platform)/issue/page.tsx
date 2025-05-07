@@ -1,17 +1,11 @@
-'use client';
-import React from 'react';
-import { columns } from '@/components/platform/task/coloum';
-import { useTask } from '@/components/platform/task/context';
-import { Content } from '@/components/platform/task/content';
+import { getIssues } from '@/components/platform/issue/action';
+import { Content } from '@/components/platform/issue/content';
 
-const Task = () => {
-  const { tasks } = useTask();
-  return (
-    <div>
-      <Content columns={columns} data={tasks} />
-
-    </div>
-  );
-};
-
-export default Task;
+export default async function IssuePage() {
+  const { issues } = await getIssues();
+  return <Content initialIssues={(issues ?? []).map(issue => ({ 
+    ...issue, 
+    _id: issue.id,
+    repository: issue.repository?.id || null
+  }))} />;
+}
