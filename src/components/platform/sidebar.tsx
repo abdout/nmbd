@@ -139,6 +139,11 @@ export function Sidebar() {
       label: 'الملف'
     },
     {
+      href: '/dashboard/membership',
+      icon: <UserIcon className="h-5 w-5" />,
+      label: 'العضوية'
+    },
+    {
       href: '/dashboard/settings',
       icon: <SettingsIcon className="h-[18px] w-[18px]" />,
       label: 'الضبط'

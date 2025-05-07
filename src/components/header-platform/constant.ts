@@ -158,13 +158,13 @@ export const marketingConfig: MarketingConfig = {
       href: "/member",
     },
     {
-      title: "مشروع",
-      href: "/project",
+      title: "مستودع",
+      href: "/repository",
     },
 
     {
-      title: "مهمة",
-      href: "/task",
+      title: "مشكلة",
+      href: "/issue",
     },
 
     {

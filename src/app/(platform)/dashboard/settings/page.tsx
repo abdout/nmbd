@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
   return (
@@ -33,26 +34,55 @@ export default function SettingsPage() {
               </button>
             </div>
             
-            <div className="flex items-center justify-between pt-2">
-              <div>
-                <p className="font-medium">الوضع المظلم</p>
-                <p className="text-sm text-muted-foreground">تبديل مظهر المنصة</p>
-              </div>
-              <div className="w-12 h-6 bg-muted rounded-full relative cursor-pointer">
-                <div className="w-5 h-5 bg-background rounded-full absolute top-0.5 right-0.5 shadow-sm"></div>
-              </div>
-            </div>
+            
           </div>
           
           <div className="mt-6 text-start">
-            <h3 className="text-lg font-medium mb-4">خيارات أخرى</h3>
+           
             
-            <button className="px-4 py-2 text-red-500 hover:bg-red-100 hover:bg-opacity-20 rounded-md transition-colors w-full text-start">
-              تسجيل الخروج
-            </button>
+            <DeleteAccountButton />
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function DeleteAccountButton() {
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+
+  const handleDelete = async () => {
+    if (!window.confirm('هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+    setLoading(true);
+    try {
+      // Get user id from session or context if available, else fetch from API
+      const res = await fetch('/api/auth/session');
+      const session = await res.json();
+      const userId = session?.user?.id;
+      if (!userId) throw new Error('لم يتم العثور على معرف المستخدم');
+      const deleteRes = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+      if (deleteRes.status === 204) {
+        // Sign out after deletion
+        await fetch('/api/auth/signout');
+        router.push('/login');
+      } else {
+        alert('حدث خطأ أثناء حذف الحساب');
+      }
+    } catch (e) {
+      alert('حدث خطأ أثناء حذف الحساب');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded-md transition-colors w-32 text-center border border-red-600"
+      onClick={handleDelete}
+      disabled={loading}
+    >
+      {loading ? 'جاري حذف الحساب...' : 'حذف الحساب'}
+    </button>
   );
 } 

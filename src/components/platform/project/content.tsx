@@ -69,7 +69,7 @@ const ProjectContent: React.FC = () => {
                                 }
                             }}
                         >
-                            <Link href={`/project/${project._id}`} onClick={(e) => {
+                            <Link href={`/repository/${project._id}`} onClick={(e) => {
                                 // Prevent the link navigation when the context menu is open
                                 if (contextMenu.projectID === project._id) {
                                     e.preventDefault();

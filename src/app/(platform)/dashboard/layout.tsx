@@ -10,15 +10,16 @@ export default function PlatformLayout({
 }) {
   const pathname = usePathname();
   const isEditRoute = pathname?.includes('/edit');
+  const isMembershipIdRoute = /^\/dashboard\/membership\/[^/]+$/.test(pathname || "");
 
-  if (isEditRoute) {
+  if (isEditRoute || isMembershipIdRoute) {
     return children;
   }
 
   return (
-    <div className="flex h-screen -mx-4">
+    <div className="flex h-screen -mx-10">
       <Sidebar />
-      <div className="flex-1 py-2">
+      <div className="flex-1 py-2 px-6">
         {children}
       </div>
     </div>

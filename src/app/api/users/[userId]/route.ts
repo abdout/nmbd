@@ -41,4 +41,22 @@ export async function GET(req: NextRequest) {
     console.error("[GET_USER]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
+}
+
+// Add DELETE handler for account deletion
+export async function DELETE(req: NextRequest) {
+  try {
+    const user = await currentUser();
+    // Extract userId from the URL path
+    const path = req.url.split('/');
+    const userId = path[path.length - 1];
+    if (!user?.id || user.id !== userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+    await db.user.delete({ where: { id: userId } });
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("[DELETE_USER]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
 } 

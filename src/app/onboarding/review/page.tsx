@@ -54,6 +54,11 @@ export default function ReviewPage() {
       }
     } catch (error) {
       console.error("Error completing onboarding:", error);
+      if (error instanceof Error) {
+        console.error("Error stack:", error.stack);
+      } else {
+        console.error("Error details:", error);
+      }
       setError("حدث خطأ أثناء إكمال عملية التسجيل");
     } finally {
       setIsSubmitting(false);

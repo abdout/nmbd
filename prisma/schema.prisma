@@ -9,8 +9,13 @@ generator client {
 
 enum UserRole {
   ADMIN
+  DEVELOPER
   USER
-  MEMBERSHIP_SECRETARY
+  MEMBER
+  MEMBERSHIP
+  FINANCE
+  CONTENT
+
 }
 
 model User {

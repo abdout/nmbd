@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { UserCard } from "@/components/user/user-card";
+import { UserCard } from "@/components/membership/user-card";
 
 export const metadata = {
   title: "الأعضاء",

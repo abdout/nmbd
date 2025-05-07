@@ -5,12 +5,11 @@ import { useForm } from "react-hook-form";
 import { attachmentSchema, AttachmentSchema } from "./validation";
 import { createAttachment, updateAttachment } from "./action";
 import { useActionState } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import { ATTACHMENT_FIELDS } from "./constant";
 import { useTransition } from "react";
-import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useFormContext } from '@/components/twitter/edit/form-context';
 import { getNextRoute } from '../utils';
@@ -28,6 +27,20 @@ const getPdfPreviewUrl = (url: string) => {
   
   // Generate preview URL with transformation
   return `${baseUrl}q_auto,f_jpg,pg_1/${filePath}`;
+};
+
+const uploadToCloudinary = async (file: File, fieldType: string): Promise<string> => {
+  const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${fieldType === 'raw' ? 'raw' : 'image'}/upload`;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "social");
+  const res = await fetch(url, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Upload failed");
+  const data = await res.json();
+  return data.secure_url;
 };
 
 const AttachmentForm = ({
@@ -62,6 +75,9 @@ const AttachmentForm = ({
 
   const router = useRouter();
   const pathname = usePathname();
+
+  // For each field, keep a ref to its file input
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const onSubmitSuccess = () => {
     SuccessToast();
@@ -105,87 +121,90 @@ const AttachmentForm = ({
       </h1> */}
 
       <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-8">
-        {ATTACHMENT_FIELDS.map(({ name, label, type: fieldType }) => (
-          <CldUploadWidget
-            key={name}
-            uploadPreset="social"
-            options={{
-              resourceType: "auto",
-              folder: fieldType === 'raw' ? 'pdfs' : 'images'
-            }}
-            onSuccess={(result: CloudinaryUploadWidgetResults, { widget }) => {
-              if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
-                setValue(name, result.info.secure_url as string);
-              }
-              widget.close();
-            }}
-          >
-            {({ open }: { open: () => void }) => (
-              <div
-                onClick={() => open()}
-                className="relative flex items-center justify-center w-36 h-28 cursor-pointer overflow-hidden border border-neutral-500 rounded-lg hover:bg-neutral-100"
-              >
-                {formValues[name] ? (
-                  // Only the profile picture (صورة شخصية) should be treated as an image
-                  fieldType === 'image' ? (
-                    <>
-                      <Image
-                        src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : getImagePath('/placeholder-profile.png')}
-                        alt={label}
-                        width={96}
-                        height={96}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        loading="lazy"
-                        sizes="96px"
-                        onError={(e) => {
-                          // Handle image loading errors
-                          const target = e.target as HTMLImageElement;
-                          target.src = getImagePath('/placeholder-profile.png'); // Fallback to a placeholder
-                          console.error('Image failed to load:', formValues[name]);
-                        }}
-                      />
-                      <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                        صورة شخصية
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Display PDF preview for all PDF fields */}
-                      {formValues[name] && formValues[name].includes('cloudinary.com') ? (
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={getPdfPreviewUrl(formValues[name])}
-                            alt={label}
-                            width={96}
-                            height={96}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            loading="lazy"
-                            sizes="96px"
-                          />
-                          <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
-                            {label}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-center text-gray-700 text-sm">
-                          <span>File Uploaded</span>
-                          <br />
-                          <span className="text-xs">(Click to change)</span>
-                        </div>
-                      )}
-                    </>
-                  )
+        {ATTACHMENT_FIELDS.map(({ name, label, type: fieldType }, index) => {
+          const isFirst = index === 0;
+          return (
+            <div
+              key={name}
+              onClick={() => fileInputRefs.current[name]?.click()}
+              className={`relative flex items-center justify-center w-40 h-40 cursor-pointer overflow-hidden border border-neutral-500 hover:bg-neutral-100 ${isFirst ? 'rounded-full' : 'rounded-lg'}`}
+              style={{ position: 'relative' }}
+            >
+              <input
+                type="file"
+                accept={fieldType === 'image' ? 'image/*' : fieldType === 'raw' ? '.pdf,.doc,.docx,.txt,.rtf' : '*'}
+                style={{ display: 'none' }}
+                ref={el => { fileInputRefs.current[name] = el; }}
+                onClick={e => e.stopPropagation()}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadToCloudinary(file, fieldType);
+                    setValue(name, url);
+                  } catch (err) {
+                    ErrorToast("فشل رفع الملف. حاول مرة أخرى.");
+                    console.error('Cloudinary upload error:', err);
+                  }
+                }}
+              />
+              {formValues[name] ? (
+                fieldType === 'image' ? (
+                  <>
+                    <Image
+                      src={formValues[name] && formValues[name].startsWith('http') ? formValues[name] : getImagePath('/placeholder-profile.png')}
+                      alt={label}
+                      width={160}
+                      height={160}
+                      className={`absolute inset-0 w-full h-full object-cover ${isFirst ? 'rounded-full' : ''}`}
+                      loading="lazy"
+                      sizes="160px"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = getImagePath('/placeholder-profile.png');
+                        console.error('Image failed to load:', formValues[name]);
+                      }}
+                    />
+                    <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                      صورة شخصية
+                    </div>
+                  </>
                 ) : (
-                  <span className="text-center text-gray-700 text-sm z-10 flex flex-col items-center">
-                    {label.split(' ').map((word, index) => (
-                      <span key={index}>{word}</span>
-                    ))}
-                  </span>
-                )}
-              </div>
-            )}
-          </CldUploadWidget>
-        ))}
+                  <>
+                    {formValues[name] && formValues[name].includes('cloudinary.com') ? (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={getPdfPreviewUrl(formValues[name])}
+                          alt={label}
+                          width={160}
+                          height={160}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                          sizes="160px"
+                        />
+                        <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                          {label}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center text-gray-700 text-sm">
+                        <span>File Uploaded</span>
+                        <br />
+                        <span className="text-xs">(Click to change)</span>
+                      </div>
+                    )}
+                  </>
+                )
+              ) : (
+                <span className="text-center text-gray-700 text-sm z-10 flex flex-col items-center">
+                  {label.split(' ').map((word, index) => (
+                    <span key={index}>{word}</span>
+                  ))}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <button
