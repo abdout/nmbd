@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { getIssue } from '@/components/platform/issue/action';
 import { IssueType } from '@/components/platform/issue/type';
 import { useParams } from "next/navigation";
+import Loading from '@/components/atom/loading';
 
 const appendixContent = {
   datasheet: { title: "Datasheet", content: () => <div>Coming soon...</div> },
@@ -46,14 +47,7 @@ const IssueDetail = () => {
   const closeAppendixDialog = () => setActiveAppendix(null);
 
   if (loading) {
-    return (
-      <div className="container px-8 py-28 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-xl">جاري التحميل...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error || !issue) {
