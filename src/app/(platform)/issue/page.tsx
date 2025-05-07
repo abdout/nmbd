@@ -6,6 +6,7 @@ export default async function IssuePage() {
   return <Content initialIssues={(issues ?? []).map(issue => ({ 
     ...issue, 
     _id: issue.id,
-    repository: issue.repository?.id || null
+    repository: issue.repository?.id || null,
+    repositoryTitle: issue.repositoryTitle || issue.repository?.title || null
   }))} />;
 }

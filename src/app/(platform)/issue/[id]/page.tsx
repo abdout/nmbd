@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { getIssue } from '@/components/platform/issue/action';
+import { IssueType } from '@/components/platform/issue/type';
+import { useParams } from "next/navigation";
 
 const appendixContent = {
   datasheet: { title: "Datasheet", content: () => <div>Coming soon...</div> },
@@ -9,53 +12,88 @@ const appendixContent = {
   awesome: { title: "Awesome", content: () => <div>Coming soon...</div> },
 };
 
-const placeholderIssue = {
-  task: "عنوان المهمة",
-  status: "جاري",
-  prioity: "عالي",
-  duration: "4",
-  desc: "هذا وصف توضيحي للمهمة الحالية. يمكن أن يكون طويلاً أو قصيراً حسب الحاجة.",
-  project: "مشروع افتراضي",
-  club: "الأمانة العامة",
-  tag: "وسم افتراضي",
-  label: "ملصق افتراضي",
-  remark: "ملاحظة افتراضية حول المهمة."
-};
-
 const IssueDetail = () => {
+  const params = useParams();
+  const issueId = params.id as string;
   const [activeAppendix, setActiveAppendix] = useState<string | null>(null);
-  const task = placeholderIssue;
+  const [issue, setIssue] = useState<IssueType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchIssue = async () => {
+      try {
+        setLoading(true);
+        const response = await getIssue(issueId);
+        if (response.error) {
+          setError(response.error);
+        } else if (response.issue) {
+          setIssue(response.issue);
+        }
+      } catch (err) {
+        setError('Failed to load issue');
+        console.error('Error fetching issue:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (issueId) {
+      fetchIssue();
+    }
+  }, [issueId]);
 
   const closeAppendixDialog = () => setActiveAppendix(null);
+
+  if (loading) {
+    return (
+      <div className="container px-8 py-28 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-xl">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !issue) {
+    return (
+      <div className="container px-8 py-28 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-xl text-red-500">{error || 'لم يتم العثور على المشكلة'}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container px-8 py-28 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         <div className="flex flex-col justify-start items-start pt-0">
           <div className="rounded-lg w-full max-w-[250px] h-[180px] flex items-center justify-center text-5xl font-bold select-none">
-            {task.task?.slice(0, 2) || 'IS'}
+            {issue.issue?.slice(0, 2) || 'IS'}
           </div>
           <p className="text-xl mx-3 mt-6 mb-3">
-            الحالة: <span className="font-bold">{task.status}</span>
+            الحالة: <span className="font-bold">{issue.status}</span>
           </p>
           <div className="flex items-center gap-4 mx-2">
             <span className="px-6 py-3 text-sm rounded-full font-bold text-center inline-block">
-              {task.prioity || '---'}
+              {issue.priority || '---'}
             </span>
-            <span className="text-sm font-medium">{task.duration} ساعة</span>
+            <span className="text-sm font-medium">{issue.duration} ساعة</span>
           </div>
         </div>
         <div className="md:col-span-2">
-          <h1 className="text-4xl font-bold">{task.task}</h1>
-          <h2 className="text-2xl mt-2">{task.desc}</h2>
+          <h1 className="text-4xl font-bold">{issue.issue}</h1>
+          <h2 className="text-2xl mt-2">{issue.desc}</h2>
           <div className="mt-8 border-t pt-6">
             <h3 className="text-xl font-semibold mb-3">تفاصيل</h3>
             <ul className="list-disc ml-5 space-y-2">
-              <li>المشروع: {task.project}</li>
-              <li>الأمانة: {task.club}</li>
-              <li>الوسم: {task.tag}</li>
-              <li>الملصق: {task.label}</li>
-              <li>ملاحظة: {task.remark}</li>
+              <li>المشروع: {issue.repositoryTitle || issue.repository || 'غير محدد'}</li>
+              <li>الأمانة: {issue.club || 'غير محدد'}</li>
+              <li>الوسم: {issue.tag || 'غير محدد'}</li>
+              <li>الملصق: {issue.label || 'غير محدد'}</li>
+              <li>ملاحظة: {issue.remark || 'غير محدد'}</li>
             </ul>
           </div>
           <div className="mt-8 border-t pt-6">

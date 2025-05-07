@@ -13,25 +13,44 @@ export async function createIssue(data: IssueFormValues) {
   }
   const { repository, ...otherData } = parsed.data;
   
-  // Only include repository connection if a valid repository ID is provided
-  const cleanData = {
-    ...otherData,
-    ...(repository && repository.length === 24 && {
-      repository: {
-        connect: { id: repository }
-      }
-    }),
-    issue: otherData.issue || "",
-    club: otherData.club || "",
-    label: otherData.label || "",
-  };
-
   try {
+    // Check if repository ID exists if provided
+    if (repository) {
+      const repoExists = await db.repository.findUnique({
+        where: { id: repository }
+      });
+      
+      if (!repoExists) {
+        return { error: 'Repository not found, please select a valid repository' };
+      }
+    }
+    
+    // Only include repository connection if a valid repository ID is provided
+    const cleanData = {
+      ...otherData,
+      ...(repository && {
+        repository: {
+          connect: { id: repository }
+        }
+      }),
+      issue: otherData.issue || "",
+      club: otherData.club || "",
+      label: otherData.label || "",
+    };
+
     const newIssue = await db.issue.create({ data: cleanData });
     revalidatePath('/issue');
     return { success: true, issueId: newIssue.id };
   } catch (error) {
     console.error('Error creating issue:', error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2023') {
+        return { error: 'Invalid ID format for repository' };
+      }
+      if (error.code === 'P2025') {
+        return { error: 'Repository not found' };
+      }
+    }
     return { error: 'Failed to create issue' };
   }
 }
@@ -48,8 +67,14 @@ export async function getIssues() {
       }
     });
 
+    // Map issues to include repository title
+    const mappedIssues = issues.map(issue => ({
+      ...issue,
+      repositoryTitle: issue.repository?.title || null
+    }));
+
     // Return all issues without filtering
-    return { success: true, issues: issues };
+    return { success: true, issues: mappedIssues };
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error fetching issues:', error);

@@ -5,7 +5,7 @@ export interface ModalState {
   
   export interface ModalContextProps {
     modal: ModalState;
-    openModal: (id: string | null) => void;
+    openModal: (id?: string | null) => void;
     closeModal: () => void;
     handleCloseModal: () => void;
   }

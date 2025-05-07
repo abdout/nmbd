@@ -3,6 +3,7 @@ export interface IssueType {
   id?: string;
   repository?: string | null;
   repositoryId?: string | null;
+  repositoryTitle?: string | null;
   issue?: string;
   club?: string;
   status?: string;

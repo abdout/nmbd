@@ -28,38 +28,50 @@ import {
 import { Icon } from '@iconify/react';
 
 import { issueFormSchema, IssueFormValues, ISSUE_STATUS, ISSUE_PRIORITY } from './validation';
-import { createIssue } from './action';
+import { createIssue, updateIssue } from './action';
 import EstTime from './esttime';
 import { club, clubs } from "../repository/constant";
 import SelectPopover from "@/components/atom/popover/popover";
 import Indicator from '@/components/atom/modal/indicator';
 import Status from '../repository/status';
 import Priority from './priority';
+import { getRepositories } from '../repository/action';
+import { IssueType } from './type';
 
 interface Props {
   onClose: () => void;
   onSuccess?: () => Promise<void>;
+  initialData?: IssueType | null;
+  isEditing?: boolean;
 }
 
-const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
+interface Repository {
+  id: string;
+  title: string;
+}
+
+const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing = false }) => {
   const [step, setStep] = useState(1);
   const [selectedClub, setSelectedClub] = useState<club | null>(null);
+  const [selectedRepository, setSelectedRepository] = useState<{value: string, label: string} | null>(null);
+  const [repositories, setRepositories] = useState<{value: string, label: string}[]>([]);
   const [, setProgress] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Set up the form with initial values if editing
   const form = useForm<IssueFormValues>({
     resolver: zodResolver(issueFormSchema),
     defaultValues: {
-      repository: '',
-      issue: '',
-      club: '',
-      status: 'pending',
-      priority: 'pending',
-      duration: '',
-      desc: '',
-      label: '',
-      tag: '',
-      remark: '',
+      repository: initialData?.repository || '',
+      issue: initialData?.issue || '',
+      club: initialData?.club || '',
+      status: (initialData?.status as any) || 'pending',
+      priority: (initialData?.priority as any) || 'pending',
+      duration: initialData?.duration || '',
+      desc: initialData?.desc || '',
+      label: initialData?.label || '',
+      tag: initialData?.tag || '',
+      remark: initialData?.remark || '',
     },
   });
 
@@ -75,6 +87,62 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
     };
   }, []);
 
+  // Initialize form with initial data
+  useEffect(() => {
+    if (initialData && isEditing) {
+      // Set form values
+      form.reset({
+        repository: initialData.repository || '',
+        issue: initialData.issue || '',
+        club: initialData.club || '',
+        status: (initialData.status as any) || 'pending',
+        priority: (initialData.priority as any) || 'pending',
+        duration: initialData.duration || '',
+        desc: initialData.desc || '',
+        label: initialData.label || '',
+        tag: initialData.tag || '',
+        remark: initialData.remark || '',
+      });
+
+      // Set selected club
+      if (initialData.club) {
+        const matchedClub = clubs.find(c => c.value === initialData.club);
+        if (matchedClub) {
+          setSelectedClub(matchedClub);
+        }
+      }
+
+      // Set selected repository
+      if (initialData.repository && initialData.repositoryTitle) {
+        setSelectedRepository({
+          value: initialData.repository,
+          label: initialData.repositoryTitle
+        });
+      }
+    }
+  }, [initialData, isEditing, form]);
+
+  // Fetch repositories for dropdown
+  useEffect(() => {
+    const fetchRepositories = async () => {
+      try {
+        const result = await getRepositories();
+        if (result.repositories) {
+          const formattedRepos = result.repositories.map(repo => ({
+            value: repo.id,
+            label: repo.title
+          }));
+          setRepositories(formattedRepos);
+        }
+      } catch (error) {
+        console.error('Error fetching repositories:', error);
+        toast.error('Failed to load repositories');
+      }
+    };
+    
+    fetchRepositories();
+  }, []);
+
   const nextStep = () => setStep((prev) => (prev < 4 ? prev + 1 : 4));
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : 1));
 
@@ -83,20 +151,29 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
       setIsSubmitting(true);
       console.log('Form data:', data);
       
-      // Add club from the selected value
+      // Add club from the selected value and repository from selected repository
       const formData = {
         ...data,
+        repository: selectedRepository?.value || '',
         club: selectedClub?.value || '',
       };
       
-      const result = await createIssue(formData);
+      let result;
+      
+      if (isEditing && initialData?._id) {
+        // Update existing issue
+        result = await updateIssue(initialData._id, formData);
+      } else {
+        // Create new issue
+        result = await createIssue(formData);
+      }
       
       if (result.error) {
         toast.error(result.error);
         return;
       }
       
-      toast.success('تم إنشاء المشكلة بنجاح');
+      toast.success(isEditing ? 'تم تحديث المشكلة بنجاح' : 'تم إنشاء المشكلة بنجاح');
       form.reset();
       
       if (onSuccess) {
@@ -105,8 +182,8 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
       
       onClose();
     } catch (error: any) {
-      console.error('Error creating issue:', error);
-      toast.error(error.message || 'فشل في إنشاء المشكلة');
+      console.error('Error processing issue:', error);
+      toast.error(error.message || 'فشل في معالجة المشكلة');
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +192,7 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
   return (
     <div className="flex flex-col items-center justify-center h-screen ">
       <div className='felx pl-[30rem] pb-4 flex-col items-start justify-start gap-2 -mt-10'>
-        <h3>مشكلة جديدة</h3>
+        <h3>{isEditing ? 'تعديل المشكلة' : 'مشكلة جديدة'}</h3>
         <p className='text-sm font-light mt-2'>
           لا يتحرك المرء نحو واجهة, انما يتحرك ليصنع واحدة
         </p>
@@ -180,12 +257,18 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
               <FormField
                 control={form.control}
                 name="repository"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        className='w-72'
-                        placeholder="المستودع" {...field} />
+                      <SelectPopover
+                        items={repositories}
+                        selectedItem={selectedRepository}
+                        setSelectedItem={(item) => {
+                          setSelectedRepository(item);
+                          form.setValue("repository", item?.value ?? "");
+                        }}
+                        label="+ اختر المستودع"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -277,7 +360,10 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess }) => {
             disabled={isSubmitting}
           >
             <Save className="mr-2 h-5 w-5" />
-            {isSubmitting ? "جارٍ الإنشاء..." : "إنشاء المشكلة"}
+            {isSubmitting 
+              ? (isEditing ? "جارٍ التحديث..." : "جارٍ الإنشاء...") 
+              : (isEditing ? "تحديث المشكلة" : "إنشاء المشكلة")
+            }
           </Button>
         </form>
       </Form>

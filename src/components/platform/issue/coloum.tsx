@@ -50,9 +50,10 @@ const PriorityCircle: React.FC<{ priority: string }> = ({ priority }) => {
 interface ActionsCellProps {
   row: { original: IssueType };
   onDelete: (id: string) => Promise<void>;
+  onEdit: (issue: IssueType) => void;
 }
 
-const ActionsCell: React.FC<ActionsCellProps> = ({ row, onDelete }) => {
+const ActionsCell: React.FC<ActionsCellProps> = ({ row, onDelete, onEdit }) => {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -70,16 +71,16 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, onDelete }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => window.open(`/issues/${row.original._id}`, '_blank')}>
+          <DropdownMenuItem onClick={() => window.location.href = `/issue/${row.original._id}`}>
             فتح
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => window.open(`/issues/${row.original._id}/edit`, '_blank')}>
+          <DropdownMenuItem onClick={() => onEdit(row.original)}>
             تعديل
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDelete} disabled={loading}>
             حذف
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => window.open(`/issues/${row.original._id}/contribute`, '_blank')}>
+          <DropdownMenuItem onClick={() => window.location.href = `/issue/${row.original._id}/contribute`}>
             مساهمة
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -89,7 +90,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, onDelete }) => {
 };
 
 export const getColumns = (
-  onDelete: (id: string) => Promise<void>
+  onDelete: (id: string) => Promise<void>,
+  onEdit: (issue: IssueType) => void
 ): ColumnDef<IssueType>[] => [
   {
     accessorKey: 'repository',
@@ -106,9 +108,10 @@ export const getColumns = (
       </div>
     ),
     cell: ({ row }) => {
-      const repository = row.getValue('repository');
+      const repositoryId = row.getValue('repository');
+      const repositoryTitle = row.original.repositoryTitle || null;
       return (
-        <div className="text-right pr-8">{repository ? String(repository) : 'بدون مستودع'}</div>
+        <div className="text-right pr-8">{repositoryTitle ? String(repositoryTitle) : 'بدون مستودع'}</div>
       );
     }
   },
@@ -166,6 +169,6 @@ export const getColumns = (
   {
     accessorKey: 'actions',
     header: () => <div className="text-center w-full">إجراءات</div>,
-    cell: ({ row }) => <ActionsCell row={row} onDelete={onDelete} />
+    cell: ({ row }) => <ActionsCell row={row} onDelete={onDelete} onEdit={onEdit} />
   }
 ];

@@ -50,6 +50,7 @@ export function Content({ initialIssues }: ContentProps) {
     priority: false,
   })
   const [rowSelection, setRowSelection] = useState({})
+  const [selectedIssue, setSelectedIssue] = useState<IssueType | null>(null)
 
   const { modal, openModal, closeModal } = useModal();
 
@@ -68,6 +69,7 @@ export function Content({ initialIssues }: ContentProps) {
           ...issue,
           _id: issue?.id || '',
           repository: issue?.repository?.id || null,
+          repositoryTitle: issue?.repositoryTitle || issue?.repository?.title || null,
           issue: issue?.issue || '',
           club: issue?.club || '',
           status: issue?.status || '',
@@ -91,8 +93,13 @@ export function Content({ initialIssues }: ContentProps) {
     await deleteIssue(id)
     await refreshIssues()
   }
+  
+  const handleEdit = (issue: IssueType) => {
+    setSelectedIssue(issue);
+    openModal();
+  }
 
-  const columns = getColumns(handleDelete)
+  const columns = getColumns(handleDelete, handleEdit)
 
   const table = useReactTable({
     data: issues,
@@ -115,11 +122,13 @@ export function Content({ initialIssues }: ContentProps) {
 
   const handleCloseModal = async () => {
     closeModal();
+    setSelectedIssue(null);
     await refreshIssues();
   }
 
   const handleOpenModal = () => {
-    openModal(null);
+    setSelectedIssue(null);
+    openModal();
   }
 
   return (
@@ -239,9 +248,14 @@ export function Content({ initialIssues }: ContentProps) {
         </Table>
       </div>
 
-      {/* Issue create modal */}
+      {/* Issue create/edit modal */}
       {modal.open && (
-        <Modal content={<IssueForm onClose={handleCloseModal} onSuccess={refreshIssues} />} />
+        <Modal content={<IssueForm 
+          onClose={handleCloseModal} 
+          onSuccess={refreshIssues} 
+          initialData={selectedIssue}
+          isEditing={!!selectedIssue}
+        />} />
       )}
     </>
   )
