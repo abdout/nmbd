@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { UserRole } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 // Approve application: sets applicationStatus to "APPROVED"
 export async function approveApplication(userId: string) {
@@ -17,6 +18,7 @@ export async function approveApplication(userId: string) {
       reviewedAt: new Date(),
     },
   });
+  revalidatePath('/dashboard/membership');
   return { success: true };
 }
 
@@ -32,6 +34,7 @@ export async function rejectApplication(userId: string) {
       reviewedAt: new Date(),
     },
   });
+  revalidatePath('/dashboard/membership');
   return { success: true };
 }
 
@@ -47,6 +50,7 @@ export async function redoApplication(userId: string) {
       reviewedAt: null,
     },
   });
+  revalidatePath('/dashboard/membership');
   return { success: true };
 }
 
@@ -66,14 +70,16 @@ export async function setOnboardingStatus(userId: string, status: string) {
 // Set user role
 export async function updateUserRole(userId: string, role: string) {
   const session = await auth();
-  if (!session?.user?.id) return { error: "Unauthorized" };
+  if (!session?.user?.id) return { success: false, error: "Unauthorized" };
   try {
     await db.user.update({
       where: { id: userId },
       data: { role: role as UserRole },
     });
+    revalidatePath('/dashboard/membership');
     return { success: true };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Unknown error' };
+    console.error("Error updating user role:", error);
+    return { success: false, error: "Failed to update user role" };
   }
 }

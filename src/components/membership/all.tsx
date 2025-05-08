@@ -1,13 +1,8 @@
 'use client';
 
-import { UserCard } from "./user-card";
 import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandItem, CommandList, CommandEmpty } from "@/components/ui/command";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { columns } from "./column";
+import { UserTable } from "./user-table";
 
 export default function AllUsers({ users: initialUsers, currentUserId }: { users: any[]; currentUserId: string }) {
   const [users, setUsers] = useState(initialUsers);
@@ -46,11 +41,8 @@ export default function AllUsers({ users: initialUsers, currentUserId }: { users
   // State for filters
   const [status, setStatus] = useState<string>("ALL");
   const [role, setRole] = useState<string>("ALL");
-  const [isOpen, setIsOpen] = useState(false);
-  const [isRoleOpen, setIsRoleOpen] = useState(false);
-  const [searchName, setSearchName] = useState("");
 
-  // Filter users based on selected status, role, and search term
+  // Filter users based on selected status and role
   const filteredUsers = users.filter((user) => {
     // Status filter
     let statusMatch = true;
@@ -75,86 +67,15 @@ export default function AllUsers({ users: initialUsers, currentUserId }: { users
     }
     // Role filter
     const roleMatch = role === "ALL" || user.role === role;
-    // Name search filter
-    const nameMatch = user.name && user.name.toLowerCase().includes(searchName.toLowerCase());
-    return statusMatch && roleMatch && (searchName.trim() === "" || nameMatch);
+    
+    return statusMatch && roleMatch;
   });
+
+  // Create table columns with the updateUserStatus callback
+  const userColumns = useMemo(() => columns(updateUserStatus), []);
 
   return (
     <>
-      {/* Search and Filter Controls */}
-      <div className="flex gap-x-4 mb-4 items-end py-4 border-b border-dashed">
-        <Input
-          type="text"
-          className="border rounded px-2 py-1 w-52 h-9"
-          placeholder="ابحث بالاسم..."
-          value={searchName}
-          onChange={e => setSearchName(e.target.value)}
-        />
-        {/* Status Filter */}
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2 ">
-              <PlusCircledIcon className="mr-2 size-4" />
-               الطلب
-              {/* <span className="font-bold">{statusOptions.find(o => o.value === status)?.label}</span> */}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[103px]" align="start">
-            <Command>
-              <CommandList>
-                <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-                {statusOptions.map((option, index) => (
-                  <>
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => {
-                        setStatus(option.value);
-                        setIsOpen(false);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                    </CommandItem>
-                    {index === 0 && <DropdownMenuSeparator />}
-                  </>
-                ))}
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        {/* Role Filter */}
-        <Popover open={isRoleOpen} onOpenChange={setIsRoleOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <PlusCircledIcon className="mr-2 size-4" />
-              الدور
-              {/* <span className="font-bold">{roleOptions.find(o => o.value === role)?.label}</span> */}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[93px]" align="start">
-            <Command>
-              <CommandList>
-                <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-                {roleOptions.map((option, index) => (
-                  <>
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => {
-                        setRole(option.value);
-                        setIsRoleOpen(false);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                    </CommandItem>
-                    {index === 0 && <DropdownMenuSeparator />}
-                  </>
-                ))}
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-      {/* User List */}
       {filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] rounded-lg border border-dashed mt-8 p-8 text-center">
           <h2 className="text-2xl font-semibold">لا يوجد مستخدمون</h2>
@@ -163,16 +84,16 @@ export default function AllUsers({ users: initialUsers, currentUserId }: { users
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredUsers.map((user) => (
-            <UserCard
-              key={user.id}
-              user={user}
-              isCurrentUser={user.id === currentUserId}
-              onStatusChange={updateUserStatus}
-            />
-          ))}
-        </div>
+        <UserTable 
+          columns={userColumns} 
+          data={filteredUsers}
+          statusOptions={statusOptions}
+          roleOptions={roleOptions}
+          onStatusChange={setStatus}
+          onRoleChange={setRole}
+          currentStatus={status}
+          currentRole={role}
+        />
       )}
     </>
   );
