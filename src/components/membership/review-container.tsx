@@ -1,3 +1,5 @@
+'use client';
+
 import { PersonalInfoCard } from '@/components/onboarding/review/information';
 import { EducationCard } from '@/components/onboarding/review/education';
 import { WorkExperienceCard } from '@/components/onboarding/review/experience';
@@ -8,7 +10,12 @@ import { AttachmentsCard } from '@/components/onboarding/review/attachment';
 import { ReviewActions } from '@/components/membership/review-action';
 import { ReviewContainerProps } from '@/components/onboarding/review/type';
 
-export function ReviewContainer({ userData, isSubmitting, handleSubmit }: ReviewContainerProps) {
+// Modify the userData to include applicationStatus
+type ExtendedReviewContainerProps = ReviewContainerProps & {
+  userData: (ReviewContainerProps['userData'] & { applicationStatus?: string }) | null;
+};
+
+export function ReviewContainer({ userData, isSubmitting, handleSubmit }: ExtendedReviewContainerProps) {
   return (
     <div className="min-h-screen -mt-10">
       {/* Main Content */}

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Loader2, Undo2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
