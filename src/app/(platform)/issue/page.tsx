@@ -16,7 +16,16 @@ async function IssuePageContent() {
   return <Content initialIssues={(issues ?? []).map(issue => ({ 
     ...issue, 
     _id: issue.id,
-    repository: issue.repository?.id || null,
-    repositoryTitle: issue.repositoryTitle || issue.repository?.title || null
+    repository: issue.repository?.id || '',
+    repositoryTitle: issue.repositoryTitle || issue.repository?.title || '',
+    issue: issue.issue || '',
+    club: issue.club || '',
+    status: issue.status || '',
+    priority: issue.priority || '',
+    duration: issue.duration || '',
+    desc: issue.desc || '',
+    label: issue.label || '',
+    tag: issue.tag || '',
+    remark: issue.remark || ''
   }))} />;
 }

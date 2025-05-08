@@ -14,6 +14,7 @@ import AddPost from '@/components/platform/x/post/add-post';
 import ClientFeed from '@/components/platform/x/feed/client-feed';
 // import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import SiteHeading from '@/components/atom/site-heading';
 
 export default function Page() {
   const [isDialogOpen, setIsDialogOpen] = useState(true);
@@ -31,21 +32,19 @@ export default function Page() {
   //   }
 
   return (
-    <div className="flex h-full text-center">
+    <div className="mr-10 flex flex-col h-full">
     
      
      
       
       {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[80%] md:max-w-[60%] pr-20" onInteractOutside={() => setIsDialogOpen(false)}>
-          <DialogHeader>
-            <h1 className="font-heading font-bold text-start text-3xl leading-normal sm:text-2xl md:text-3xl">
-              مرحبا بيك
-            </h1>
-          </DialogHeader>
+          <DialogHeader> */}
+            <SiteHeading title="مرحبا بيك" description='في منصة الحركة الوطنية للبناء والتنمية' align='start' size='md'/>
+          {/* </DialogHeader> */}
           
           <div className='relative -mt-2 '>
-            <p className='text-[16px] text-muted-foreground'>في منصة الحركة الوطنية للبناء والتنمية</p>
+       
 
             <p className='w-full md:w-4/5 pt-4'>لن يصيب المجد كف واحد - إيماناً بسحر العمل الجماعي، نسعى من خلال هذه المنصة إلى أتمتة أعمال الحركة  وامتلاك ادوات تنسيق وتعاون افضل. ساهم في خلق تجربة جديدة من الكفاءة والتنظيم.</p>
 
@@ -59,7 +58,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-        </DialogContent>
+        {/* </DialogContent>
       </Dialog> */}
     </div>
   );

@@ -348,7 +348,7 @@ export async function completeOnboarding(): Promise<{ success: boolean, error: s
     
     // Get all membership secretaries and admins for notification
     const secretaries = await db.user.findMany({
-      where: { role: "MEMBERSHIP_SECRETARY" },
+      where: { role: "MEMBERSHIP" },
       select: { 
         email: true,
       }

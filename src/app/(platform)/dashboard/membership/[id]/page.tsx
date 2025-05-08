@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchUserForLabReview, approveUserApplication, type UserReviewData } from "@/components/onboarding/review/backup-action";
+import { fetchUserForLabReview, approveUserApplication, rejectUserApplication, type UserReviewData } from "@/components/onboarding/review/backup-action";
 import {  ReviewContainer } from "@/components/membership/review-container";
 import Loading from "@/components/atom/loading";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ export default function LabUserReviewPage() {
       const result = await approveUserApplication(userId);
       if (result.success) {
         setSuccess(true);
-        setUserData((prev) => prev ? { ...prev, applicationStatus: "APPROVED" } : prev);
+        setUserData((prev: UserReviewData | null) => prev ? { ...prev, applicationStatus: "APPROVED" } : prev);
       } else {
         setError(result.error || "حدث خطأ أثناء الموافقة على الطلب");
       }
@@ -58,11 +58,18 @@ export default function LabUserReviewPage() {
 
   const handleReject = async () => {
     setIsRejecting(true);
-    // TODO: Implement reject logic (e.g., call a rejectUserApplication action)
-    setTimeout(() => {
-      setUserData((prev) => prev ? { ...prev, applicationStatus: "REJECTED" } : prev);
+    try {
+      const result = await rejectUserApplication(userId);
+      if (result.success) {
+        setUserData((prev: UserReviewData | null) => prev ? { ...prev, applicationStatus: "REJECTED" } : prev);
+      } else {
+        setError(result.error || "حدث خطأ أثناء رفض الطلب");
+      }
+    } catch (error) {
+      setError("حدث خطأ أثناء رفض الطلب");
+    } finally {
       setIsRejecting(false);
-    }, 1000);
+    }
   };
 
   if (isLoading) return <Loading />;
@@ -80,7 +87,48 @@ export default function LabUserReviewPage() {
       >
         <ArrowRight className="w-6 h-6" />
       </Button>
+      
       <ReviewContainer userData={userData} isSubmitting={false} handleSubmit={async () => {}} />
+      
+      {/* Action buttons at the bottom */}
+      {userData && userData.applicationStatus !== "APPROVED" && userData.applicationStatus !== "REJECTED" && (
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={handleApprove} 
+            disabled={isApproving}
+            variant="default"
+            className="px-8"
+          >
+            {isApproving ? "جاري الموافقة..." : "موافقة"}
+          </Button>
+          <Button 
+            onClick={handleReject} 
+            disabled={isRejecting}
+            variant="destructive"
+            className="px-8"
+          >
+            {isRejecting ? "جاري الرفض..." : "رفض"}
+          </Button>
+        </div>
+      )}
+
+      {userData && userData.applicationStatus === "APPROVED" && (
+        <div className="text-center mt-8 p-4 bg-green-100 rounded-md">
+          <p className="text-green-800 font-bold">تمت الموافقة على الطلب</p>
+        </div>
+      )}
+
+      {userData && userData.applicationStatus === "REJECTED" && (
+        <div className="text-center mt-8 p-4 bg-red-100 rounded-md">
+          <p className="text-red-800 font-bold">تم رفض الطلب</p>
+        </div>
+      )}
+      
+      {error && (
+        <div className="text-center mt-8 p-4 bg-red-100 rounded-md">
+          <p className="text-red-800">{error}</p>
+        </div>
+      )}
     </div>
   );
 }

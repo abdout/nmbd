@@ -2,11 +2,8 @@
 
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
-import { notifyNewApplication } from '@/lib/notification';
 
-// Keep full UserReviewData type for component use
 export type UserReviewData = {
-  // All fields needed for the component...
   // Personal info
   name?: string;
   fullname?: string;
@@ -63,27 +60,18 @@ export type UserReviewData = {
   major?: string;
   studentYear?: number;
   
-  // Bachelor's information
+  // Education details
   bachelorInstitution?: string;
   bachelorMajor?: string;
   bachelorCompletionYear?: number;
-  
-  // Master's information
   masterInstitution?: string;
   masterMajor?: string;
   masterCompletionYear?: number;
-  
-  // PhD information
   phdInstitution?: string;
   phdMajor?: string;
   phdCompletionYear?: number;
   
-  // Professor information
-  professorInstitution?: string;
-  professorMajor?: string;
-  professorCompletionYear?: number;
-  
-  // Current occupation
+  // Work information
   currentOccupation?: string;
   employmentSector?: string;
   workplaceAddress?: string;
@@ -93,21 +81,18 @@ export type UserReviewData = {
   studentInstitution?: string;
   studentFaculty?: string;
   
-  // Activities
+  // Activities and memberships
   partyMember?: boolean;
   partyName?: string;
   partyStartDate?: Date;
   partyEndDate?: Date;
-  
   unionMember?: boolean;
   unionName?: string;
   unionStartDate?: Date;
   unionEndDate?: Date;
-  
   ngoMember?: boolean;
   ngoName?: string;
   ngoActivity?: string;
-  
   clubMember?: boolean;
   clubName?: string;
   clubType?: string;
@@ -127,7 +112,7 @@ export type UserReviewData = {
   donationDate?: Date;
   oathAcknowledged?: boolean;
   
-  // Attachments
+  // Files and attachments
   image?: string;
   cv?: string;
   portfolio?: string;
@@ -144,19 +129,25 @@ export type UserReviewData = {
 };
 
 /**
- * Server action to fetch complete user data for the review page
+ * Server action to fetch user data for lab review
  */
-export async function fetchUserForReview(): Promise<{ error: string | null, data: UserReviewData | null }> {
+export async function fetchUserForLabReview(userId: string): Promise<{ error: string | null, data: UserReviewData | null }> {
   try {
-    const user = await currentUser();
-    if (!user?.id) {
+    const currentUserData = await currentUser();
+    if (!currentUserData?.id) {
       return { error: "Unauthorized", data: null };
     }
     
-    // Only select fields that are confirmed to exist in the schema
+    // Verify if current user has permission to view this user's data
+    const userRole = currentUserData.role;
+    if (userRole !== "ADMIN" && userRole !== "MEMBERSHIP") {
+      return { error: "You don't have permission to view this data", data: null };
+    }
+    
+    // Fetch the user data
     const userData = await db.user.findUnique({
       where: {
-        id: user.id,
+        id: userId,
       },
       select: {
         // System fields
@@ -169,6 +160,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         onboardingStep: true,
         createdAt: true,
         updatedAt: true,
+        applicationStatus: true,
         
         // Personal info
         description: true,
@@ -200,14 +192,12 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         birthMonth: true,
         birthYear: true,
         
-        // Current Location
+        // Location info
         currentCountry: true,
         currentState: true,
         currentLocality: true,
         currentAdminUnit: true,
         currentNeighborhood: true,
-        
-        // Original Location
         originalCountry: true,
         originalState: true,
         originalLocality: true,
@@ -216,19 +206,18 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         
         // Education & Work
         educationLevel: true,
+        institution: true,
+        yearOfCompletion: true,
+        major: true,
         studentYear: true,
         
-        // Bachelor's information
+        // Additional education details
         bachelorInstitution: true,
         bachelorMajor: true,
         bachelorCompletionYear: true,
-        
-        // Master's information
         masterInstitution: true,
         masterMajor: true,
         masterCompletionYear: true,
-        
-        // PhD information
         phdInstitution: true,
         phdMajor: true,
         phdCompletionYear: true,
@@ -248,16 +237,13 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         partyName: true,
         partyStartDate: true,
         partyEndDate: true,
-        
         unionMember: true,
         unionName: true,
         unionStartDate: true,
         unionEndDate: true,
-        
         ngoMember: true,
         ngoName: true,
         ngoActivity: true,
-        
         clubMember: true,
         clubName: true,
         clubType: true,
@@ -293,225 +279,77 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
       return { error: "User not found", data: null };
     }
     
-    console.log("Raw user data from DB:", userData);
-    console.log("Skills in raw data:", userData.skills);
-    console.log("Interests in raw data:", userData.interests);
-    
     // Convert null values to undefined to match the UserReviewData type
     const cleanedData: UserReviewData = Object.fromEntries(
       Object.entries(userData).map(([key, value]) => [key, value === null ? undefined : value])
     ) as UserReviewData;
     
-    console.log("Cleaned user data:", cleanedData);
-    console.log("Skills in cleaned data:", cleanedData.skills);
-    console.log("Interests in cleaned data:", cleanedData.interests);
-    
     return { error: null, data: cleanedData };
   } catch (error) {
-    console.error("Error fetching user data for review:", error);
+    console.error("Error fetching user data for lab review:", error);
     return { error: "Error fetching user data", data: null };
   }
 }
 
 /**
- * Server action to complete the onboarding process
+ * Server action to approve a user application
  */
-export async function completeOnboarding(): Promise<{ success: boolean, error: string | null }> {
+export async function approveUserApplication(userId: string): Promise<{ success: boolean, error?: string }> {
   try {
-    const user = await currentUser();
-    if (!user?.id) {
+    const currentUserData = await currentUser();
+    if (!currentUserData?.id) {
       return { success: false, error: "Unauthorized" };
     }
     
-    // Get user details for notification
-    const userData = await db.user.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true,
-        name: true,
-        fullname: true,
-        email: true,
-        phone: true,
-        whatsapp: true,
-        image: true,
-      }
-    });
-    
-    // Update onboarding status
-    await db.user.update({
-      where: { id: user.id },
-      data: {
-        onboardingStatus: "COMPLETED",
-        // Using a temporary workaround until Prisma schema is updated
-        ...(process.env.NODE_ENV === 'production' ? {} : { applicationStatus: "PENDING" })
-      }
-    });
-    
-    // Get all membership secretaries and admins for notification
-    const secretaries = await db.user.findMany({
-      where: { role: "MEMBERSHIP_SECRETARY" },
-      select: { 
-        email: true,
-      }
-    });
-    
-    const admins = await db.user.findMany({
-      where: { role: "ADMIN" },
-      select: { 
-        email: true,
-      }
-    });
-    
-    // Combine emails without duplicates
-    const secretaryEmails = secretaries.map(sec => sec.email).filter(Boolean) as string[];
-    const adminEmails = admins.map(admin => admin.email).filter(Boolean) as string[];
-    const uniqueNotificationEmails = [...new Set([...secretaryEmails, ...adminEmails])];
-    
-    if (uniqueNotificationEmails.length > 0 && userData) {
-      // Send notification about new application
-      await notifyNewApplication(
-        uniqueNotificationEmails,
-        userData.fullname || userData.name || "User",
-        userData.email,
-        userData.phone,
-        userData.whatsapp
-      );
+    // Verify if current user has permission to approve applications
+    const userRole = currentUserData.role;
+    if (userRole !== "ADMIN" && userRole !== "MEMBERSHIP") {
+      return { success: false, error: "You don't have permission to approve applications" };
     }
     
-    return { success: true, error: null };
-  } catch (error) {
-    console.error("Error completing onboarding:", error);
-    return { success: false, error: "Failed to complete onboarding" };
-  }
-}
-
-export async function fetchUserForLabReview(userId: string): Promise<{ error: string | null, data: UserReviewData | null }> {
-  try {
-    if (!userId) {
-      return { error: "No user id provided", data: null };
-    }
-    const userData = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        fullname: true,
-        email: true,
-        role: true,
-        onboardingStatus: true,
-        onboardingStep: true,
-        createdAt: true,
-        updatedAt: true,
-        description: true,
-        bio: true,
-        phone: true,
-        whatsapp: true,
-        twitter: true,
-        facebook: true,
-        linkedin: true,
-        telegram: true,
-        instagram: true,
-        tiktok: true,
-        nationalityId: true,
-        maritalStatus: true,
-        gender: true,
-        religion: true,
-        birthDate: true,
-        birthCountry: true,
-        birthState: true,
-        birthLocality: true,
-        birthAdminUnit: true,
-        birthNeighborhood: true,
-        birthMonth: true,
-        birthYear: true,
-        currentCountry: true,
-        currentState: true,
-        currentLocality: true,
-        currentAdminUnit: true,
-        currentNeighborhood: true,
-        originalCountry: true,
-        originalState: true,
-        originalLocality: true,
-        originalAdminUnit: true,
-        originalNeighborhood: true,
-        educationLevel: true,
-        institution: true,
-        yearOfCompletion: true,
-        major: true,
-        studentYear: true,
-        bachelorInstitution: true,
-        bachelorMajor: true,
-        bachelorCompletionYear: true,
-        masterInstitution: true,
-        masterMajor: true,
-        masterCompletionYear: true,
-        phdInstitution: true,
-        phdMajor: true,
-        phdCompletionYear: true,
-        professorInstitution: true,
-        professorMajor: true,
-        professorCompletionYear: true,
-        currentOccupation: true,
-        employmentSector: true,
-        workplaceAddress: true,
-        companyName: true,
-        studentInstitution: true,
-        studentFaculty: true,
-        partyMember: true,
-        partyName: true,
-        partyStartDate: true,
-        partyEndDate: true,
-        unionMember: true,
-        unionName: true,
-        unionStartDate: true,
-        unionEndDate: true,
-        ngoMember: true,
-        ngoName: true,
-        ngoActivity: true,
-        clubMember: true,
-        clubName: true,
-        clubType: true,
-        emergencyName1: true,
-        emergencyRelation1: true,
-        emergencyPhone1: true,
-        emergencyName2: true,
-        emergencyRelation2: true,
-        emergencyPhone2: true,
-        referralSource: true,
-        acquaintanceName: true,
-        donationAmount: true,
-        donationDate: true,
-        oathAcknowledged: true,
-        image: true,
-        cv: true,
-        portfolio: true,
-        additionalFile: true,
-        skills: true,
-        interests: true,
-        applicationStatus: true,
-      },
-    });
-    if (!userData) {
-      return { error: "User not found", data: null };
-    }
-    const cleanedData: UserReviewData = Object.fromEntries(
-      Object.entries(userData).map(([key, value]) => [key, value === null ? undefined : value])
-    ) as UserReviewData;
-    return { error: null, data: cleanedData };
-  } catch (error) {
-    return { error: "Error fetching user data", data: null };
-  }
-}
-
-export async function approveUserApplication(userId: string): Promise<{ success: boolean; error?: string }> {
-  try {
-    if (!userId) return { success: false, error: "No user id provided" };
+    // Update application status
     await db.user.update({
       where: { id: userId },
-      data: { applicationStatus: "APPROVED" },
+      data: { 
+        applicationStatus: "APPROVED",
+        // Additional membership fields could be updated here if needed
+      }
     });
+    
+    // Additional logic like notifications could be added here
+    
     return { success: true };
   } catch (error) {
+    console.error("Error approving user application:", error);
     return { success: false, error: "Failed to approve application" };
   }
-} 
+}
+
+/**
+ * Server action to reject a user application
+ */
+export async function rejectUserApplication(userId: string): Promise<{ success: boolean, error?: string }> {
+  try {
+    const currentUserData = await currentUser();
+    if (!currentUserData?.id) {
+      return { success: false, error: "Unauthorized" };
+    }
+    
+    // Verify if current user has permission to reject applications
+    const userRole = currentUserData.role;
+    if (userRole !== "ADMIN" && userRole !== "MEMBERSHIP") {
+      return { success: false, error: "You don't have permission to reject applications" };
+    }
+    
+    // Update application status
+    await db.user.update({
+      where: { id: userId },
+      data: { applicationStatus: "REJECTED" }
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error rejecting user application:", error);
+    return { success: false, error: "Failed to reject application" };
+  }
+}

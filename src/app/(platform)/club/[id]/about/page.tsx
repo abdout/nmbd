@@ -1,6 +1,4 @@
 import AboutSection from '@/components/platform/club/about'
-import ContactSection from '@/components/platform/club/ContactSection'
-import TeamSection from '@/components/platform/club/core'
 import Excute from '@/components/platform/club/excute'
 import React from 'react'
 

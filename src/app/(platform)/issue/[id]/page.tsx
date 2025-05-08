@@ -29,7 +29,19 @@ const IssueDetail = () => {
         if (response.error) {
           setError(response.error);
         } else if (response.issue) {
-          setIssue(response.issue);
+          setIssue({
+            ...response.issue,
+            _id: response.issue.id,
+            issue: response.issue.issue || '',
+            club: response.issue.club || '',
+            status: response.issue.status || '',
+            priority: response.issue.priority || '',
+            duration: response.issue.duration || '',
+            desc: response.issue.desc || '',
+            label: response.issue.label || '',
+            tag: response.issue.tag || '',
+            remark: response.issue.remark || ''
+          });
         }
       } catch (err) {
         setError('Failed to load issue');

@@ -172,3 +172,9 @@ export const getColumns = (
     cell: ({ row }) => <ActionsCell row={row} onDelete={onDelete} onEdit={onEdit} />
   }
 ];
+
+// Export columns with default empty handlers
+export const columns = getColumns(
+  async () => { console.warn("Delete handler not provided"); },
+  () => { console.warn("Edit handler not provided"); }
+);
