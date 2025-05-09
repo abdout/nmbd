@@ -15,7 +15,7 @@ const Contact = () => {
   return (
     <>
     <Head title="الاتصال" description="حبابك عشرة" />
-    <div className='flex flex-col space-y-8 px-4 md:px-20'>
+    <div className='flex flex-col space-y-8 px-0 md:px-20'>
         
         {/* <Office /> */}
         <MapSection />  

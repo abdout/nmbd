@@ -93,7 +93,7 @@ const MapPage = () => {
           </div>
 
           {/* Info Section */}
-          <div className="space-y-6 px-6 rounded-lg">
+          <div className="space-y-6 px-0 md:px-6 rounded-lg">
             {Object.values(OFFICES).map((office) => (
               <div 
                 key={office.id}

@@ -16,7 +16,7 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   return (
     
-    <div data-wrapper="" className="px-2 md:px-8 lg:px-16 xl:px-32 2xl:px-48 border-grid flex flex-1 flex-col mx-auto w-full max-w-[1400px]">
+    <div data-wrapper="" className="px-1 md:px-8 lg:px-16 xl:px-32 2xl:px-48 border-grid flex flex-1 flex-col mx-auto w-full max-w-[1400px]">
       <TaxonomyHeader />
       <ImageKitWrapper>
       <main className="flex flex-1 flex-col">{children}</main>
