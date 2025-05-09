@@ -30,7 +30,7 @@ export const CardWrapper = ({
   showHorizontalLine = true
 }: CardWrapperProps) => {
   return (
-    <Card className="w-[350px] border-none shadow-none text-black">
+    <Card className="w-full border-none shadow-none text-black">
        {showSocial && (
         <CardFooter>
           <Social />

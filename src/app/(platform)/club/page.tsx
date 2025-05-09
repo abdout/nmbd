@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const Club = () => {
   return (
-    <div className="container mx-auto px-4">
+    <div className="container">
       <div className="flex flex-col">
         <h2 className="font-heading text-3xl leading-[1.1] sm:text-2xl md:text-3xl">
           الامانات

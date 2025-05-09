@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import RepositoryCard from './card';
-import { Button } from "@/components/ui/button";
 import { useModal } from "@/components/atom/modal/context";
 import Modal from "@/components/atom/modal/modal";
 import RepositoryForm from "@/components/platform/repository/form";
 import { getRepositories, deleteRepository } from "./action";
 import { toast } from "sonner";
+import Loading from "@/components/atom/loading";
 
 interface Repository {
   id: string;
@@ -93,25 +93,27 @@ const RepositoryContent: React.FC = () => {
     const repositoryToEdit = editingRepositoryId ? repositories.find(repo => repo.id === editingRepositoryId) : null;
 
     if (isLoading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+        return <Loading />;
     }
 
     return (
         <>
             {modal.open && <Modal content={<RepositoryForm onClose={handleCloseModal} />} />}
             
-            <div className="items-center justify-center pr-10 pb-20">
-                <div className="grid md:grid-cols-4 md:gap-x-60 gap-y-6 md:gap-y-8 md:-mx-12">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {repositories.map((repository) => (
                         <div key={repository.id}
                             onContextMenu={(e) => handleRightClick(e, repository.id)}
+                            
                         >
                             <Link href={`/repository/${repository.id}`} onClick={(e) => {
                                 if (contextMenu.repositoryId === repository.id) {
                                     e.preventDefault();
                                 }
-                            }}>
-                                <div className={`relative flex items-center justify-center w-60 ${contextMenu.repositoryId === repository.id ? 'opacity-80' : ''}`}
+                            }}
+                            className="w-full block"
+                            >
+                                <div className={`relative flex items-center justify-center w-full ${contextMenu.repositoryId === repository.id ? 'opacity-80' : ''}`}
                                     onClick={(e) => {
                                         if (contextMenu.repositoryId === repository.id) {
                                             e.stopPropagation();
@@ -145,9 +147,9 @@ const RepositoryContent: React.FC = () => {
                         </div>
                     ))}
 
-                    <div className="h-52 w-52">
+                    <div className="h-52">
                         <button
-                            className="w-full h-full p-6 mx-[18px] border rounded-md flex flex-col items-center justify-center hover:border-primary opacity-70 hover:opacity-100"
+                            className="w-full h-full p-6 md:mx-[18px] border rounded-md flex flex-col items-center justify-center hover:border-primary opacity-70 hover:opacity-100"
                             onClick={() => {
                                 setEditingRepositoryId(null);
                                 openModal(null);
@@ -158,7 +160,6 @@ const RepositoryContent: React.FC = () => {
                         </button>
                     </div>
                 </div>
-            </div>
         </>
     );
 };

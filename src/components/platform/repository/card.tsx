@@ -54,7 +54,7 @@ const getArabicStatus = (status: string): string => {
 
 const RepositoryCard: React.FC<RepositoryCardProps> = ({ repository }) => {
   return (
-    <Card className='border  hover:border-primary max-w-full md:w-52 h-52 reveal rounded-md'>
+    <Card className='border hover:border-primary w-full h-52 reveal rounded-md'>
       <CardHeader>
         <strong className="font-semibold">{repository.title}</strong>
         <p className="line-clamp-2 overflow-hidden text-ellipsis">

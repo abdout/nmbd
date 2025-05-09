@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Settings,
   TrendingUp,
@@ -8,42 +10,56 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-const Sidebar = () => {
+const FinanceSidebar = () => {
+  const pathname = usePathname();
+
+  const sidebarItems = [
+    {
+      href: "/finance",
+      icon: <BarChart className="h-4 w-4" />,
+      label: "المالية"
+    },
+    {
+      href: "/finance/wallet",
+      icon: <Wallet className="h-4 w-4" />,
+      label: "الميزانية"
+    },
+    {
+      href: "/finance/investments",
+      icon: <TrendingUp className="h-4 w-4" />,
+      label: "التمويل"
+    },
+    {
+      href: "/finance/settings",
+      icon: <Settings className="h-4 w-4" />,
+      label: "الإعدادات"
+    }
+  ];
+
   return (
-    <aside className="w-32">
-      <div className="flex item-center ">
-        
-        
-      </div>
+    <aside className="w-full md:w-32">
+      <h4 className="text-xl font-medium mb-3 hidden md:hidden">الشؤون المالية</h4>
       <nav>
-        <Link href={"/finance"} passHref>
-          <Button variant="ghost" className="w-full justify-start mb-2">
-            <BarChart className="mr-2 h-4 w-4" />
-             المالية
-          </Button>
-        </Link>
-        <Link href={"/finance/wallet"} passHref>
-          <Button variant="ghost" className="w-full justify-start mb-2">
-            <Wallet className="mr-2 h-4 w-4" />
-            الميزانية
-          </Button>
-        </Link>
-        <Link href={"/finance/investments"} passHref>
-          <Button variant="ghost" className="w-full justify-start mb-2">
-            <TrendingUp className="mr-2 h-4 w-4" />
-            التمويل
-          </Button>
-        </Link>
-        <Link href={"/finance/settings"} passHref>
-          <Button variant="ghost" className="w-full justify-start mb-2">
-            <Settings className="mr-2 h-4 w-4" />
-            الإعدادات
-          </Button>
-        </Link>
+        {sidebarItems.map((item) => (
+          <Link key={item.href} href={item.href} passHref>
+            <Button 
+              variant="ghost" 
+              className={cn(
+                "w-full justify-start mb-2",
+                pathname === item.href && "bg-muted"
+              )}
+            >
+              <span className="mr-2">{item.icon}</span>
+              {item.label}
+            </Button>
+          </Link>
+        ))}
       </nav>
     </aside>
   );
 };
 
-export default Sidebar;
+export default FinanceSidebar;

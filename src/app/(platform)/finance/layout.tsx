@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Sidebar from "@/components/finance/sidebar";
+import FinanceSidebar from "@/components/finance/sidebar";
 
 export const metadata: Metadata = {
   title: "مال",
@@ -12,9 +12,9 @@ export default function FinanceLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-1 -mx-10">
-      <Sidebar />
-      <div className="flex-1 px-4">
+    <div className="flex flex-1">
+      <FinanceSidebar />
+      <div className="flex-1">
         {children}
       </div>
     </div>

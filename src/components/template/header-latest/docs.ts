@@ -4,13 +4,15 @@ export interface DocsConfig {
   mainNav: MainNavItem[]
   sidebarNav: SidebarNavItem[]
   chartsNav: SidebarNavItem[]
+  dashboardSidebarNav: SidebarNavItem[]
+  financeSidebarNav: SidebarNavItem[]
 }
 
 export const docsConfig: DocsConfig = {
   mainNav: [
     {
       title: "الرئيسية",
-      href: "/",
+      href: "/dashboard",
     },
     {
       title: "فريق",
@@ -528,6 +530,95 @@ export const docsConfig: DocsConfig = {
         {
           title: "Legend",
           href: "/docs/charts/legend",
+          items: [],
+        },
+      ],
+    },
+  ],
+  dashboardSidebarNav: [
+    {
+      title: "لوحة التحكم",
+      items: [
+        {
+          title: "نظرة عامة",
+          href: "/dashboard",
+          items: [],
+        },
+        {
+          title: "الملف الشخصي",
+          href: "/dashboard/profile",
+          items: [],
+        },
+        {
+          title: "الإحصائيات",
+          href: "/dashboard/stats",
+          items: [],
+        },
+        {
+          title: "التقارير",
+          href: "/dashboard/reports",
+          items: [],
+        },
+      ],
+    },
+    {
+      title: "المشاريع",
+      items: [
+        {
+          title: "المشاريع النشطة",
+          href: "/dashboard/projects/active",
+          items: [],
+        },
+        {
+          title: "المشاريع المكتملة",
+          href: "/dashboard/projects/completed",
+          items: [],
+        },
+        {
+          title: "إضافة مشروع",
+          href: "/dashboard/projects/new",
+          items: [],
+        },
+      ],
+    },
+  ],
+  financeSidebarNav: [
+    {
+      title: "الشؤون المالية",
+      items: [
+        {
+          title: "نظرة عامة",
+          href: "/finance",
+          items: [],
+        },
+        {
+          title: "التبرعات",
+          href: "/finance/donations",
+          items: [],
+        },
+        {
+          title: "النفقات",
+          href: "/finance/expenses",
+          items: [],
+        },
+        {
+          title: "التقارير المالية",
+          href: "/finance/reports",
+          items: [],
+        },
+      ],
+    },
+    {
+      title: "المعاملات",
+      items: [
+        {
+          title: "سجل المعاملات",
+          href: "/finance/transactions",
+          items: [],
+        },
+        {
+          title: "إضافة معاملة",
+          href: "/finance/transactions/new",
           items: [],
         },
       ],

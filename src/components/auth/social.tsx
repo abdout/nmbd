@@ -38,7 +38,7 @@ export const Social = () => {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="flex items-center justify-center gap-4">
       <Button
         size="lg"
         className="w-full items-center"
