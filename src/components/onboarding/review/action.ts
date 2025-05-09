@@ -3,6 +3,7 @@
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import { notifyNewApplication } from '@/lib/notification';
+import { notifyOnboardingSubmission } from '@/components/notifications/action';
 
 // Keep full UserReviewData type for component use
 export type UserReviewData = {
@@ -366,11 +367,22 @@ export async function completeOnboarding(): Promise<{ success: boolean, error: s
     const adminEmails = admins.map(admin => admin.email).filter(Boolean) as string[];
     const uniqueNotificationEmails = [...new Set([...secretaryEmails, ...adminEmails])];
     
-    if (uniqueNotificationEmails.length > 0 && userData) {
-      // Send notification about new application
-      await notifyNewApplication(
-        uniqueNotificationEmails,
+    if (userData) {
+      // 1. Send traditional email notification (legacy system)
+      if (uniqueNotificationEmails.length > 0) {
+        await notifyNewApplication(
+          uniqueNotificationEmails,
+          userData.fullname || userData.name || "User",
+          userData.email,
+          userData.phone,
+          userData.whatsapp
+        );
+      }
+      
+      // 2. Send in-app and WhatsApp notifications using the new system
+      await notifyOnboardingSubmission(
         userData.fullname || userData.name || "User",
+        userData.id,
         userData.email,
         userData.phone,
         userData.whatsapp

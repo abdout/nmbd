@@ -1,20 +1,18 @@
 'use client';
 
 import React from 'react';
+import { NotificationList } from '@/components/notifications/NotificationList';
 
 export default function NotificationsPage() {
   return (
-    <div className="flex flex-col items-center h-full text-center">
-      <h1 className="text-3xl font-bold mb-4">الإشعارات</h1>
-      <p className="text-lg text-muted-foreground mb-8">تتبع إشعاراتك وتحديثاتك</p>
+    <div className="container py-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">الإشعارات</h1>
+        <p className="text-muted-foreground">عرض جميع الإشعارات الخاصة بك</p>
+      </div>
       
-      <div className="border rounded-lg p-8 max-w-md w-full shadow-sm">
-        <div className="flex flex-col gap-4">
-          <div className="text-start">
-            <p className="text-muted-foreground">لا توجد إشعارات جديدة</p>
-            <p className="text-sm text-muted-foreground mt-2">ستظهر هنا الإشعارات الجديدة عند وصولها</p>
-          </div>
-        </div>
+      <div className="bg-card border rounded-lg shadow-sm">
+        <NotificationList />
       </div>
     </div>
   );

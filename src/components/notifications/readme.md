@@ -16,11 +16,9 @@ This document describes the architecture and usage of the notification system fo
 src/components/notifications/
   readme.md                # This file
   type.ts                  # Notification types, interfaces, enums
-  event.ts                 # Event emitters/listeners for notification triggers
+  event.ts                 # Event emitters/listeners for notification triggers (future)
   action.ts                # Core notification logic (send, fetch, mark as read, etc.)
-  in-app.ts                # In-app notification channel
   whatsapp.ts              # WhatsApp notification channel
-  ...                      # (future) email.ts, sms.ts, etc.
   NotificationList.tsx     # UI for notification list in-app
   NotificationIcon.tsx     # Sidebar icon with badge/indicator
 ```
@@ -60,10 +58,34 @@ This section outlines the implementation of notifications for when new users com
 2. Send WhatsApp notifications to a designated WhatsApp number
 3. Update the notification badge in the sidebar
 
+### Implementation Status
+
+✅ The following components have been implemented:
+
+1. **Database Schema:**
+   - Added `Notification` model to store in-app notifications
+   - Updated `User` model with relation to notifications
+   
+2. **Notification Core:**
+   - Created type definitions in `type.ts`
+   - Implemented notification actions in `action.ts`
+   - Added WhatsApp handler in `whatsapp.ts`
+   
+3. **UI Components:**
+   - Created notification icon with badge in `NotificationIcon.tsx`
+   - Built notification list in `NotificationList.tsx`
+   - Updated sidebar to use the notification icon
+   - Enhanced notifications page
+   
+4. **Integration with Onboarding:**
+   - Modified `completeOnboarding()` in `src/components/onboarding/review/action.ts` to:
+     - Keep the existing email notification via `notifyNewApplication()`
+     - Add new in-app notifications and WhatsApp notifications via `notifyOnboardingSubmission()`
+
 ### Required Files and Changes
 
 #### 1. Database Schema (`prisma/schema.prisma`)
-Add a Notification model to store in-app notifications:
+Added Notification model to store in-app notifications:
 
 ```prisma
 model Notification {
@@ -84,7 +106,7 @@ model Notification {
 }
 ```
 
-Update the User model to include the relationship:
+Updated the User model to include the relationship:
 
 ```prisma
 model User {
@@ -316,8 +338,8 @@ export async function sendWhatsAppNotification({ to, message }: WhatsAppPayload)
 }
 ```
 
-#### 5. Update Onboarding Review Action (`src/components/onboarding/review/action.ts`)
-Integrate with the notification system in the `completeOnboarding` function:
+#### 5. Updated Onboarding Review Action (`src/components/onboarding/review/action.ts`)
+Integrated with the notification system in the `completeOnboarding` function:
 
 ```typescript
 import { notifyOnboardingSubmission } from '@/components/notifications/action';
@@ -332,23 +354,38 @@ export async function completeOnboarding(): Promise<{ success: boolean, error: s
     
     // Update the user's onboarding status
     await db.user.update({
-      where: {
-        id: user.id,
-      },
+      where: { id: user.id },
       data: {
         onboardingStatus: "COMPLETED",
         applicationStatus: "PENDING",
       },
     });
     
-    // Send notifications to admins
-    await notifyOnboardingSubmission(
-      user.name || 'New Applicant',
-      user.id,
-      user.email,
-      user.phone,
-      user.whatsapp
-    );
+    // Get user details for notification
+    const userData = await db.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true, 
+        name: true,
+        email: true,
+        phone: true,
+        whatsapp: true
+      }
+    });
+    
+    if (userData) {
+      // 1. Send traditional email notification (legacy system)
+      // ... existing email notification code ...
+      
+      // 2. Send in-app and WhatsApp notifications using the new system
+      await notifyOnboardingSubmission(
+        userData.name || 'New Applicant',
+        userData.id,
+        userData.email,
+        userData.phone,
+        userData.whatsapp
+      );
+    }
     
     return { success: true, error: null };
   } catch (error) {
@@ -361,196 +398,38 @@ export async function completeOnboarding(): Promise<{ success: boolean, error: s
 }
 ```
 
-#### 6. Create Notification Icon Component (`src/components/notifications/NotificationIcon.tsx`)
+### Configuration and Setup
 
-```tsx
-'use client';
+1. **Environment Variables**
+   Add to your `.env` file:
+   ```
+   # WhatsApp notification settings
+   WHATSAPP_NOTIFICATIONS_ENABLED=true
+   MEMBERSHIP_SECRETARY_WHATSAPP=+1234567890  # Replace with actual WhatsApp number
+   ```
 
-import { useState, useEffect } from 'react';
-import { getUnreadNotificationsCount } from './action';
+2. **Database Migration**
+   After adding the Notification model to the schema:
+   ```
+   npx prisma db push
+   ```
 
-export function NotificationIcon({ className }: { className?: string }) {
-  const [unreadCount, setUnreadCount] = useState(0);
-  
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      const count = await getUnreadNotificationsCount();
-      setUnreadCount(count);
-    };
-    
-    fetchUnreadCount();
-    
-    // Set up polling or websocket connection for live updates
-    const interval = setInterval(fetchUnreadCount, 60000); // Poll every minute
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  return (
-    <div className="relative">
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24"
-        className={className}
-      >
-        <path 
-          fill="currentColor" 
-          d="M21.53 14.47L20 13v-3a8 8 0 0 0-7-7.94V1h-2v1.06A8 8 0 0 0 4 9v3L2.47 13.47A1 1 0 0 0 2 14v2a1 1 0 0 0 1 1h5v1a4 4 0 0 0 8 0v-1h5a1 1 0 0 0 1-1v-2a1 1 0 0 0-.47-.53ZM14 18a2 2 0 0 1-4 0v-1h4Zm6-3H4v-.59l1.53-1.53A1 1 0 0 0 6 12v-3a6 6 0 0 1 12 0v3a1 1 0 0 0 .47.88L20 14.41Z"
-        />
-      </svg>
-      
-      {unreadCount > 0 && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center">
-          {unreadCount > 9 ? '9+' : unreadCount}
-        </span>
-      )}
-    </div>
-  );
-}
-```
+## Next Steps
 
-#### 7. Update Sidebar Component to Use NotificationIcon (`src/components/platform/sidebar.tsx`)
+1. **Testing and Verification:**
+   - Test the onboarding completion flow to ensure notifications are created
+   - Verify the notification badge appears in sidebar with the correct count
+   - Check that the notifications page displays the notifications
 
-```tsx
-// Import the NotificationIcon component
-import { NotificationIcon } from '@/components/notifications/NotificationIcon';
-
-// Replace the existing NotificationIcon with our custom component
-// Inside the sidebarItems array:
-{
-  href: '/dashboard/notifications',
-  icon: <NotificationIcon className="h-[18px] w-[18px]" />,
-  label: 'الاشعارات'
-},
-```
-
-#### 8. Create the Notification List Component (`src/components/notifications/NotificationList.tsx`)
-
-```tsx
-'use client';
-
-import { useState, useEffect } from 'react';
-import { getUserNotifications, markNotificationAsRead } from './action';
-import { Notification } from './type';
-import { formatDistanceToNow } from 'date-fns';
-import { ar } from 'date-fns/locale';
-
-export function NotificationList() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      setLoading(true);
-      const data = await getUserNotifications(20, 0);
-      setNotifications(data);
-      setLoading(false);
-    };
-    
-    fetchNotifications();
-  }, []);
-  
-  const handleMarkAsRead = async (id: string) => {
-    await markNotificationAsRead(id);
-    setNotifications(prevNotifications => 
-      prevNotifications.map(notification => 
-        notification.id === id 
-          ? { ...notification, isRead: true } 
-          : notification
-      )
-    );
-  };
-  
-  if (loading) {
-    return <div className="p-4 text-center">جارٍ التحميل...</div>;
-  }
-  
-  if (notifications.length === 0) {
-    return <div className="p-4 text-center">لا توجد إشعارات</div>;
-  }
-  
-  return (
-    <div className="divide-y">
-      {notifications.map(notification => (
-        <div 
-          key={notification.id}
-          className={`p-4 hover:bg-muted transition-colors cursor-pointer ${
-            !notification.isRead ? 'bg-muted/50' : ''
-          }`}
-          onClick={() => handleMarkAsRead(notification.id)}
-        >
-          <div className="flex justify-between items-start">
-            <h3 className="font-medium text-sm">{notification.title}</h3>
-            <span className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(notification.createdAt), { 
-                addSuffix: true,
-                locale: ar 
-              })}
-            </span>
-          </div>
-          <p className="text-sm mt-1 text-muted-foreground">{notification.content}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-#### 9. Create Notifications Page (`src/app/(platform)/dashboard/notifications/page.tsx`)
-
-```tsx
-import { NotificationList } from '@/components/notifications/NotificationList';
-
-export default function NotificationsPage() {
-  return (
-    <div className="container py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">الإشعارات</h1>
-        <p className="text-muted-foreground">عرض جميع الإشعارات الخاصة بك</p>
-      </div>
-      
-      <div className="bg-card border rounded-lg shadow-sm">
-        <NotificationList />
-      </div>
-    </div>
-  );
-}
-```
-
-#### 10. Environment Variables (`.env`)
-Add the following environment variables:
-
-```
-# WhatsApp notification settings
-WHATSAPP_NOTIFICATIONS_ENABLED=true
-MEMBERSHIP_SECRETARY_WHATSAPP=+1234567890  # Replace with actual WhatsApp number
-```
-
----
-
-## Adding New Notification Types/Channels
-- **To add a new notification type:**
-  - Define a new event in `events.ts` and handle it in `service.ts`.
-- **To add a new channel:**
-  - Create a new file in `channels/` (e.g. `email.ts`) implementing the channel interface.
-  - Register the channel in `service.ts`.
-
----
+2. **Future Enhancements:**
+   - Implement event emitters/listeners for a more decoupled architecture
+   - Add more notification types (e.g., application approved/rejected)
+   - Create real-time notification updates using WebSockets
+   - Add filtering options in the notification list
 
 ## Best Practices
 - Use TypeScript types/enums for notification payloads and channels.
 - Keep channel logic isolated for easy maintenance.
 - Use async/await for all notification sending logic.
 - Make notification fetching efficient (pagination, unread filter, etc.).
-- Use a single source of truth for notification state (e.g. database or in-memory store).
-
----
-
-## Next Steps
-1. Define notification types and interfaces (`type.ts`).
-2. Implement event emitters/listeners (`event.ts`).
-3. Build the core notification service (`action.ts`).
-4. Implement in-app and WhatsApp channels.
-5. Build UI components for notification list and sidebar icon. 
+- Use a single source of truth for notification state (e.g. database or in-memory store). 

@@ -180,9 +180,27 @@ model User {
   blocksCreated      Block[]       @relation("BlocksSent")
   blocksReceived     Block[]       @relation("BlocksReceived")
   images             Image[]
+
+  // Notifications
+  notifications      Notification[]
 }
 
-
+model Notification {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  userId      String?   @db.ObjectId  // Optional: the user this notification is for
+  type        String    // "ONBOARDING_SUBMITTED", "APPLICATION_APPROVED", etc.
+  isRead      Boolean   @default(false)
+  metadata    Json?     // Additional data related to notification
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([isRead])
+}
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
