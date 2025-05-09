@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { useSelectedLayoutSegment, usePathname } from "next/navigation"
 
 import { MainNavItem } from "./type"
 import { siteConfig } from "./constant"
@@ -17,7 +17,13 @@ interface MainNavProps {
 
 export function MainNav({ items, children }: MainNavProps) {
   const segment = useSelectedLayoutSegment()
+  const pathname = usePathname()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
+
+  // Close mobile menu when pathname changes
+  React.useEffect(() => {
+    setShowMobileMenu(false)
+  }, [pathname])
 
   return (
     <div className="flex gap-6 md:gap-10 antialiased font-sans">
@@ -27,10 +33,6 @@ export function MainNav({ items, children }: MainNavProps) {
         <span className="hidden font-bold text-[16px] sm:inline-block">
           {siteConfig.name}
         </span>
-
-
-
-
       </Link>
       {items?.length ? (
         <nav className="hidden gap-8 antialiased font-sans md:flex ">
@@ -62,7 +64,6 @@ export function MainNav({ items, children }: MainNavProps) {
       {showMobileMenu && items && (
         <MobileNav items={items}>{children}</MobileNav>
       )}
-
     </div>
   )
 }

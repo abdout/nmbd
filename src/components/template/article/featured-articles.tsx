@@ -11,7 +11,7 @@ const FeaturedArticles = () => {
     <div className=''>
       <Head title="المقالات" description="مدونة الحركة" />
 
-      <div className="max-w-5xl mx-auto md:px-8 -mt-10">
+      <div className="-mt-10">
         <ArticleHoverEffect items={featuredArticles()} />
       </div>
     </div>

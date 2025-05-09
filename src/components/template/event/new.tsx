@@ -51,7 +51,7 @@ export default function EventCard() {
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="">
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-1">
           {events.map((event, index) => (
@@ -108,7 +108,7 @@ export default function EventCard() {
 
         {/* Feed Section */}
         <div className="mt-12 border-t pt-4 border-neutral-200 dark:border-neutral-700">
-          <div className="flex items-start gap-4 mb-8 w-[70%]">
+          <div className="flex items-start gap-4 mb-8 w-full md:w-[70%]">
             <Image 
               src="/nmbd-logo.png" 
               alt="logo" 

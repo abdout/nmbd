@@ -65,7 +65,7 @@ const MapPage = () => {
 
   return (
     <>
-      <div className='flex gap-2 items-center pr-3'>
+      <div className='flex gap-2 items-center '>
         <Icon icon='fluent:location-48-regular' width={20} />
         <h5 className='text-xl font-semibold'>دار الحركة</h5>
       </div>

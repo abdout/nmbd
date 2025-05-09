@@ -57,7 +57,7 @@ export default function Home() {
       </div>
       
       <Hero />
-      <div className="py-6 -mt-24 md:-mt-32">
+      <div className="py-6 -mt-24 md:-mt-30">
         <div id="testimonials">
           <AnimatedTestimonialsDemo />
         </div>
