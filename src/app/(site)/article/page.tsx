@@ -177,7 +177,7 @@ export default function AllArticlesPage() {
       
       <div className="max-w-5xl mx-auto -mt-14">
         <div className="flex justify-between items-center mt-4">
-          {session && (
+          {session && session.user?.role === "CONTENT" && (
             <Button variant='outline' onClick={() => {
               setEditingArticleId(null);
               openModal(null);
@@ -189,8 +189,8 @@ export default function AllArticlesPage() {
         
         <ArticleHoverEffect 
           items={formattedArticles} 
-          onEdit={session ? handleEdit : undefined}
-          onDelete={session ? handleDelete : undefined}
+          onEdit={session && session.user?.role === "CONTENT" ? handleEdit : undefined}
+          onDelete={session && session.user?.role === "CONTENT" ? handleDelete : undefined}
           onShare={handleShare}
         />
         
