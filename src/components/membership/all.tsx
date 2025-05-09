@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { columns } from "./column";
 import { UserTable } from "./user-table";
+import { ModalProvider } from "@/components/atom/modal/context";
+import Modal from "@/components/atom/modal/modal";
 
 export default function AllUsers({ users: initialUsers, currentUserId }: { users: any[]; currentUserId: string }) {
   const [users, setUsers] = useState(initialUsers);
@@ -12,6 +14,15 @@ export default function AllUsers({ users: initialUsers, currentUserId }: { users
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
         user.id === userId ? { ...user, applicationStatus: newStatus } : user
+      )
+    );
+  };
+
+  // Callback to update a user's role
+  const updateUserRole = (userId: string, newRole: string) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === userId ? { ...user, role: newRole } : user
       )
     );
   };
@@ -71,30 +82,35 @@ export default function AllUsers({ users: initialUsers, currentUserId }: { users
     return statusMatch && roleMatch;
   });
 
-  // Create table columns with the updateUserStatus callback
-  const userColumns = useMemo(() => columns(updateUserStatus), []);
+  // Create table columns with the callbacks
+  const userColumns = useMemo(
+    () => columns(updateUserStatus, updateUserRole), 
+    [updateUserStatus, updateUserRole]
+  );
 
   return (
-    <>
-      {filteredUsers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] rounded-lg border border-dashed mt-8 p-8 text-center">
-          <h2 className="text-2xl font-semibold">لا يوجد مستخدمون</h2>
-          <p className="text-muted-foreground max-w-[500px] mt-2">
-            لا يوجد مستخدمون مسجلون بعد.
-          </p>
-        </div>
-      ) : (
-        <UserTable 
-          columns={userColumns} 
-          data={filteredUsers}
-          statusOptions={statusOptions}
-          roleOptions={roleOptions}
-          onStatusChange={setStatus}
-          onRoleChange={setRole}
-          currentStatus={status}
-          currentRole={role}
-        />
-      )}
-    </>
+    <ModalProvider>
+      <div className="scroll-x">
+        {filteredUsers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center min-h-[400px] rounded-lg border border-dashed mt-8 p-8 text-center">
+            <h2 className="text-2xl font-semibold">لا يوجد مستخدمون</h2>
+            <p className="text-muted-foreground max-w-[500px] mt-2">
+              لا يوجد مستخدمون مسجلون بعد.
+            </p>
+          </div>
+        ) : (
+          <UserTable 
+            columns={userColumns} 
+            data={filteredUsers}
+            statusOptions={statusOptions}
+            roleOptions={roleOptions}
+            onStatusChange={setStatus}
+            onRoleChange={setRole}
+            currentStatus={status}
+            currentRole={role}
+          />
+        )}
+      </div>
+    </ModalProvider>
   );
 } 

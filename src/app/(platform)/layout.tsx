@@ -29,7 +29,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div data-wrapper="" className="px-6 border-grid flex flex-1 flex-col">
+    <div data-wrapper="" className="border-grid flex flex-1 flex-col">
       <PlatformHeader />
       <main className="flex flex-1 flex-col pt-8">
        

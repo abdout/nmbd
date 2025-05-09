@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Sidebar from "@/components/platform/sidebar";
+import { DashboardSidebar } from "@/components/platform/sidebar";
 import { usePathname } from 'next/navigation';
 
 export default function PlatformLayout({
@@ -18,8 +18,8 @@ export default function PlatformLayout({
 
   return (
     <div className="flex h-screen ">
-      <Sidebar />
-      <div className="flex-1 py-2 px-6">
+      <DashboardSidebar />
+      <div className="flex-1 py-2 ">
         {children}
       </div>
     </div>

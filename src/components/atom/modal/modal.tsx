@@ -1,6 +1,6 @@
 "use client";
 import { useModal } from "@/components/atom/modal/context";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,6 +27,23 @@ interface Props {
 function Modal({ content, sm = false }: Props) {
   const { modal, closeModal } = useModal();
   useBodyScroll(modal.open);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if screen is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkIfMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup event listener
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
 
   const modalVariants = {
     hidden: { 
@@ -74,7 +91,9 @@ function Modal({ content, sm = false }: Props) {
             <motion.div 
               className={`relative z-50 bg-background ${
                 sm 
-                  ? 'm-4 p-8 max-w-2xl w-[24rem] h-[29rem] sm:text-sm' 
+                  ? isMobile
+                    ? 'w-full h-screen p-4 overflow-auto'
+                    : 'm-4 p-8 max-w-2xl w-[24rem] h-[29rem] sm:text-sm rounded-lg' 
                   : 'w-full h-screen overflow-hidden p-4 sm:p-8'
               }`}
               initial="hidden"
@@ -82,16 +101,14 @@ function Modal({ content, sm = false }: Props) {
               exit="exit"
               variants={modalVariants}
             >
-              {!sm && (
-                <Button 
-                  size='icon' 
-                  variant='outline' 
-                  className="rounded-full absolute top-4 right-4"
-                  onClick={closeModal}
-                >
-                  <Icon icon='ic:twotone-close' width={25} />
-                </Button>
-              )}
+              <Button 
+                size='icon' 
+                variant='outline' 
+                className="rounded-full absolute top-4 right-4 z-10"
+                onClick={closeModal}
+              >
+                <Icon icon='ic:twotone-close' width={25} />
+              </Button>
               {content}
             </motion.div>
           </div>

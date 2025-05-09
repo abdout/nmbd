@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -34,6 +34,10 @@ import { PopoverContent, Popover, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandItem, CommandList } from '@/components/ui/command'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { PlusCircledIcon } from '@radix-ui/react-icons'
+import { useModal } from "@/components/atom/modal/context"
+import Modal from "@/components/atom/modal/modal"
+import FilterModal from './filter-modal'
+import { Filter } from '@/components/atom/icon'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -62,6 +66,24 @@ export function UserTable<TData, TValue>({
   const [isStatusOpen, setIsStatusOpen] = useState(false)
   const [isResponseOpen, setIsResponseOpen] = useState(false)
   const [isRoleOpen, setIsRoleOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const { modal, openModal, closeModal } = useModal()
+
+  // Check for mobile screen on mount and when window resizes
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    // Initial check
+    checkIfMobile()
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile)
+    
+    // Cleanup event listener
+    return () => window.removeEventListener('resize', checkIfMobile)
+  }, [])
 
   // Response filter options
   const responseOptions = [
@@ -101,10 +123,25 @@ export function UserTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel()
   })
 
+  // Render the filter modal content
+  const filterModalContent = (
+    <FilterModal
+      statusOptions={statusOptions}
+      responseOptions={responseOptions}
+      roleOptions={roleOptions}
+      onStatusChange={onStatusChange}
+      onResponseChange={handleResponseChange}
+      onRoleChange={onRoleChange}
+      currentStatus={currentStatus}
+      currentRole={currentRole}
+      closeModal={closeModal}
+    />
+  )
+
   return (
     <>
       {/* Filters */}
-      <div className='flex items-center gap-4'>
+      <div className='flex items-center gap-4 flex-wrap'>
         <div className='flex items-center py-4'>
           <Input
             placeholder='بحث بالاسم ...'
@@ -112,102 +149,119 @@ export function UserTable<TData, TValue>({
             onChange={event =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
-            className='max-w-sm'
+            className='max-w-sm h-9'
           />
         </div>
         
-        {/* Status Filter (الطلب) */}
-        <Popover open={isStatusOpen} onOpenChange={setIsStatusOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <PlusCircledIcon className="mr-2 size-4" />
-               الطلب
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[103px]" align="start">
-            <Command>
-              <CommandList>
-                <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-                {statusOptions.filter(opt => opt.value === "ALL" || opt.value === "COMPLETED" || opt.value === "INCOMPLETE").map((option, index) => (
-                  <>
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => {
-                        onStatusChange(option.value);
-                        setIsStatusOpen(false);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                    </CommandItem>
-                    {index === 0 && <DropdownMenuSeparator />}
-                  </>
-                ))}
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        {/* Mobile Filter Button */}
+        {isMobile && (
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="md:hidden"
+            onClick={() => openModal('filter')}
+          >
+            <Filter className="size-4" />
+          </Button>
+        )}
         
-        {/* Response Filter (الرد) */}
-        <Popover open={isResponseOpen} onOpenChange={setIsResponseOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <PlusCircledIcon className="mr-2 size-4" />
-              الرد
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[103px]" align="start">
-            <Command>
-              <CommandList>
-                <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-                {responseOptions.map((option, index) => (
-                  <>
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => {
-                        handleResponseChange(option.value);
-                        setIsResponseOpen(false);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                    </CommandItem>
-                    {index === 0 && <DropdownMenuSeparator />}
-                  </>
-                ))}
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        
-        {/* Role Filter */}
-        <Popover open={isRoleOpen} onOpenChange={setIsRoleOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <PlusCircledIcon className="mr-2 size-4" />
-              الدور
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[93px]" align="start">
-            <Command>
-              <CommandList>
-                <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-                {roleOptions.map((option, index) => (
-                  <>
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => {
-                        onRoleChange(option.value);
-                        setIsRoleOpen(false);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                    </CommandItem>
-                    {index === 0 && <DropdownMenuSeparator />}
-                  </>
-                ))}
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        {/* Desktop Filters */}
+        {!isMobile && (
+          <>
+            {/* Status Filter (الطلب) */}
+            <Popover open={isStatusOpen} onOpenChange={setIsStatusOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <PlusCircledIcon className="mr-2 size-4" />
+                    الطلب
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-[103px]" align="start">
+                <Command>
+                  <CommandList>
+                    <CommandEmpty>لا توجد نتائج.</CommandEmpty>
+                    {statusOptions.filter(opt => opt.value === "ALL" || opt.value === "COMPLETED" || opt.value === "INCOMPLETE").map((option, index) => (
+                      <>
+                        <CommandItem
+                          key={option.value}
+                          onSelect={() => {
+                            onStatusChange(option.value);
+                            setIsStatusOpen(false);
+                          }}
+                        >
+                          <span>{option.label}</span>
+                        </CommandItem>
+                        {index === 0 && <DropdownMenuSeparator />}
+                      </>
+                    ))}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            
+            {/* Response Filter (الرد) */}
+            <Popover open={isResponseOpen} onOpenChange={setIsResponseOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <PlusCircledIcon className="mr-2 size-4" />
+                  الرد
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-[103px]" align="start">
+                <Command>
+                  <CommandList>
+                    <CommandEmpty>لا توجد نتائج.</CommandEmpty>
+                    {responseOptions.map((option, index) => (
+                      <>
+                        <CommandItem
+                          key={option.value}
+                          onSelect={() => {
+                            handleResponseChange(option.value);
+                            setIsResponseOpen(false);
+                          }}
+                        >
+                          <span>{option.label}</span>
+                        </CommandItem>
+                        {index === 0 && <DropdownMenuSeparator />}
+                      </>
+                    ))}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            
+            {/* Role Filter */}
+            <Popover open={isRoleOpen} onOpenChange={setIsRoleOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <PlusCircledIcon className="mr-2 size-4" />
+                  الدور
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-[93px]" align="start">
+                <Command>
+                  <CommandList>
+                    <CommandEmpty>لا توجد نتائج.</CommandEmpty>
+                    {roleOptions.map((option, index) => (
+                      <>
+                        <CommandItem
+                          key={option.value}
+                          onSelect={() => {
+                            onRoleChange(option.value);
+                            setIsRoleOpen(false);
+                          }}
+                        >
+                          <span>{option.label}</span>
+                        </CommandItem>
+                        {index === 0 && <DropdownMenuSeparator />}
+                      </>
+                    ))}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </>
+        )}
 
         {/* Column visibility */}
         {/* 
@@ -249,44 +303,33 @@ export function UserTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
+                <TableCell colSpan={columns.length} className='h-24 text-center'>
                   لا توجد نتائج.
                 </TableCell>
               </TableRow>
@@ -294,16 +337,20 @@ export function UserTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
+      
       {/* Pagination */}
-      <div className='flex items-center justify-end space-x-4 gap-4 py-4'>
+      <div className='flex items-center justify-end space-x-2 py-4'>
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </div>
         <Button
           variant='outline'
           size='sm'
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          السابق
+          Previous
         </Button>
         <Button
           variant='outline'
@@ -311,9 +358,14 @@ export function UserTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          التالي
+          Next
         </Button>
       </div>
+
+      {/* Modal */}
+      {modal.open && modal.id === 'filter' && (
+        <Modal content={filterModalContent} />
+      )}
     </>
   )
 } 

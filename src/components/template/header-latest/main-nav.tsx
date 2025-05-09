@@ -12,7 +12,7 @@ export function MainNav() {
 
   return (
     <div className="ml-4 hidden md:flex">
-      <Link href="/" className="ml-4 flex items-center gap-1 lg:ml-6">
+      <Link href="/dashboard" className="ml-4 flex items-center gap-1 lg:ml-6">
       <svg
           width="40"
           height="18"

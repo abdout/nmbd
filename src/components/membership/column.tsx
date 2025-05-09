@@ -40,6 +40,7 @@ interface ActionsProps {
     original: User
   }
   onStatusChange?: (userId: string, newStatus: string) => void
+  onRoleChange?: (userId: string, newRole: string) => void
 }
 
 const roleOptions = [
@@ -52,7 +53,7 @@ const roleOptions = [
   { value: 'CONTENT', label: 'امين المحتوى' },
 ];
 
-const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange }) => {
+const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange, onRoleChange }) => {
   const user = row.original;
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -80,6 +81,9 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange }) => {
       setLoading(false);
       if (result.success) {
         toast.success('تم تغيير الدور بنجاح');
+        if (onRoleChange) {
+          onRoleChange(user.id, newRole);
+        }
         router.refresh();
       } else {
         toast.error(result.error || 'حدث خطأ أثناء تغيير الدور');
@@ -143,7 +147,10 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange }) => {
   );
 };
 
-export const columns = (onStatusChange?: (userId: string, newStatus: string) => void): ColumnDef<User>[] => [
+export const columns = (
+  onStatusChange?: (userId: string, newStatus: string) => void,
+  onRoleChange?: (userId: string, newRole: string) => void
+): ColumnDef<User>[] => [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -239,6 +246,6 @@ export const columns = (onStatusChange?: (userId: string, newStatus: string) => 
   },
   {
     id: 'actions',
-    cell: ({ row }) => <ActionsCell row={row} onStatusChange={onStatusChange} />
+    cell: ({ row }) => <ActionsCell row={row} onStatusChange={onStatusChange} onRoleChange={onRoleChange} />
   }
 ] 

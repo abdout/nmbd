@@ -4,27 +4,51 @@ import React from 'react';
 type Props = {
     title: string;
     description: string;
-    align?: 'center' | 'start'; // Optional alignment prop
-    size?: 'sm' | 'md'; // Added 'md' as a size option
+    align?: 'center' | 'start' | 'end'; // Added 'end' as an alignment option
+    size?: 'sm' | 'md' | 'lg'; // Added 'lg' as a size option
+    className?: string; // Added optional className for custom styling
 };
 
-const SiteHeading = ({ title, description, align = 'center', size }: Props) => {
+const SiteHeading = ({ 
+    title, 
+    description, 
+    align = 'center', 
+    size = 'lg', 
+    className = '' 
+}: Props) => {
+    // Determine alignment classes
+    const alignClasses = {
+        'center': 'items-center text-center',
+        'start': 'items-start text-start',
+        'end': 'items-end text-end'
+    };
+
+    // Determine size classes
+    const titleSizeClasses = {
+        'sm': 'text-xl sm:text-2xl font-medium',
+        'md': 'text-2xl sm:text-3xl md:text-4xl font-semibold',
+        'lg': 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold'
+    };
+
+    const descriptionSizeClasses = {
+        'sm': 'text-sm sm:text-base',
+        'md': 'text-base sm:text-lg',
+        'lg': 'text-base sm:text-lg md:text-xl'
+    };
+
+    const spacingClasses = {
+        'sm': 'gap-1 pb-2',
+        'md': 'gap-2 py-2 md:py-4',
+        'lg': 'gap-2 sm:gap-3 py-4 md:py-6 lg:py-8'
+    };
 
     return (
-        <div className={`flex flex-col gap-1 sm:gap-2 ${align === 'start' ? 'items-start' : 'items-center'}${size === 'sm' || size === 'md' ? '' : ' py-4 md:py-10'}`}>
-            <h2 className={`font-heading leading-[1.1] ${
-                size === 'sm' 
-                    ? 'text-3xl' 
-                    : size === 'md'
-                        ? 'text-2xl sm:text-3xl md:text-4xl font-bold'
-                        : 'text-4xl sm:text-2xl md:text-5xl'
-            }`}>
+        <div className={`flex flex-col ${alignClasses[align]} ${spacingClasses[size]} ${className}`}>
+            <h2 className={`font-heading leading-tight ${titleSizeClasses[size]}`}>
                 {title}
             </h2>
 
-            <p className={`max-w-[85%] leading-normal text-muted-foreground ${
-                size === 'md' ? 'sm:text-xl sm:leading-8' : 'sm:text-lg sm:leading-7'
-            }`}>
+            <p className={`max-w-prose leading-normal text-muted-foreground ${descriptionSizeClasses[size]}`}>
                 {description}
             </p>
         </div>
