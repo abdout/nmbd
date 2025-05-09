@@ -6,6 +6,19 @@ import { Notification } from './type';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
 
+// Define a type for the database notification format
+type DatabaseNotification = {
+  id: string;
+  type: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string | null;
+  title: string;
+  content: string;
+  isRead: boolean;
+  metadata: any;
+};
+
 export function NotificationList() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +27,20 @@ export function NotificationList() {
     const fetchNotifications = async () => {
       setLoading(true);
       const data = await getUserNotifications(20, 0);
-      setNotifications(data);
+      
+      // Transform the database notifications to match the Notification interface
+      const transformedNotifications: Notification[] = data.map((notification: DatabaseNotification) => ({
+        id: notification.id,
+        title: notification.title,
+        content: notification.content,
+        type: notification.type as any, // Convert string to NotificationType enum
+        isRead: notification.isRead,
+        createdAt: notification.createdAt,
+        updatedAt: notification.updatedAt,
+        metadata: notification.metadata
+      }));
+      
+      setNotifications(transformedNotifications);
       setLoading(false);
     };
     
