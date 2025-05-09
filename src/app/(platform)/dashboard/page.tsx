@@ -32,7 +32,7 @@ export default function Page() {
   //   }
 
   return (
-    <div className="mr-0 md:mr-10 flex flex-col h-full">
+    <div className="mr-0 mt-10 md:mt-0 md:mr-10 flex flex-col h-full">
     
      
      
@@ -50,7 +50,7 @@ export default function Page() {
 
             <div className='flex flex-col md:flex-row justify-between items-center mt-8'>
               <div>
-                <p className='-mt-2 mb-4 text-sm'>استكشف الروابط أدناه للدليل المستخدم ومركز المساعدة👇</p>
+                <p className='-mt-2 mb-4 text-sm w-[80%] md:w-full'>استكشف الروابط أدناه للدليل المستخدم ومركز المساعدة👇</p>
                 <div className='flex gap-8 items-center'>
                   <Icon icon={"ph:book-fill"} height="60" className="opacity-80 hover:opacity-100 transition-opacity duration-200" />
                   <Icon icon={"ant-design:customer-service-filled"} height="60" className="opacity-80 hover:opacity-100 transition-opacity duration-200" />
