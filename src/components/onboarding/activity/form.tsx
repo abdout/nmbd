@@ -31,7 +31,7 @@ export default function ActivityForm({ user }: ActivityFormProps) {
     if (user.unionMember) activities.push("نقابي");
     if (user.ngoMember) activities.push("اجتماعي");
     if (user.clubMember) activities.push("شبابي");
-    if (user.voluntaryMember) activities.push("تطوعي");
+    // Note: voluntaryMember is tracked in the form but not in the database
     return activities;
   };
   
@@ -58,11 +58,12 @@ export default function ActivityForm({ user }: ActivityFormProps) {
       clubMember: user.clubMember || false,
       clubName: user.clubName || '',
       clubType: user.clubType || '',
-      voluntaryMember: user.voluntaryMember || false,
-      voluntaryName: user.voluntaryName || '',
-      voluntaryRole: user.voluntaryRole || '',
-      voluntaryStartDate: user.voluntaryStartDate?.toISOString().split('T')[0] || '',
-      voluntaryEndDate: user.voluntaryEndDate?.toISOString().split('T')[0] || '',
+      // Voluntary fields are not in the database, so default them
+      voluntaryMember: false,
+      voluntaryName: '',
+      voluntaryRole: '', 
+      voluntaryStartDate: '',
+      voluntaryEndDate: '',
       skills: Array.isArray(user.skills) ? [...user.skills] : [],
       interests: Array.isArray(user.interests) ? [...user.interests] : [],
     }

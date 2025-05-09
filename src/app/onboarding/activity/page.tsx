@@ -27,6 +27,8 @@ async function getActivityData() {
         clubMember: true,
         clubName: true,
         clubType: true,
+        skills: true,
+        interests: true
       }
     });
 
@@ -44,10 +46,23 @@ export default async function ActivityPage() {
     return null;
   }
 
+  // Transform userData to ensure skills and interests are arrays
+  const transformedUserData = {
+    ...userData,
+    skills: Array.isArray(userData.skills) ? userData.skills : [],
+    interests: Array.isArray(userData.interests) ? userData.interests : [],
+    // Add empty voluntary fields for the form
+    voluntaryMember: false,
+    voluntaryName: '',
+    voluntaryRole: '',
+    voluntaryStartDate: null,
+    voluntaryEndDate: null
+  };
+
   return (
     <div className="w-full flex items-center justify-center">
       <Suspense fallback={<Loading />}>
-        <ActivityForm user={userData} />
+        <ActivityForm user={transformedUserData} />
       </Suspense>
     </div>
   );

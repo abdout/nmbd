@@ -10,6 +10,7 @@ import {
 } from '@/components/onboarding/review';
 import Loading from '@/components/atom/loading';
 import fireConfetti from '@/components/atom/confetti';
+import { ModalProvider } from '@/components/atom/modal/context';
 
 export default function ReviewPage() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function ReviewPage() {
   }
 
   return (
-    <>
+    <ModalProvider>
       <ReviewContainer 
         userData={userData}
         isSubmitting={isSubmitting}
@@ -91,6 +92,6 @@ export default function ReviewPage() {
         setShowDialog={setShowDialog}
         onClose={handleCloseDialog}
       />
-    </>
+    </ModalProvider>
   );
 } 
