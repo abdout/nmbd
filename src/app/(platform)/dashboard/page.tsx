@@ -32,7 +32,7 @@ export default function Page() {
   //   }
 
   return (
-    <div className="mr-10 flex flex-col h-full">
+    <div className="mr-0 md:mr-10 flex flex-col h-full">
     
      
      

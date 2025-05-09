@@ -26,7 +26,7 @@ const SiteHeading = ({
     // Determine size classes
     const titleSizeClasses = {
         'sm': 'text-xl sm:text-2xl font-medium',
-        'md': 'text-2xl sm:text-3xl md:text-4xl font-semibold',
+        'md': 'text-3xl sm:text-4xl md:text-5xl font-semibold',
         'lg': 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold'
     };
 
