@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { NotificationType, NotificationPayload } from './type';
 import { currentUser } from '@/lib/auth';
 import { sendWhatsAppNotification } from './whatsapp';
+import { sendTelegramNotification, sendChannelNotification } from './telegram';
 
 /**
  * Create a new in-app notification
@@ -68,6 +69,25 @@ export async function notifyOnboardingSubmission(
         to: process.env.MEMBERSHIP_SECRETARY_WHATSAPP,
         message: `طلب عضوية جديد: ${applicantName}. يرجى مراجعة الطلب في لوحة التحكم.`,
       });
+    }
+    
+    // 4. Send Telegram notification if configured
+    if (process.env.TELEGRAM_NOTIFICATIONS_ENABLED === "true") {
+      // Send to specific admin chat IDs if defined
+      if (process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID) {
+        await sendTelegramNotification({
+          chatId: process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID,
+          message: `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\nرقم الهاتف: ${applicantPhone || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+        });
+      }
+      
+      // Send to a channel if defined
+      if (process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL) {
+        await sendChannelNotification(
+          `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+          process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL
+        );
+      }
     }
     
     return { success: true };

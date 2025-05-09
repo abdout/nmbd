@@ -178,13 +178,18 @@ export const columns = (
             .substring(0, 2)
         : "??";
       
+      // Limit name to first two words
+      const displayName = user.name
+        ? user.name.split(" ").slice(0, 2).join(" ")
+        : "مستخدم بدون اسم";
+      
       return (
         <div className="flex items-center gap-3">
           <Avatar className="hidden md:block h-6 w-6">
             <AvatarImage src={user.image || ""} alt={user.name || "عضو"} />
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
-          <span>{user.name || "مستخدم بدون اسم"}</span>
+          <span title={user.name || "مستخدم بدون اسم"}>{displayName}</span>
         </div>
       );
     }

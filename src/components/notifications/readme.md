@@ -4,7 +4,7 @@ This document describes the architecture and usage of the notification system fo
 
 ## Goals
 - **Internal notifications:** Show in-app notifications (e.g. for onboarding review events) and update the sidebar notification icon.
-- **External notifications:** Support sending notifications via channels like WhatsApp, email, etc.
+- **External notifications:** Support sending notifications via channels with **Telegram channel** .
 - **Event-driven:** Use an event-based approach so new notification types and channels can be added easily.
 - **Centralized logic:** All notification-related code lives in `src/notifications`.
 
@@ -18,7 +18,8 @@ src/components/notifications/
   type.ts                  # Notification types, interfaces, enums
   event.ts                 # Event emitters/listeners for notification triggers (future)
   action.ts                # Core notification logic (send, fetch, mark as read, etc.)
-  whatsapp.ts              # WhatsApp notification channel
+  telegram.ts              # Telegram notification channel (primary)
+  whatsapp.ts              # WhatsApp notification channel (secondary)
   NotificationList.tsx     # UI for notification list in-app
   NotificationIcon.tsx     # Sidebar icon with badge/indicator
 ```
@@ -31,11 +32,12 @@ src/components/notifications/
    - When a user completes onboarding (or any other event), an event is emitted (e.g. `onboarding:submitted`).
 2. **Notification Service:**
    - Listens for events and creates notification objects.
-   - Sends notifications to the appropriate channels (in-app, WhatsApp, etc.).
+   - Sends notifications to the appropriate channels (in-app, Telegram, WhatsApp, etc.).
 3. **In-App Notifications:**
    - Stored in the database and fetched for display in the UI (e.g. notification list, sidebar icon).
 4. **External Channels:**
-   - The service can send notifications via WhatsApp, email, etc., using pluggable channel modules.
+   - **Telegram (Primary):** Free, reliable and feature-rich API for sending notifications to admins
+   - **WhatsApp (Secondary):** Alternative option for critical notifications (requires paid API)
 5. **Sidebar Indicator:**
    - The sidebar icon component checks for unread notifications and displays a badge if there are new ones.
 
@@ -46,17 +48,28 @@ src/components/notifications/
   - Emit an event: `onboarding:submitted` with user info.
   - The notification service creates an in-app notification for admins/reviewers.
   - The sidebar icon shows a badge for new notifications.
-  - Optionally, a WhatsApp message is sent to the reviewer group.
+  - **Primary:** A Telegram message is sent to individual admins or a notifications channel.
+  - Optional: A WhatsApp message is sent to the reviewer group (if configured).
 
 ---
 
-## First Step Implementation: Onboarding Completion Notifications
+## First Step Implementation: Telegram Notifications for Onboarding Completion
 
 ### Overview
-This section outlines the implementation of notifications for when new users complete their onboarding process. The system will:
+This section outlines the implementation of Telegram notifications for when new users complete their onboarding process. The system will:
 1. Send in-app notifications to administrators/reviewers
-2. Send WhatsApp notifications to a designated WhatsApp number
+2. Send Telegram notifications to specific chat IDs and/or a notifications channel
 3. Update the notification badge in the sidebar
+4. Optionally send WhatsApp notifications if configured (secondary channel)
+
+### Why Telegram?
+Telegram was chosen as the primary external notification channel for several reasons:
+- **Free:** No costs associated with the Telegram Bot API
+- **Easy Setup:** Creating a bot takes minutes with BotFather
+- **Rich Features:** HTML formatting, buttons, and other interactive elements
+- **Reliable Delivery:** Messages are delivered instantly even with poor connectivity
+- **Group & Channel Support:** Can send to individual admins, groups, or broadcast channels
+- **Privacy:** Users interact with your bot without sharing personal phone numbers
 
 ### Implementation Status
 
@@ -69,7 +82,8 @@ This section outlines the implementation of notifications for when new users com
 2. **Notification Core:**
    - Created type definitions in `type.ts`
    - Implemented notification actions in `action.ts`
-   - Added WhatsApp handler in `whatsapp.ts`
+   - Added Telegram handler in `telegram.ts` (primary)
+   - Added WhatsApp handler in `whatsapp.ts` (secondary)
    
 3. **UI Components:**
    - Created notification icon with badge in `NotificationIcon.tsx`
@@ -80,7 +94,8 @@ This section outlines the implementation of notifications for when new users com
 4. **Integration with Onboarding:**
    - Modified `completeOnboarding()` in `src/components/onboarding/review/action.ts` to:
      - Keep the existing email notification via `notifyNewApplication()`
-     - Add new in-app notifications and WhatsApp notifications via `notifyOnboardingSubmission()`
+     - Send Telegram notifications to admins and channels
+     - Optionally send WhatsApp notifications if configured
 
 ### Required Files and Changes
 
@@ -106,40 +121,84 @@ model Notification {
 }
 ```
 
-Updated the User model to include the relationship:
-
-```prisma
-model User {
-  // ... existing fields
-  
-  // Add this relation
-  notifications       Notification[]
-}
-```
-
-#### 2. Notification Type Definitions (`src/components/notifications/type.ts`)
+#### 2. Telegram Notification Handler (`src/components/notifications/telegram.ts`)
 
 ```typescript
-export enum NotificationType {
-  ONBOARDING_SUBMITTED = 'ONBOARDING_SUBMITTED',
-  APPLICATION_APPROVED = 'APPLICATION_APPROVED',
-  APPLICATION_REJECTED = 'APPLICATION_REJECTED',
-  // Add more notification types as needed
+'use server';
+
+type TelegramPayload = {
+  chatId: string | number;
+  message: string;
+  parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+  disableNotification?: boolean;
+};
+
+/**
+ * Send Telegram notification
+ * Implementation using Telegram Bot API
+ */
+export async function sendTelegramNotification({ 
+  chatId, 
+  message, 
+  parseMode = 'HTML',
+  disableNotification = false
+}: TelegramPayload) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  
+  if (!botToken) {
+    console.error('TELEGRAM_BOT_TOKEN is not defined in environment variables');
+    return { success: false, error: 'Telegram bot token not configured' };
+  }
+
+  // Skip sending in development mode if configured
+  if (process.env.NODE_ENV === "development" && process.env.TELEGRAM_DEV_MODE_ONLY_LOG === "true") {
+    console.log("🤖 TELEGRAM NOTIFICATION (DEV MODE - NOT ACTUALLY SENT)");
+    console.log(`Chat ID: ${chatId}`);
+    console.log(`Message: ${message}`);
+    return { success: true, dev: true };
+  }
+  
+  try {
+    const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: parseMode,
+        disable_notification: disableNotification
+      }),
+    });
+
+    const data = await response.json();
+    
+    if (!data.ok) {
+      console.error('Error sending Telegram notification:', data.description);
+      return { success: false, error: data.description };
+    }
+    
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending Telegram notification:', error);
+    return { success: false, error };
+  }
 }
 
-export interface NotificationPayload {
-  title: string;
-  content: string;
-  recipientId?: string; // For admin notifications, this might be null
-  type: NotificationType;
-  metadata?: Record<string, any>;
-}
-
-export interface Notification extends NotificationPayload {
-  id: string;
-  isRead: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+/**
+ * Send a notification to a Telegram channel
+ * @param message The message to send
+ * @param channelName The channel name with @ prefix (e.g. @my_channel)
+ */
+export async function sendChannelNotification(message: string, channelName: string) {
+  return sendTelegramNotification({
+    chatId: channelName,
+    message,
+    parseMode: 'HTML'
+  });
 }
 ```
 
@@ -151,22 +210,8 @@ export interface Notification extends NotificationPayload {
 import { db } from '@/lib/db';
 import { NotificationType, NotificationPayload } from './type';
 import { currentUser } from '@/lib/auth';
+import { sendTelegramNotification, sendChannelNotification } from './telegram';
 import { sendWhatsAppNotification } from './whatsapp';
-
-/**
- * Create a new in-app notification
- */
-export async function createNotification(data: NotificationPayload) {
-  return db.notification.create({
-    data: {
-      title: data.title,
-      content: data.content,
-      userId: data.recipientId,
-      type: data.type,
-      metadata: data.metadata || {},
-    },
-  });
-}
 
 /**
  * Create an onboarding submission notification for admins
@@ -209,7 +254,26 @@ export async function notifyOnboardingSubmission(
       });
     }
     
-    // 3. Send WhatsApp notification if configured
+    // 3. Send Telegram notification (PRIMARY CHANNEL)
+    if (process.env.TELEGRAM_NOTIFICATIONS_ENABLED === "true") {
+      // Send to specific admin chat IDs if defined
+      if (process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID) {
+        await sendTelegramNotification({
+          chatId: process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID,
+          message: `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\nرقم الهاتف: ${applicantPhone || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+        });
+      }
+      
+      // Send to a channel if defined
+      if (process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL) {
+        await sendChannelNotification(
+          `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+          process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL
+        );
+      }
+    }
+    
+    // 4. Send WhatsApp notification if configured (SECONDARY CHANNEL)
     if (process.env.WHATSAPP_NOTIFICATIONS_ENABLED === "true" && 
         process.env.MEMBERSHIP_SECRETARY_WHATSAPP) {
       await sendWhatsAppNotification({
@@ -224,212 +288,65 @@ export async function notifyOnboardingSubmission(
     return { success: false, error };
   }
 }
-
-/**
- * Get unread notifications count for the current user
- */
-export async function getUnreadNotificationsCount() {
-  try {
-    const user = await currentUser();
-    if (!user?.id) return 0;
-    
-    return db.notification.count({
-      where: {
-        userId: user.id,
-        isRead: false,
-      },
-    });
-  } catch (error) {
-    console.error('Error fetching unread notifications count:', error);
-    return 0;
-  }
-}
-
-/**
- * Get notifications for the current user
- */
-export async function getUserNotifications(limit = 10, offset = 0) {
-  try {
-    const user = await currentUser();
-    if (!user?.id) return [];
-    
-    return db.notification.findMany({
-      where: {
-        userId: user.id,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: limit,
-      skip: offset,
-    });
-  } catch (error) {
-    console.error('Error fetching user notifications:', error);
-    return [];
-  }
-}
-
-/**
- * Mark notification as read
- */
-export async function markNotificationAsRead(notificationId: string) {
-  try {
-    const user = await currentUser();
-    if (!user?.id) return { success: false, error: 'Unauthorized' };
-    
-    await db.notification.update({
-      where: {
-        id: notificationId,
-        userId: user.id,
-      },
-      data: {
-        isRead: true,
-      },
-    });
-    
-    return { success: true };
-  } catch (error) {
-    console.error('Error marking notification as read:', error);
-    return { success: false, error };
-  }
-}
 ```
 
-#### 4. WhatsApp Notification Handler (`src/components/notifications/whatsapp.ts`)
+### Configuration and Setup for Telegram
 
-```typescript
-'use server';
+1. **Create a Telegram Bot**
+   - Start a chat with BotFather (@BotFather) on Telegram
+   - Send the command `/newbot` and follow instructions
+   - Once created, BotFather will provide a bot token (e.g., `7532530964:AAHWWKT9yNv1SbZpSj6hJtCBBm0ScoGiX4g`)
 
-type WhatsAppPayload = {
-  to: string;
-  message: string;
-};
-
-/**
- * Send WhatsApp notification
- * Implementation will depend on your WhatsApp provider
- */
-export async function sendWhatsAppNotification({ to, message }: WhatsAppPayload) {
-  // Skip sending in development mode
-  if (process.env.NODE_ENV === "development") {
-    console.log("📱 WHATSAPP NOTIFICATION (DEV MODE - NOT ACTUALLY SENT)");
-    console.log(`To: ${to}`);
-    console.log(`Message: ${message}`);
-    return { success: true };
-  }
-  
-  try {
-    // Replace with your actual WhatsApp API implementation
-    // Example with Twilio:
-    // const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-    // await twilioClient.messages.create({
-    //   body: message,
-    //   from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-    //   to: `whatsapp:${to}`
-    // });
-    
-    // For now, we'll just log the attempt
-    console.log(`WhatsApp notification would be sent to ${to}`);
-    return { success: true };
-  } catch (error) {
-    console.error('Error sending WhatsApp notification:', error);
-    return { success: false, error };
-  }
-}
-```
-
-#### 5. Updated Onboarding Review Action (`src/components/onboarding/review/action.ts`)
-Integrated with the notification system in the `completeOnboarding` function:
-
-```typescript
-import { notifyOnboardingSubmission } from '@/components/notifications/action';
-
-// Inside the completeOnboarding function where it marks the onboarding as completed
-export async function completeOnboarding(): Promise<{ success: boolean, error: string | null }> {
-  try {
-    const user = await currentUser();
-    if (!user?.id) {
-      return { success: false, error: "Unauthorized" };
-    }
-    
-    // Update the user's onboarding status
-    await db.user.update({
-      where: { id: user.id },
-      data: {
-        onboardingStatus: "COMPLETED",
-        applicationStatus: "PENDING",
-      },
-    });
-    
-    // Get user details for notification
-    const userData = await db.user.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true, 
-        name: true,
-        email: true,
-        phone: true,
-        whatsapp: true
-      }
-    });
-    
-    if (userData) {
-      // 1. Send traditional email notification (legacy system)
-      // ... existing email notification code ...
-      
-      // 2. Send in-app and WhatsApp notifications using the new system
-      await notifyOnboardingSubmission(
-        userData.name || 'New Applicant',
-        userData.id,
-        userData.email,
-        userData.phone,
-        userData.whatsapp
-      );
-    }
-    
-    return { success: true, error: null };
-  } catch (error) {
-    console.error("Error completing onboarding:", error);
-    return {
-      success: false,
-      error: "Failed to complete onboarding. Please try again."
-    };
-  }
-}
-```
-
-### Configuration and Setup
-
-1. **Environment Variables**
+2. **Environment Variables**
    Add to your `.env` file:
    ```
-   # WhatsApp notification settings
-   WHATSAPP_NOTIFICATIONS_ENABLED=true
-   MEMBERSHIP_SECRETARY_WHATSAPP=+1234567890  # Replace with actual WhatsApp number
+   # Telegram notification settings (PRIMARY CHANNEL)
+   TELEGRAM_NOTIFICATIONS_ENABLED=true
+   TELEGRAM_BOT_TOKEN=7532530964:AAHWWKT9yNv1SbZpSj6hJtCBBm0ScoGiX4g
+   
+   # WhatsApp notification settings (SECONDARY CHANNEL)
+   WHATSAPP_NOTIFICATIONS_ENABLED=false
    ```
 
-2. **Database Migration**
-   After adding the Notification model to the schema:
+3. **Get Chat IDs**
+   - Start a chat with your new bot (e.g., @nmbdsd_bot)
+   - Send any message (e.g., "Hello")
+   - Visit URL in browser: `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+   - Find your chat_id in the response JSON and add it to your .env:
    ```
-   npx prisma db push
+   MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID=123456789
    ```
+   
+4. **Channel Setup (Optional but Recommended)**
+   - Create a channel in Telegram for all membership notifications
+   - Add your bot as an administrator with posting permissions
+   - Use the channel username in your .env:
+   ```
+   MEMBERSHIP_NOTIFICATIONS_CHANNEL=@membership_notifications
+   ```
+
+5. **Testing with Lab Page**
+   - Use the `/lab` page in the application to test your Telegram notifications
+   - Enter your bot token, chat ID, and test messages
+   - Verify messages are received in your Telegram app
 
 ## Next Steps
 
 1. **Testing and Verification:**
-   - Test the onboarding completion flow to ensure notifications are created
+   - Test the onboarding completion flow to ensure Telegram notifications are sent
    - Verify the notification badge appears in sidebar with the correct count
    - Check that the notifications page displays the notifications
 
 2. **Future Enhancements:**
-   - Implement event emitters/listeners for a more decoupled architecture
-   - Add more notification types (e.g., application approved/rejected)
-   - Create real-time notification updates using WebSockets
-   - Add filtering options in the notification list
+   - Add interactive buttons to Telegram notifications for quick actions (approve/reject)
+   - Implement more notification types (application approved/rejected)
+   - Add support for message formatting and rich media attachments
+   - Create notification templates for consistent messaging
+   - Implement multi-language support for notifications
 
 ## Best Practices
-- Use TypeScript types/enums for notification payloads and channels.
-- Keep channel logic isolated for easy maintenance.
-- Use async/await for all notification sending logic.
-- Make notification fetching efficient (pagination, unread filter, etc.).
-- Use a single source of truth for notification state (e.g. database or in-memory store). 
+- Use HTML formatting in Telegram messages for better readability
+- Keep messages concise and actionable
+- Include relevant information but avoid sensitive data
+- Provide clear calls-to-action in notification messages
+- Test message delivery on both mobile and desktop Telegram clients 
