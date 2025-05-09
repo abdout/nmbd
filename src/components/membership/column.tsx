@@ -180,7 +180,7 @@ export const columns = (
       
       return (
         <div className="flex items-center gap-3">
-          <Avatar className="h-6 w-6">
+          <Avatar className="hidden md:block h-6 w-6">
             <AvatarImage src={user.image || ""} alt={user.name || "عضو"} />
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>

@@ -40,7 +40,7 @@ const FinanceSidebar = () => {
   ];
 
   return (
-    <aside className="w-full md:w-32">
+    <aside className="w-full md:w-28 ml-20 hidden md:block">
       <h4 className="text-xl font-medium mb-3 hidden md:hidden">الشؤون المالية</h4>
       <nav>
         {sidebarItems.map((item) => (
@@ -52,7 +52,7 @@ const FinanceSidebar = () => {
                 pathname === item.href && "bg-muted"
               )}
             >
-              <span className="mr-2">{item.icon}</span>
+              <span className="">{item.icon}</span>
               {item.label}
             </Button>
           </Link>

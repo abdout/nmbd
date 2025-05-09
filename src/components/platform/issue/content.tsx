@@ -143,7 +143,7 @@ export function Content({ initialIssues }: ContentProps) {
             onChange={(event) =>
               table.getColumn('issue')?.setFilterValue(event.target.value)
             }
-            className='w-[200px] h-9'
+            className='w-[180px] md:w-[200px]  h-9'
           />
         </div>
         <div className="ml-auto flex items-center gap-2">
@@ -156,7 +156,7 @@ export function Content({ initialIssues }: ContentProps) {
                 className='h-9 px-3 gap-2 reveal'
               >
                 <MixerHorizontalIcon className='size-4' />
-                الأعمدة
+                <span className='hidden md:block'>الأعمدة</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className="text-right">

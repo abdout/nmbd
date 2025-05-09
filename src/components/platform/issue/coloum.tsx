@@ -102,8 +102,9 @@ export const getColumns = (
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          <ArrowUpDown className='ml-2 h-4 w-4' />
           المستودع
+          <ArrowUpDown className=' h-4 w-4' />
+          
         </Button>
       </div>
     ),
@@ -111,7 +112,7 @@ export const getColumns = (
       const repositoryId = row.getValue('repository');
       const repositoryTitle = row.original.repositoryTitle || null;
       return (
-        <div className="text-right pr-8">{repositoryTitle ? String(repositoryTitle) : 'بدون مستودع'}</div>
+        <div className="text-right mr-2">{repositoryTitle ? String(repositoryTitle) : 'بدون مستودع'}</div>
       );
     }
   },
@@ -123,9 +124,9 @@ export const getColumns = (
       const tag = row.original.tag;
       return (
         <div className="">
-          <span className="text-right">{issue}</span>
+          <span className="text-right mr-2">{issue}</span>
           {tag && (
-            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-neutral-100 text-neutral-800">
+            <div className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold bg-neutral-100 text-neutral-800">
               {tag}
             </div>
           )}
@@ -137,7 +138,7 @@ export const getColumns = (
     accessorKey: 'club',
     header: () => <div className="text-right w-full">الامانة</div>,
     cell: ({ row }) => (
-      <div className="text-right">{row.getValue('club')}</div>
+      <div className="text-right mr-2">{row.getValue('club')}</div>
     )
   },
   {
