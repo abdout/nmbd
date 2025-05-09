@@ -168,7 +168,7 @@ export default function AllArticlesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container">
       <Head 
         title="المقالات" 
         description="" 
@@ -176,7 +176,7 @@ export default function AllArticlesPage() {
       />
       
       <div className="max-w-5xl mx-auto -mt-14">
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-6 ">
           {session && session.user?.role === "CONTENT" && (
             <Button variant='outline' onClick={() => {
               setEditingArticleId(null);
