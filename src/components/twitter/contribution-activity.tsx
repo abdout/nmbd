@@ -24,13 +24,13 @@ const pullRequests = [
   { repo: "تقنية/دليل", title: "تحديث التوثيق", status: "مغلق", date: "١٠ ديسمبر" },
 ];
 
-function DotMenu() {
-  return (
-    <button className="text-gray-400 hover:text-gray-600">
-      <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="3.5" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="14.5" r="1.5" fill="currentColor"/></svg>
-    </button>
-  );
-}
+// function DotMenu() {
+//   return (
+//     <button className="text-gray-400 hover:text-gray-600">
+//       <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="3.5" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="14.5" r="1.5" fill="currentColor"/></svg>
+//     </button>
+//   );
+// }
 
 export default function GitHubTimeline() {
   return (
@@ -49,7 +49,7 @@ export default function GitHubTimeline() {
             {/* Icon on timeline */}
             <div className="relative z-10">
               <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
-                <Commit />
+                <Commit className="w-4 h-4" />
               </div>
             </div>
             {/* Content */}
@@ -64,7 +64,7 @@ export default function GitHubTimeline() {
                     <Link href="#" className="text-muted-foreground hover:text-blue-600 hover:underline font-medium">{repo.name}</Link>
                     <span className="text-gray-500">{repo.commits} تعديل</span>
                     <div className="flex-1 flex justify-end">
-                      <div className="w-32 bg-gray-100 rounded-full h-2 ml-2">
+                      <div className="w-32 bg-gray-100 rounded-full h-2 ml-2 hidden md:block">
                         <div className={`${repo.color} h-2 rounded-full`} style={{ width: repo.width }} />
                       </div>
                     </div>
@@ -77,7 +77,7 @@ export default function GitHubTimeline() {
           <div className="flex items-start relative group">
             <div className="relative z-10">
               <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
-                <Repo />
+                <Repo className="w-4 h-4 text-[#8B949E]" />
               </div>
             </div>
             <div className="mr-4 flex-1">
@@ -103,7 +103,7 @@ export default function GitHubTimeline() {
           <div className="flex items-start relative group">
             <div className="relative z-10">
               <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
-                <Issue />
+                <Issue className="w-4 h-4" />
               </div>
             </div>
             <div className="mr-4 flex-1">
@@ -113,11 +113,15 @@ export default function GitHubTimeline() {
               </div>
               <div className="mt-2 space-y-1">
                 {issues.map((issue) => (
-                  <div key={issue.title} className="flex items-center gap-2 text-sm">
+                  <div key={issue.title} className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2">
                     <Link href="#" className="text-muted-foreground hover:text-blue-600 hover:underline font-medium">{issue.repo}</Link>
                     <span className="bg-green-100 text-green-700 border border-green-300 rounded-full px-2 py-0.5 text-xs font-bold ml-2">٢ مفتوحة</span>
+                    </div>
+                    <div className="flex items-center gap-2">
                     <span className="text-gray-800 font-medium">{issue.title}</span>
                     <span className="text-gray-400 ml-auto text-xs">{issue.date}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -137,11 +141,15 @@ export default function GitHubTimeline() {
               </div>
               <div className="mt-2 space-y-1">
                 {pullRequests.map((pr, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-sm">
+                  <div key={idx} className="flex flex-col md:flex-row md:items-center gap-2 text-sm ">
+                    <div className="flex items-center gap-2">
                     <Link href="#" className="text-muted-foreground hover:text-blue-600 hover:underline font-medium">{pr.repo}</Link>
                     <span className={`rounded-full px-2 py-0.5 text-xs font-bold ml-2 ${pr.status === 'مفتوح' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 text-gray-500 border border-gray-300'}`}>{pr.status}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
                     <span className="text-gray-800 font-medium">{pr.title}</span>
                     <span className="text-gray-400 ml-auto text-xs">{pr.date}</span>
+                    </div>
                   </div>
                 ))}
               </div>

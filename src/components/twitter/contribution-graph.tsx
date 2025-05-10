@@ -109,50 +109,52 @@ export default function GitHubContributionGraph() {
         <h3 className="text-sm font-medium mb-4 text-right" dir="rtl">
           {totalContributions} مساهمة في العام الماضي
         </h3>
-        <TooltipProvider>
-          <div className="w-full">
-            {/* Month labels */}
-            <div className="flex flex-wrap min-w-max mb-1" style={{ marginRight: '24px' }}>
-              {contributionData[0].map((_, week) => {
-                const labelObj = monthLabels.find((m) => m.week === week);
-                return (
-                  <div key={week} className="w-3 h-3 flex items-center justify-center" style={{ width: 12, height: 12, marginLeft: 4 }}>
-                    {labelObj ? (
-                      <span className="text-xs text-muted-foreground" style={{ minWidth: 28 }}>{labelObj.label}</span>
-                    ) : null}
+        <div className="overflow-x-auto pb-2">
+          <TooltipProvider>
+            <div className="min-w-fit">
+              {/* Month labels */}
+              <div className="flex mb-1" style={{ marginRight: '24px' }}>
+                {contributionData[0].map((_, week) => {
+                  const labelObj = monthLabels.find((m) => m.week === week);
+                  return (
+                    <div key={week} className="w-3 h-3 flex items-center justify-center" style={{ width: 12, height: 12, marginLeft: 4 }}>
+                      {labelObj ? (
+                        <span className="text-xs text-muted-foreground whitespace-nowrap" style={{ minWidth: 28 }}>{labelObj.label}</span>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Graph */}
+              <div className="flex gap-1">
+                {contributionData[0].map((_, week) => (
+                  <div key={week} className="flex flex-col gap-1">
+                    {contributionData.map((_, day) => (
+                      <Tooltip key={`${week}-${day}`} delayDuration={0}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className={`w-3 h-3 rounded-sm ${getColorClass(contributionData[day][week])}`}
+                            aria-label={`${getContributionText(contributionData[day][week])} في ${getDateText(week, day)}`}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          <p>{getContributionText(contributionData[day][week])}</p>
+                          <p className="text-muted-foreground">{getDateText(week, day)}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
-            {/* Graph */}
-            <div className="flex flex-wrap gap-1 min-w-max">
-              {contributionData[0].map((_, week) => (
-                <div key={week} className="flex flex-col gap-1">
-                  {contributionData.map((_, day) => (
-                    <Tooltip key={`${week}-${day}`} delayDuration={0}>
-                      <TooltipTrigger asChild>
-                        <div
-                          className={`w-3 h-3 rounded-sm ${getColorClass(contributionData[day][week])}`}
-                          aria-label={`${getContributionText(contributionData[day][week])} في ${getDateText(week, day)}`}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">
-                        <p>{getContributionText(contributionData[day][week])}</p>
-                        <p className="text-muted-foreground">{getDateText(week, day)}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </TooltipProvider>
+          </TooltipProvider>
+        </div>
 
-        <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-          <button className="text-xs text-muted-foreground hover:text-blue-600">
+        <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+          <button className="text-xs text-muted-foreground hover:text-blue-600 order-2 sm:order-1">
             تعرّف على كيفية حساب المساهمات
           </button>
-          <div className="flex items-center" dir="rtl">
+          <div className="flex items-center order-1 sm:order-2" dir="rtl">
             <span className="ml-2">أقل</span>
             <div className="flex gap-1">
               <div className="w-3 h-3 rounded-sm bg-neutral-100" />

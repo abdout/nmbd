@@ -16,8 +16,8 @@ export default async function TwitterProfile() {
   const image = attachment?.image || "/placeholder.svg?height=128&width=128";
 
   const { data: userData } = await fetchUserForReview();
-  const name = userData?.name || "Davide Biscuso";
-  const occupation = userData?.currentOccupation || "Product Designer";
+  const name = userData?.name || "غير معروف";
+  const occupation = userData?.currentOccupation || "غير معروف";
 
   
 
