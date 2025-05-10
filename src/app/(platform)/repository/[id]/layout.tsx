@@ -7,16 +7,16 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
+import { RepositoryNav } from "@/components/platform/repository/repository-nav"
 import { Button } from "@/components/ui/button"
-import { ClubNav } from "@/components/platform/club/club-nav"
+
 
 import Link from "next/link"
-import { club as clubList } from '@/components/template/club/constant';
+import { getRepository } from '@/components/platform/repository/action';
 
 export const metadata: Metadata = {
-  title: " امانة المجتمع",
-  description:
-    "غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ",
+  title: "Repository",
+  description: "Repository details page",
   openGraph: {
     images: [
       {
@@ -38,24 +38,22 @@ export const metadata: Metadata = {
   },
 }
 
-export default function templatesLayout({
+export default async function RepositoryLayout({
   children,
   params,
 }: {
   children: React.ReactNode,
   params: { id: string }
 }) {
-  // Find the club by id
-  const clubData = clubList.find(c => c.id === params.id);
-  const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
-  const description = 'غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ';
+  // Fetch repository data from DB
+  const { repository } = await getRepository(params.id);
 
   return (
     <>
       <PageHeader>
         <Announcement />
-        <PageHeaderHeading>{title}</PageHeaderHeading>
-        <PageHeaderDescription>{description}</PageHeaderDescription>
+        <PageHeaderHeading>{repository?.title || "Repository"}</PageHeaderHeading>
+        <PageHeaderDescription>{repository?.desc || "No description available."}</PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
             <a href="#vibes">تصفح المشكلات</a>
@@ -68,7 +66,7 @@ export default function templatesLayout({
       <div id="templates" className="border-grid scroll-mt-24 border-b">
         <div className="container-wrapper">
           <div className="container flex items-center py-4">
-            <ClubNav />
+            <RepositoryNav />
           </div>
         </div>
       </div>

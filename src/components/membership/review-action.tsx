@@ -8,6 +8,13 @@ import { SuccessToast, ErrorToast } from '@/components/atom/toast';
 import { approveApplication, rejectApplication, redoApplication, updateUserRole } from '@/components/membership/action';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 type ReviewActionsProps = {
   isSubmitting: boolean;
@@ -105,16 +112,22 @@ export function ReviewActions({ isSubmitting, onSubmit, userId, applicationStatu
   return (
     <div className="mt-12 flex items-center justify-center gap-4">
       {/* Role Dropdown */}
-      <select
-        className="border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+      <Select
         value={role}
-        onChange={e => handleRoleChange(e.target.value)}
+        onValueChange={handleRoleChange}
         disabled={loading}
       >
-        {roleOptions.map(opt => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
-      </select>
+        <SelectTrigger className="w-[160px] h-10 text-right" dir="rtl">
+          <SelectValue placeholder="اختر الدور" />
+        </SelectTrigger>
+        <SelectContent dir="rtl">
+          {roleOptions.map(opt => (
+            <SelectItem key={opt.value} value={opt.value} className="text-right" dir="rtl">
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {/* Approve/Undo Button */}
       <Button
         onClick={isApproved ? handleUndo : handleApprove}

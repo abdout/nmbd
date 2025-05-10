@@ -2,7 +2,7 @@ import RepositoryContent from "@/components/platform/repository/content";
 import Loading from '@/components/atom/loading';
 import { Suspense } from 'react';
 
-const Project = () => {
+const Repository = () => {
   return (
     <Suspense fallback={<Loading />}>
       <div className="">
@@ -12,4 +12,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Repository;
