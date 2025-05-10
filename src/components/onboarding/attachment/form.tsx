@@ -177,7 +177,7 @@ const AttachmentForm = ({
         if (submitBtn && !submitBtn.disabled) {
           submitBtn.click();
         }
-      }, 100);
+      }, 200);
     }
   }, [formValues.image, formValues.cv]);
 
