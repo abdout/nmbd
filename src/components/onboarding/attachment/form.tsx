@@ -18,31 +18,86 @@ import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { getImagePath } from "@/lib/utils";
 import { ErrorToast, SuccessToast } from "@/components/atom/toast";
 import { useRef } from "react";
+// import PDFViewerFallback from "@/components/pdf-viewer-fallback";
 
-// Helper function to convert PDF URL to preview URL
+// Helper function to check if URL is a PDF
+const isPdfUrl = (url: string) => {
+  return url.toLowerCase().endsWith('.pdf') || 
+    (url.includes('cloudinary.com') && url.includes('/raw/upload/'));
+};
+
+// Simple function to get file type icon or name
+const getFileNameFromUrl = (url: string) => {
+  if (!url) return '';
+  try {
+    // For PDF or raw uploads, extract the filename
+    if (url.includes('/raw/upload/')) {
+      const parts = url.split('/');
+      return parts[parts.length - 1] || 'Document';
+    }
+    return url.split('/').pop() || 'Document';
+  } catch (e) {
+    console.error('Error getting filename:', e);
+    return 'Document';
+  }
+};
+
+// Helper function to convert PDF URL to preview URL - keeping this for reference
 const getPdfPreviewUrl = (url: string) => {
-  if (!url.includes('cloudinary.com')) return url;
+  console.log('getPdfPreviewUrl called with:', url);
+  // No transformation needed anymore - we'll handle PDFs differently
+  return url;
+};
+
+// Helper function to get PDF thumbnail approaches
+const getPdfThumbnailUrls = (url: string) => {
+  console.log('Creating PDF thumbnail for:', url);
+  if (!url || !url.includes('cloudinary.com')) return { directUrl: '', fetchUrl: '' };
   
-  // Extract the base URL and file path
-  const baseUrl = url.substring(0, url.indexOf('/upload/') + 8);
-  const filePath = url.substring(url.indexOf('/upload/') + 8);
-  
-  // Generate preview URL with transformation
-  return `${baseUrl}q_auto,f_jpg,pg_1/${filePath}`;
+  try {
+    // For raw uploaded PDFs in Cloudinary
+    if (url.includes('/raw/upload/')) {
+      // Approach 1: Change resource type from raw to image and add PDF transformation
+      const directUrl = url.replace('/raw/upload/', '/upload/w_300,h_400,c_fill,pg_1/');
+      console.log('Direct transformed URL:', directUrl);
+      
+      // Approach 2: Use image/fetch to fetch the PDF and convert it
+      const cloudName = url.split('/')[3];
+      const fetchUrl = `https://res.cloudinary.com/${cloudName}/image/fetch/w_300,h_400,c_fill,pg_1/${encodeURIComponent(url)}`;
+      console.log('Fetch transform URL:', fetchUrl);
+      
+      return { directUrl, fetchUrl };
+    }
+  } catch (error) {
+    console.error('Error generating PDF thumbnail:', error);
+  }
+  return { directUrl: '', fetchUrl: '' };
 };
 
 const uploadToCloudinary = async (file: File, fieldType: string): Promise<string> => {
+  console.log('uploadToCloudinary called with file:', file.name, 'type:', file.type, 'fieldType:', fieldType);
   const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${fieldType === 'raw' ? 'raw' : 'image'}/upload`;
+  console.log('Uploading to Cloudinary URL:', url);
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "social");
-  const res = await fetch(url, {
-    method: "POST",
-    body: formData,
-  });
-  if (!res.ok) throw new Error("Upload failed");
-  const data = await res.json();
-  return data.secure_url;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+    console.log('Cloudinary response status:', res.status);
+    if (!res.ok) {
+      console.error('Cloudinary upload failed with status:', res.status);
+      throw new Error("Upload failed");
+    }
+    const data = await res.json();
+    console.log('Cloudinary upload success, URL:', data.secure_url);
+    return data.secure_url;
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    throw error;
+  }
 };
 
 const AttachmentForm = ({
@@ -110,6 +165,10 @@ const AttachmentForm = ({
     }
   }, [state, onSubmitSuccess]);
 
+  useEffect(() => {
+    console.log('Current form values:', formValues);
+  }, [formValues]);
+
   // For each field, keep a ref to its file input
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -140,13 +199,19 @@ const AttachmentForm = ({
                 onClick={e => e.stopPropagation()}
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
-                  if (!file) return;
+                  console.log('File input changed for field:', name, 'File selected:', file);
+                  if (!file) {
+                    console.log('No file selected');
+                    return;
+                  }
                   try {
+                    console.log('Attempting to upload file:', file.name, 'type:', file.type);
                     const url = await uploadToCloudinary(file, fieldType);
+                    console.log('Upload successful, setting value for', name, 'to:', url);
                     setValue(name, url);
                   } catch (err) {
+                    console.error('Cloudinary upload failed:', err);
                     ErrorToast("فشل رفع الملف. حاول مرة أخرى.");
-                    console.error('Cloudinary upload error:', err);
                   }
                 }}
               />
@@ -163,8 +228,8 @@ const AttachmentForm = ({
                       sizes="160px"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
+                        console.error('Image failed to load:', formValues[name], 'Fallback to placeholder');
                         target.src = getImagePath('/placeholder-profile.png');
-                        console.error('Image failed to load:', formValues[name]);
                       }}
                     />
                     <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
@@ -175,15 +240,62 @@ const AttachmentForm = ({
                   <>
                     {formValues[name] && formValues[name].includes('cloudinary.com') ? (
                       <div className="relative w-full h-full">
-                        <Image
-                          src={getPdfPreviewUrl(formValues[name])}
-                          alt={label}
-                          width={160}
-                          height={160}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                          sizes="160px"
-                        />
+                        {(() => { console.log('Rendering file for URL:', formValues[name]); return null; })()}
+                        {isPdfUrl(formValues[name] || '') ? (
+                          // Custom PDF preview approach with iframe and scaling
+                          <div className="relative w-full h-full overflow-hidden bg-white">
+                            {/* Create negative margin and scale up to eliminate scrollbars and zoom in */}
+                            <div 
+                              className="absolute inset-[-25%] w-[150%] h-[150%]" 
+                            >
+                              <iframe
+                                src={formValues[name] || ''}
+                                width="100%"
+                                height="100%"
+                                className="w-full h-full pointer-events-none"
+                                title="PDF Preview"
+                                frameBorder="0"
+                                scrolling="no"
+                              />
+                            </div>
+                            <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1 z-10">
+                              {label}
+                            </div>
+                          </div>
+                        ) : (
+                          // Normal image display
+                          <Image
+                            src={formValues[name] || ''}
+                            alt={label}
+                            width={160}
+                            height={160}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                            sizes="160px"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              console.error('Image failed to load:', formValues[name]);
+                              
+                              // Create a fallback UI for image errors
+                              if (target.parentElement) {
+                                target.style.display = 'none';
+                                
+                                // Create a div with error indicator
+                                const errorIndicator = document.createElement('div');
+                                errorIndicator.className = 'absolute inset-0 flex items-center justify-center bg-gray-100';
+                                errorIndicator.innerHTML = `
+                                  <div class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <p class="text-xs mt-1">Image Error</p>
+                                  </div>
+                                `;
+                                target.parentElement.appendChild(errorIndicator);
+                              }
+                            }}
+                          />
+                        )}
                         <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs text-center py-1">
                           {label}
                         </div>
