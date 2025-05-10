@@ -12,6 +12,8 @@ export const publicRoutes = [
   "/setting",
   "/timeline",
   "/article",
+  "/paper",
+  "/video",
   "/father",
   "/author",
   
