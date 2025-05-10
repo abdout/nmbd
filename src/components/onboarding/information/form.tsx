@@ -103,6 +103,18 @@ const Form = ({ type, data }: FormProps) => {
   // Add isInitialRender ref at the top level of the component
   const isInitialRender = useRef(true);
   
+  // Track if auto-navigation is allowed (only for the first time)
+  const [autoNavAllowed, setAutoNavAllowed] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const alreadyAutoNav = localStorage.getItem('informationAutoNavDone');
+      if (alreadyAutoNav === 'true') {
+        setAutoNavAllowed(false);
+      }
+    }
+  }, []);
+
   // Update isInitialRender after the first render
   useEffect(() => {
     // Set isInitialRender to false after the first render
@@ -194,6 +206,7 @@ const Form = ({ type, data }: FormProps) => {
   // Auto-submit when all required fields are valid and location/birthdate are complete, but only if user has interacted
   useEffect(() => {
     if (
+      autoNavAllowed &&
       isDirty &&
       isValid &&
       locationComplete &&
@@ -203,10 +216,12 @@ const Form = ({ type, data }: FormProps) => {
         const submitBtn = document.getElementById('submit-information') as HTMLButtonElement;
         if (submitBtn && !submitBtn.disabled) {
           submitBtn.click();
+          // Set the flag so auto-nav is blocked next time
+          localStorage.setItem('informationAutoNavDone', 'true');
         }
       }, 100);
     }
-  }, [isDirty, isValid, locationComplete, birthdateComplete]);
+  }, [autoNavAllowed, isDirty, isValid, locationComplete, birthdateComplete]);
 
   return (
     <form
