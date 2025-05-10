@@ -38,7 +38,14 @@ export default auth((req) => {
   });
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+  const isPublicRoute = publicRoutes.some(route => {
+    if (route.includes(':')) {
+      // Convert /paper/:id to regex: ^/paper/[^/]+$
+      const pattern = '^' + route.replace(/:[^/]+/g, '[^/]+') + '$';
+      return new RegExp(pattern).test(nextUrl.pathname);
+    }
+    return route === nextUrl.pathname;
+  });
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
