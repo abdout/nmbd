@@ -169,6 +169,18 @@ const AttachmentForm = ({
     console.log('Current form values:', formValues);
   }, [formValues]);
 
+  // Auto-submit when both image and cv are uploaded
+  useEffect(() => {
+    if (formValues.image && formValues.cv) {
+      setTimeout(() => {
+        const submitBtn = document.getElementById('submit-attachment') as HTMLButtonElement;
+        if (submitBtn && !submitBtn.disabled) {
+          submitBtn.click();
+        }
+      }, 100);
+    }
+  }, [formValues.image, formValues.cv]);
+
   // For each field, keep a ref to its file input
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
