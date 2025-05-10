@@ -90,7 +90,7 @@ export default function LabUserReviewPage() {
       
       <ReviewContainer userData={userData} isSubmitting={false} handleSubmit={async () => {}} />
       
-      {/* Action buttons at the bottom */}
+      {/* Action buttons at the bottom
       {userData && userData.applicationStatus !== "APPROVED" && userData.applicationStatus !== "REJECTED" && (
         <div className="flex justify-center gap-4 mt-8">
           <Button 
@@ -128,7 +128,7 @@ export default function LabUserReviewPage() {
         <div className="text-center mt-8 p-4 bg-red-100 rounded-md">
           <p className="text-red-800">{error}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
