@@ -7,7 +7,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 const navLinks = [
   { name: "حول", slug: "about" },
   { name: "طريق", slug: "roadmap" },
-  { name: "مستودع", slug: "repository" },
   { name: "مشكلة", slug: "issue" },
   { name: "نقاش", slug: "discussion" },
   { name: "مالي", slug: "finance" },
