@@ -22,9 +22,8 @@ const PDFRenderer = ({ url, width = 300, height = 400 }: {
         // Dynamically import pdfjs only on client side
         const pdfjs = await import('pdfjs-dist');
         
-        // Set up the worker source directly from node_modules
-        const workerSrc = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
-        pdfjs.GlobalWorkerOptions.workerSrc = workerSrc.default;
+        // Set up the worker source from CDN
+        pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
         
         setPdfjsLib(pdfjs);
         setPdfjsLoaded(true);
