@@ -105,6 +105,7 @@ const Form = ({ type, data }: FormProps) => {
   
   // Track if auto-navigation is allowed (only for the first time)
   const [autoNavAllowed, setAutoNavAllowed] = useState(true);
+  const autoNavTriggered = useRef(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -207,17 +208,25 @@ const Form = ({ type, data }: FormProps) => {
   useEffect(() => {
     if (
       autoNavAllowed &&
+      !autoNavTriggered.current &&
       isDirty &&
       isValid &&
       locationComplete &&
       birthdateComplete
     ) {
+      // Double-check the flag right before triggering
+      if (typeof window !== 'undefined' && localStorage.getItem('informationAutoNavDone') === 'true') {
+        setAutoNavAllowed(false);
+        return;
+      }
+      autoNavTriggered.current = true;
       setTimeout(() => {
         const submitBtn = document.getElementById('submit-information') as HTMLButtonElement;
         if (submitBtn && !submitBtn.disabled) {
           submitBtn.click();
           // Set the flag so auto-nav is blocked next time
           localStorage.setItem('informationAutoNavDone', 'true');
+          setAutoNavAllowed(false);
         }
       }, 100);
     }
