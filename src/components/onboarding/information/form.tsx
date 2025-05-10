@@ -115,7 +115,7 @@ const Form = ({ type, data }: FormProps) => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     watch,
     reset
   } = useForm<InformationSchema>({
@@ -191,9 +191,10 @@ const Form = ({ type, data }: FormProps) => {
   // Watch all fields for changes
   const allFields = watch();
 
-  // Auto-submit when all required fields are valid and location/birthdate are complete
+  // Auto-submit when all required fields are valid and location/birthdate are complete, but only if user has interacted
   useEffect(() => {
     if (
+      isDirty &&
       isValid &&
       locationComplete &&
       birthdateComplete
@@ -205,7 +206,7 @@ const Form = ({ type, data }: FormProps) => {
         }
       }, 100);
     }
-  }, [isValid, locationComplete, birthdateComplete]);
+  }, [isDirty, isValid, locationComplete, birthdateComplete]);
 
   return (
     <form
