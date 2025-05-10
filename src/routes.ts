@@ -12,9 +12,13 @@ export const publicRoutes = [
   "/setting",
   "/timeline",
   "/article",
+  "/article/:id",
   "/paper",
+  "/paper/:id",
   "/video",
+  "/video/:id",
   "/father",
+  "/father/:id",
   "/author",
   
   
