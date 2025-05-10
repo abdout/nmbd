@@ -115,7 +115,7 @@ const Form = ({ type, data }: FormProps) => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
     reset
   } = useForm<InformationSchema>({
@@ -187,6 +187,25 @@ const Form = ({ type, data }: FormProps) => {
     type, 
     setIsSubmitting 
   });
+
+  // Watch all fields for changes
+  const allFields = watch();
+
+  // Auto-submit when all required fields are valid and location/birthdate are complete
+  useEffect(() => {
+    if (
+      isValid &&
+      locationComplete &&
+      birthdateComplete
+    ) {
+      setTimeout(() => {
+        const submitBtn = document.getElementById('submit-information') as HTMLButtonElement;
+        if (submitBtn && !submitBtn.disabled) {
+          submitBtn.click();
+        }
+      }, 100);
+    }
+  }, [isValid, locationComplete, birthdateComplete]);
 
   return (
     <form
