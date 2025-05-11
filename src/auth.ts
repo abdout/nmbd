@@ -110,11 +110,11 @@ export const {
           
           // Basic info
           fullname: null,
-          description: null,
+          contribute: null,
           bio: null,
           cv: null,
           portfolio: null,
-          additionalFile: null,
+          cover: null,
           
           // Contact
           phone: null,
@@ -125,7 +125,7 @@ export const {
           telegram: null,
           instagram: null,
           tiktok: null,
-          
+          link: null,
           // Birth details
           birthDate: null,
           birthCountry: null,

@@ -37,11 +37,11 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  description          String?
+  contribute           String?
   bio                  String?         
   cv                   String? 
   portfolio            String?            
-  additionalFile       String?
+  cover                String?
 
 // Contact 
   phone                String?

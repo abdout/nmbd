@@ -22,7 +22,7 @@ export async function createAttachment(state: ActionState, data: AttachmentSchem
         image: data.image || '',
         cv: data.cv || '',
         portfolio: data.portfolio || '',
-        additionalFile: data.additionalFile || '',
+        cover: data.cover || '',
         onboardingStep: 3
       }
     });
@@ -47,7 +47,7 @@ export async function getAttachment() {
         image: true,
         cv: true,
         portfolio: true,
-        additionalFile: true,
+        cover: true,
       }
     });
 
@@ -70,7 +70,7 @@ export async function updateAttachment(_state: ActionState, data: AttachmentSche
         image: data.image || '',
         cv: data.cv || '',
         portfolio: data.portfolio || '',
-        additionalFile: data.additionalFile || ''
+        cover: data.cover || ''
       }
     });
 
@@ -94,7 +94,7 @@ export async function deleteAttachment() {
         image: null,
         cv: null,
         portfolio: null,
-        additionalFile: null,
+        cover: null,
       }
     });
 

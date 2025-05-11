@@ -20,11 +20,11 @@ interface UserProfile {
   
   // Basic info
   fullname: string | null;
-  description: string | null;
+  contribute: string | null;
   bio: string | null;
   cv: string | null;
   portfolio: string | null;
-  additionalFile: string | null;
+  cover: string | null;
   
   // Contact
   phone: string | null;
@@ -35,7 +35,7 @@ interface UserProfile {
   telegram: string | null;
   instagram: string | null;
   tiktok: string | null;
-  
+  link: string | null;
   // Birth details
   birthDate: Date | null;
   birthCountry: string | null;
@@ -159,11 +159,11 @@ export default {
           
           // Basic info
           fullname: null,
-          description: null,
+          contribute: null,
           bio: null,
           cv: null,
           portfolio: null,
-          additionalFile: null,
+          cover: null,
           
           // Contact
           phone: null,
@@ -174,6 +174,7 @@ export default {
           telegram: null,
           instagram: null,
           tiktok: null,
+          link: null,
           
           // Birth details
           birthDate: null,
@@ -297,11 +298,11 @@ export default {
           
           // Basic info
           fullname: null,
-          description: null,
+          contribute: null,
           bio: null,
           cv: null,
           portfolio: null,
-          additionalFile: null,
+          cover: null,
           
           // Contact
           phone: null,
@@ -312,6 +313,7 @@ export default {
           telegram: null,
           instagram: null,
           tiktok: null,
+          link: null,
           
           // Birth details
           birthDate: null,

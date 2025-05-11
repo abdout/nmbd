@@ -22,7 +22,7 @@ export type UserReviewData = {
   birthNeighborhood?: string;
   birthMonth?: number;
   birthYear?: number;
-  description?: string;
+  contribute?: string;
   bio?: string;
   
   // Skills and Interests
@@ -36,7 +36,7 @@ export type UserReviewData = {
   telegram?: string;
   instagram?: string;
   tiktok?: string;
-  
+  link?: string;
   // Current location
   currentCountry?: string;
   currentState?: string;
@@ -171,7 +171,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         updatedAt: true,
         
         // Personal info
-        description: true,
+        contribute: true,
         bio: true,
         phone: true,
         whatsapp: true,
@@ -183,6 +183,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         telegram: true,
         instagram: true,
         tiktok: true,
+        link: true,
         
         // Personal details
         nationalityId: true,
@@ -281,7 +282,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         image: true,
         cv: true,
         portfolio: true,
-        additionalFile: true,
+        cover: true,
         
         // Skills and Interests
         skills: true,

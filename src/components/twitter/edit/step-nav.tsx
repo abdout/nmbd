@@ -40,7 +40,10 @@ const StepIcons = {
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" className={className}>
       <path fill="currentColor" d="M255 471L91.7 387V41h328.6v346zm-147.3-93.74L255 453l149.3-75.76V57H107.7zm146.43-65.76l98.27-49.89v-49.9l-98.14 49.82l-94.66-48.69v50zm.13 32.66l-94.66-48.69v50l94.54 48.62l98.27-49.89v-49.9z"/>
     </svg>
-  )
+  ),
+  contribute: (className: string) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><path d="M6 9a3 3 0 1 0 0-6a3 3 0 0 0 0 6m12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6M6 9v12m12-6V7.5a2 2 0 0 0-2-2h-2.5"/><path d="M14.5 8L12 5.5L14.5 3"/></g></svg>
+  ),
 };
 
 const steps = [
@@ -49,6 +52,7 @@ const steps = [
   { title: 'الاتصال', route: 'contact', link: '/dashboard/profile/edit/contact', icon: 'contact' },
   { title: 'المعلومات', route: 'information', link: '/dashboard/profile/edit/information', icon: 'information' },
   { title: 'الدراسة', route: 'education', link: '/dashboard/profile/edit/education', icon: 'education' },
+  { title: 'المساهمة', route: 'contribute', link: '/dashboard/profile/edit/contribute', icon: 'contribute' },
   { title: 'العنوان', route: 'activity', link: '/onboarding/activity', icon: 'activity' },
 ];
 
@@ -58,6 +62,7 @@ const FORM_STORAGE_KEYS = {
   contact: 'contactFormData',
   information: 'informationFormData',
   education: 'educationFormData',
+  contribute: 'contributeFormData',
   activity: 'activityFormData',
 };
 
@@ -151,6 +156,23 @@ export default function StepNavigation() {
       }
     } catch (e) {
       console.error('Error parsing education data:', e);
+    }
+
+    // Check contribute form - green if at least 1 field is filled
+    try {
+      const contributeData = localStorage.getItem(FORM_STORAGE_KEYS.contribute);
+      if (contributeData) {
+        const parsedData = JSON.parse(contributeData);
+        const fieldsWithValue = Object.entries(parsedData)
+          .filter(([key, value]) => key !== 'id' && value && value !== '')
+          .length;
+        setFormStatus(prev => ({
+          ...prev,
+          contribute: fieldsWithValue > 0 ? 'complete' : 'partial'
+        }));
+      }
+    } catch (e) {
+      console.error('Error parsing contribute data:', e);
     }
 
     // Check activity form - green if at least one skill is filled

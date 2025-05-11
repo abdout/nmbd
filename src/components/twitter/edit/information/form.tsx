@@ -14,6 +14,7 @@ import Degree from "./degree";
 import { useSubmit } from './use-submit';
 import { useFormInit } from './use-init';
 import { useScrollLocationBirthdate } from './use-scroll-location-birthdate';
+import ID from "./id";
 
 
 // Add this at the top of the file, after the imports
@@ -223,7 +224,14 @@ const Form = ({ type, data }: FormProps) => {
                 />
               </div>
             </div>
-
+            <div>
+              <ID
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                watch={watch}
+              />
+            </div>
             {/* <div className="pt-6">
               <DegreeSelector 
                 setValue={setValue} 

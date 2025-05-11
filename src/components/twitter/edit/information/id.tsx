@@ -17,14 +17,14 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
   const religion = watch("religion");
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center justify-between mt-3 md:mt-0 gap-1 md:gap-4">
       <div className="w-1/4">
         <Select
           onValueChange={(value) => setValue('maritalStatus', value)}
           value={maritalStatus || ""}
           dir="rtl"
         >
-          <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الحالة">
+          <SelectTrigger className="h-8  flex justify-start text-right [&>svg]:hidden" aria-label="الحالة">
             <SelectValue placeholder="الحالة" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
@@ -45,7 +45,7 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
           value={gender || ""}
           dir="rtl"
         >
-          <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الجنس">
+          <SelectTrigger className="h-8 flex justify-start text-right [&>svg]:hidden" aria-label="الجنس">
             <SelectValue placeholder="الجنس" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
@@ -58,13 +58,13 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
         )}
       </div>
       
-      <div className="w-1/4">
+      <div className="w-1/4 md:p-2">
         <Select
           onValueChange={(value) => setValue('religion', value)}
           value={religion || ""}
           dir="rtl"
         >
-          <SelectTrigger className="h-9 flex justify-start text-right [&>svg]:hidden" aria-label="الديانة">
+          <SelectTrigger className="h-8 flex justify-start text-right [&>svg]:hidden" aria-label="الديانة">
             <SelectValue placeholder="الديانة" />
           </SelectTrigger>
           <SelectContent className="text-right" position="popper" dir="rtl" side="bottom" align="start">
@@ -81,8 +81,8 @@ const ID = ({ register, errors, setValue, watch }: IDProps) => {
       <div className="w-1/4">
         <Input
           id="nationalityId"
-          placeholder="الرقم الوطني"
-          className="h-9 text-right"
+          placeholder="رقم وطني"
+          className="h-8 text-right"
           dir="rtl"
           {...register('nationalityId')}
         />
