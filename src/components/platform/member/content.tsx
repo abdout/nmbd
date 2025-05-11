@@ -196,6 +196,13 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
     </div>
   )
 
+  // Chart modal content
+  const chartModalContent = (
+    <div className="p-4 flex items-center justify-center">
+      <MemberChart onClose={() => closeModal()} />
+    </div>
+  )
+
   return (
     <>
       {/* Filters */}
@@ -282,9 +289,15 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
           </DropdownMenu>
         )}
 
-        <ShadcnDailog triggerText='' triggerIcon='mdi:analytics'>
-          <MemberChart onClose={() => {}} />
-        </ShadcnDailog>
+        {/* Chart button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="reveal"
+          onClick={() => openModal('chart')}
+        >
+          <Icon icon='mdi:analytics' width={24} />
+        </Button>
       </div>
 
       {/* Table */}
@@ -382,6 +395,9 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
       {/* Modal */}
       {modal.open && modal.id === 'filter' && (
         <Modal content={filterModalContent} />
+      )}
+      {modal.open && modal.id === 'chart' && (
+        <Modal content={chartModalContent} />
       )}
     </>
   )

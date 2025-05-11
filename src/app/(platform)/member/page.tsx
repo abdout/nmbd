@@ -5,28 +5,10 @@ import { columns } from '@/components/template/table/coloum';
 import { Content } from '@/components/platform/member/content';
 import { fetchAllMembers } from '@/components/platform/member/action';
 import { member } from '@/components/platform/member/type';
-import { useMember } from '@/components/platform/member/context';
 import Loading from '@/components/atom/loading';
 
-// Create a custom hook to safely try using context
-const useSafeMemberContext = () => {
-  // Safely try to use the context
-  try {
-    return useMember();
-  } catch (_) {
-    // Use underscore to ignore the variable
-    return { members: [] };
-  }
-};
-
 const Member = () => {
-  // Use our custom hook to safely get context data if available
-  const contextData = useSafeMemberContext();
-  
-  // Ensure contextData.members is an array
-  const initialMembers = Array.isArray(contextData?.members) ? contextData.members : [];
-  
-  const [members, setMembers] = useState<member[]>(initialMembers);
+  const [members, setMembers] = useState<member[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +31,7 @@ const Member = () => {
     }
   }, []);
 
-  // Load members using server action regardless of context
+  // Load members using server action
   useEffect(() => {
     refreshMembers();
     

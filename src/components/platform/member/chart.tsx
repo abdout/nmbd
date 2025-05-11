@@ -12,13 +12,13 @@ interface MemberChartProps {
 
 const MemberChart: React.FC<MemberChartProps> = () => {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col -mt-6'>
       <div className='flex '>
         <ChartRank />
         <ChartTotal />
         <ChartActive />
       </div>
-      <div className='flex '>
+      <div className='flex mt-2 justify-between'>
         <ChartField />
         <ChartInterst />
       </div>

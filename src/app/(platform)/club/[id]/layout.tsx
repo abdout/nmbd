@@ -13,12 +13,10 @@ import { ClubNav } from "@/components/platform/club/club-nav"
 import Link from "next/link"
 import { club as clubList } from '@/components/template/club/constant';
 
-interface ClubLayoutProps {
-  children: React.ReactNode
-  params: { id: string }
-}
-
-export async function generateMetadata({ params }: ClubLayoutProps): Promise<Metadata> {
+// Define the generateMetadata function with exact Next.js signature
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
   // Find the club by id for dynamic metadata
   const clubData = clubList.find(c => c.id === params.id);
   const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
@@ -49,10 +47,14 @@ export async function generateMetadata({ params }: ClubLayoutProps): Promise<Met
   }
 }
 
+// Define the layout with the proper parameter structure
 export default async function ClubLayout({
   children,
   params,
-}: ClubLayoutProps) {
+}: {
+  children: React.ReactNode;
+  params: { id: string };
+}) {
   // Find the club by id
   const clubData = clubList.find(c => c.id === params.id);
   const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;

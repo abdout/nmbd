@@ -13,12 +13,10 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { getRepository } from '@/components/platform/repository/action';
 
-interface RepositoryLayoutProps {
-  children: React.ReactNode
-  params: { id: string }
-}
-
-export async function generateMetadata({ params }: RepositoryLayoutProps): Promise<Metadata> {
+// Define the generateMetadata function with exact Next.js signature
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
   try {
     // Fetch repository data from DB for dynamic metadata
     const { repository } = await getRepository(params.id);
@@ -53,10 +51,14 @@ export async function generateMetadata({ params }: RepositoryLayoutProps): Promi
   }
 }
 
+// Define the layout with the proper parameter structure
 export default async function RepositoryLayout({
   children,
   params,
-}: RepositoryLayoutProps) {
+}: {
+  children: React.ReactNode;
+  params: { id: string };
+}) {
   // Fetch repository data from DB
   const { repository } = await getRepository(params.id);
 

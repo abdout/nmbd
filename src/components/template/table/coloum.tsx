@@ -99,11 +99,11 @@ export const columns: ColumnDef<member>[] = [
   },
   {
     accessorKey: 'address',
-    header: () => <div className="text-right">المحلية</div>,
+    header: () => <div className="text-right">العنوان</div>,
     cell: ({ row }) => {
       const address = row.original.address;
       return (
-        <div className="text-right font-medium">
+        <div className="text-right">
           {address}
         </div>
       );
@@ -115,7 +115,7 @@ export const columns: ColumnDef<member>[] = [
   },
   {
     accessorKey: 'rank',
-    header: 'التخصص'    
+    header: () => <div className="text-right">التخصص</div>    
   },
   {
     accessorKey: 'skill',
