@@ -13,38 +13,46 @@ import { ClubNav } from "@/components/platform/club/club-nav"
 import Link from "next/link"
 import { club as clubList } from '@/components/template/club/constant';
 
-export const metadata: Metadata = {
-  title: " امانة المجتمع",
-  description:
-    "غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ",
-  openGraph: {
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          " امانة المجتمع"
-        )}&description=${encodeURIComponent("غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ")}`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          " امانة المجتمع"
-        )}&description=${encodeURIComponent("غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ")}`,
-      },
-    ],
-  },
+interface ClubLayoutProps {
+  children: React.ReactNode
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: ClubLayoutProps): Promise<Metadata> {
+  // Find the club by id for dynamic metadata
+  const clubData = clubList.find(c => c.id === params.id);
+  const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
+  const description = 'غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ';
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      images: [
+        {
+          url: `/og?title=${encodeURIComponent(
+            title
+          )}&description=${encodeURIComponent(description)}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [
+        {
+          url: `/og?title=${encodeURIComponent(
+            title
+          )}&description=${encodeURIComponent(description)}`,
+        },
+      ],
+    },
+  }
 }
 
 export default async function ClubLayout({
   children,
   params,
-}: {
-  children: React.ReactNode,
-  params: { id: string }
-}) {
+}: ClubLayoutProps) {
   // Find the club by id
   const clubData = clubList.find(c => c.id === params.id);
   const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;

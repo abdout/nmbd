@@ -10,41 +10,53 @@ import {
 import { RepositoryNav } from "@/components/platform/repository/repository-nav"
 import { Button } from "@/components/ui/button"
 
-
 import Link from "next/link"
 import { getRepository } from '@/components/platform/repository/action';
 
-export const metadata: Metadata = {
-  title: "Repository",
-  description: "Repository details page",
-  openGraph: {
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          " امانة المجتمع"
-        )}&description=${encodeURIComponent("غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ")}`,
+interface RepositoryLayoutProps {
+  children: React.ReactNode
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: RepositoryLayoutProps): Promise<Metadata> {
+  try {
+    // Fetch repository data from DB for dynamic metadata
+    const { repository } = await getRepository(params.id);
+    
+    const title = repository?.title || "Repository";
+    const description = repository?.desc || "No description available.";
+    
+    return {
+      title: title,
+      description: description,
+      openGraph: {
+        images: [
+          {
+            url: `/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
+          },
+        ],
       },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          " امانة المجتمع"
-        )}&description=${encodeURIComponent("غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ")}`,
+      twitter: {
+        card: "summary_large_image",
+        images: [
+          {
+            url: `/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
+          },
+        ],
       },
-    ],
-  },
+    };
+  } catch (error) {
+    return {
+      title: "Repository",
+      description: "Repository details page", 
+    };
+  }
 }
 
 export default async function RepositoryLayout({
   children,
   params,
-}: {
-  children: React.ReactNode,
-  params: { id: string }
-}) {
+}: RepositoryLayoutProps) {
   // Fetch repository data from DB
   const { repository } = await getRepository(params.id);
 

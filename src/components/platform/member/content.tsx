@@ -29,14 +29,16 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTableFacetedFilter } from '@/components/template/table/faceted-filter'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { useFilter } from './useFilter'
 import { member } from './type'
 import { ShadcnDailog } from '@/components/atom/dailog'
 import MemberChart from './chart'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Icon } from '@iconify/react'
+import { useModal } from "@/components/atom/modal/context"
+import Modal from "@/components/atom/modal/modal"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -55,9 +57,27 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
   })
   const [rowSelection, setRowSelection] = useState({})
   const [page, setPage] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const { modal, openModal, closeModal } = useModal()
   const loadMoreRef = useRef(null)
 
   const PAGE_SIZE = 20
+
+  // Check for mobile screen on mount and when window resizes
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    // Initial check
+    checkIfMobile()
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile)
+    
+    // Cleanup event listener
+    return () => window.removeEventListener('resize', checkIfMobile)
+  }, [])
 
   const table = useReactTable({
     data: validData,
@@ -113,143 +133,154 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
 
   const visibleRows = table.getRowModel().rows.slice(0, (page + 1) * PAGE_SIZE)
 
+  // Filter modal content
+  const filterModalContent = (
+    <div className='flex flex-col gap-4 p-4 mx-auto max-w-xs w-full'>
+      <h2 className="text-xl font-semibold text-center mb-4">تصفية النتائج</h2>
+      {rankColumn && (
+        <DataTableFacetedFilter
+          column={rankColumn}
+          title='تخصص'
+          options={rankOptions}
+          onFilterChange={(filterValue) => {
+            rankColumn.setFilterValue(filterValue)
+          }}
+        />
+      )}
+      {skillColumn && (
+        <DataTableFacetedFilter
+          column={skillColumn}
+          title='مهارة'
+          options={skillOptions}
+          onFilterChange={(filterValue) => {
+            skillColumn.setFilterValue(filterValue)
+          }}
+        />
+      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            aria-label='اختر الاعمدة'
+            variant='outline'
+            className='gap-2 w-full mt-2'
+          >
+            <MixerHorizontalIcon className="mr-2 size-4" />
+            اعمدة
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end'>
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className='capitalize'
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              )
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button 
+        variant="default" 
+        className="mt-4 w-full" 
+        onClick={() => closeModal()}
+      >
+        تطبيق
+      </Button>
+    </div>
+  )
+
   return (
     <>
       {/* Filters */}
       <div className='flex flex-wrap items-center gap-2 md:gap-4'>
         <div className='flex gap-2 py-4'>
-
           <Input
-            placeholder='بحث بالاسم ...'
+            placeholder='بحث ...'
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
-            className='w-40'
+            className='w-40 h-9'
           />
         </div>
 
         {/* Mobile filter trigger */}
-        <div className='block sm:hidden'>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant='ghost'>
-                <Icon icon='mdi:filter' width={30} />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <div className='flex flex-col gap-4'>
-
-
-                {/* Filters inside modal */}
-                {rankColumn && (
-                  <DataTableFacetedFilter
-                    column={rankColumn}
-                    title='تخصص'
-                    options={rankOptions}
-                    onFilterChange={(filterValue) => {
-                      rankColumn.setFilterValue(filterValue)
-                    }}
-                  />
-                )}
-                {skillColumn && (
-                  <DataTableFacetedFilter
-                    column={skillColumn}
-                    title='مهارة'
-                    options={skillOptions}
-                    onFilterChange={(filterValue) => {
-                      skillColumn.setFilterValue(filterValue)
-                    }}
-                  />
-                )}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      aria-label='اختر الاعمدة'
-                      variant='outline'
-                      className='ml-auto hidden gap-2 lg:flex reveal'
-                    >
-                      <MixerHorizontalIcon className='mr-2 size-4' />
-                      اعمدة
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align='end'>
-                    {table
-                      .getAllColumns()
-                      .filter((column) => column.getCanHide())
-                      .map((column) => {
-                        return (
-                          <DropdownMenuCheckboxItem
-                            key={column.id}
-                            className='capitalize'
-                            checked={column.getIsVisible()}
-                            onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                          >
-                            {column.id}
-                          </DropdownMenuCheckboxItem>
-                        )
-                      })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+        {isMobile && (
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="md:hidden"
+            onClick={() => openModal('filter')}
+          >
+            <Icon icon='mdi:filter' width={24} />
+          </Button>
+        )}
 
         {/* Desktop filters */}
-        <div className='hidden gap-4 sm:flex'>
-          {rankColumn && (
-            <DataTableFacetedFilter
-              column={rankColumn}
-              title='تخصص'
-              options={rankOptions}
-              onFilterChange={(filterValue) => {
-                rankColumn.setFilterValue(filterValue)
-              }}
-            />
-          )}
-          {skillColumn && (
-            <DataTableFacetedFilter
-              column={skillColumn}
-              title='مهارة'
-              options={skillOptions}
-              onFilterChange={(filterValue) => {
-                skillColumn.setFilterValue(filterValue)
-              }}
-            />
-          )}
-        </div>
+        {!isMobile && (
+          <div className='hidden gap-4 sm:flex'>
+            {rankColumn && (
+              <DataTableFacetedFilter
+                column={rankColumn}
+                title='تخصص'
+                options={rankOptions}
+                onFilterChange={(filterValue) => {
+                  rankColumn.setFilterValue(filterValue)
+                }}
+              />
+            )}
+            {skillColumn && (
+              <DataTableFacetedFilter
+                column={skillColumn}
+                title='مهارة'
+                options={skillOptions}
+                onFilterChange={(filterValue) => {
+                  skillColumn.setFilterValue(filterValue)
+                }}
+              />
+            )}
+          </div>
+        )}
 
         {/* Column visibility */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label='اختر الاعمدة'
-              variant='outline'
-              className='ml-auto hidden gap-2 lg:flex reveal'
-            >
-              <MixerHorizontalIcon className='mr-2 size-4' />
-              اعمدة
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className='capitalize'
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {!isMobile && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label='اختر الاعمدة'
+                variant='outline'
+                className='ml-auto hidden gap-2 lg:flex reveal'
+              >
+                <MixerHorizontalIcon className='mr-2 size-4' />
+                اعمدة
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className='capitalize'
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         <ShadcnDailog triggerText='' triggerIcon='mdi:analytics'>
           <MemberChart onClose={() => {}} />
@@ -279,21 +310,57 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
           </TableHeader>
           <TableBody>
             {visibleRows.length ? (
-              visibleRows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              visibleRows.map((row) => {
+                // Get member data from row
+                const member = row.original as member;
+                // Calculate initials for avatar fallback
+                const initials = member.name
+                  ? member.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .substring(0, 2)
+                  : "??";
+                
+                // Limit name to first two words
+                const displayName = member.name
+                  ? member.name.split(" ").slice(0, 2).join(" ")
+                  : "عضو بدون اسم";
+                
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      // For name column, show avatar and formatted name
+                      if (cell.column.id === 'name') {
+                        return (
+                          <TableCell key={cell.id}>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="hidden md:block h-6 w-6">
+                                <AvatarImage src={member.image || ""} alt={member.name || "عضو"} />
+                                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                              </Avatar>
+                              <span title={member.name}>{displayName}</span>
+                            </div>
+                          </TableCell>
+                        );
+                      }
+                      // For other columns, use the default rendering
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className='h-24 text-center'>
@@ -310,6 +377,11 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
         <div ref={loadMoreRef} className='text-center py-4'>
           Loading more...
         </div>
+      )}
+
+      {/* Modal */}
+      {modal.open && modal.id === 'filter' && (
+        <Modal content={filterModalContent} />
       )}
     </>
   )
