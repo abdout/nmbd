@@ -63,7 +63,7 @@ export default function EditLayout({
         </div>
 
         <div className={`${isReviewPage ? "flex-grow" : "flex-1"} flex flex-col items-center justify-center`}>
-          <div className={`w-full flex flex-col items-center justify-center ${isReviewPage ? "" : "max-h-full overflow-auto"}`}>
+          <div className={`w-full h-full flex flex-col items-center justify-center ${isReviewPage ? "" : "max-h-full overflow-auto"}`}>
             {children}
           </div>
         </div>

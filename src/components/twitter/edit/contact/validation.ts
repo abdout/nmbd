@@ -7,6 +7,7 @@ const hasAtLeastOneOtherContactMethod = (data: any) => {
     data.twitter, 
     data.facebook, 
     data.linkedin, 
+    data.link,
     data.telegram, 
     data.instagram, 
     data.tiktok
@@ -22,6 +23,7 @@ export const contactSchema = z.object({
   twitter: z.string().optional(),
   facebook: z.string().optional(),
   linkedin: z.string().optional(),
+  link: z.string().optional(),
   telegram: z.string().optional(),
   instagram: z.string().optional(),
   tiktok: z.string().optional()

@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaPhone, FaWhatsapp, FaTwitter, FaFacebook, FaLinkedin, FaTelegram, FaInstagram, FaTiktok, FaLink } from 'react-icons/fa';
 import { useFormContext } from '@/components/twitter/edit/form-context';
 import { getNextRoute } from '../utils';
 import { SuccessToast, ErrorToast, showValidationErrorToast } from '@/components/atom/toast';
@@ -23,14 +23,14 @@ type ContactField = keyof Omit<ContactSchema, 'id'>;
 
 const tabsData: Array<{icon: React.ReactElement, name: ContactField, label: string, placeholder: string, showOnMobile?: boolean}> = [
   // { icon: <FaTiktok size={26} />, name: 'tiktok', label: 'تيك توك', placeholder: '@username' },
-  // { icon: <FaInstagram size={26} />, name: 'instagram', label: 'انستجرام', placeholder: '@username' },
-  { icon: <FaLinkedin size={40} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username', showOnMobile: false },
-  
-  { icon: <FaFacebook size={70} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username', showOnMobile: false },
-  { icon: <FaTwitter size={70} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username', showOnMobile: true },
-  { icon: <FaTelegram size={70} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username', showOnMobile: true },
-  { icon: <FaWhatsapp size={70} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890', showOnMobile: true },
-  { icon: <FaPhone size={60} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890', showOnMobile: true },
+  { icon: <FaLink size={24} />, name: 'link', label: 'رابط شخصي', placeholder: 'https://yourwebsite.com', showOnMobile: true },
+  { icon: <FaInstagram size={28} />, name: 'instagram', label: 'انستجرام', placeholder: '@username', showOnMobile: true },
+  { icon: <FaLinkedin size={28} />, name: 'linkedin', label: 'لينكدان', placeholder: 'https://linkedin.com/in/username', showOnMobile: true },
+  { icon: <FaFacebook size={28} />, name: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/username', showOnMobile: true },
+  { icon: <FaTwitter size={28} />, name: 'twitter', label: 'تويتر', placeholder: 'https://twitter.com/username', showOnMobile: true },
+  { icon: <FaTelegram size={28} />, name: 'telegram', label: 'تيليجرام', placeholder: '@username', showOnMobile: true },
+  { icon: <FaWhatsapp size={28} />, name: 'whatsapp', label: 'واتساب', placeholder: '+1234567890', showOnMobile: true },
+  { icon: <FaPhone size={24} />, name: 'phone', label: 'الهاتف', placeholder: '+1234567890', showOnMobile: true },
 ];
 
 const ContactForm = ({
@@ -56,6 +56,7 @@ const ContactForm = ({
       twitter: '',
       facebook: '',
       linkedin: '',
+      link: '',
       telegram: '',
       instagram: '',
       tiktok: '',
@@ -79,6 +80,7 @@ const ContactForm = ({
       twitter: formData.twitter || '',
       facebook: formData.facebook || '',
       linkedin: formData.linkedin || '',
+      link: formData.link || '',
       telegram: formData.telegram || '',
       instagram: formData.instagram || '',
       tiktok: formData.tiktok || '',
@@ -124,7 +126,7 @@ const ContactForm = ({
   return (
     <form 
       ref={formRef} 
-      className="w-full flex flex-col p-2"
+      className="w-full h-fullflex flex-col p-2"
       
       onSubmit={onSubmit}
     >
@@ -157,7 +159,7 @@ const ContactForm = ({
           </TabsContent>
         ))}
         <div className="flex items-center justify-center mb-4">
-          <TabsList className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-6 md:gap-4 bg-background">
+          <TabsList className="grid grid-cols-4 md:grid-cols-8 items-center justify-center gap-2 md:gap-2 bg-background">
             {tabsData.slice().reverse().map(({ icon, name, showOnMobile }) => (
               <TabsTrigger 
                 key={name} 

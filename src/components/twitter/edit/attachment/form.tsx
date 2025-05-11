@@ -127,7 +127,7 @@ const AttachmentForm = ({
             <div
               key={name}
               onClick={() => fileInputRefs.current[name]?.click()}
-              className={`relative flex items-center justify-center w-40 h-40 cursor-pointer overflow-hidden border border-neutral-500 hover:bg-neutral-100 ${isFirst ? 'rounded-full' : 'rounded-lg'}`}
+              className={`relative flex items-center justify-center w-28 h-28 md:w-40 md:h-40 cursor-pointer overflow-hidden border border-neutral-500 hover:bg-neutral-100 ${isFirst ? 'rounded-full' : 'rounded-sm'}`}
               style={{ position: 'relative' }}
             >
               <input
