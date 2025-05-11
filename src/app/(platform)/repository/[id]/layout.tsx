@@ -56,7 +56,7 @@ export default async function RepositoryLayout({
         <PageHeaderDescription>{repository?.desc || "No description available."}</PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
-            <a href="#vibes">تصفح المشكلات</a>
+            <a href="#vibes">تابع المستودع</a>
           </Button>
           <Button asChild variant="ghost" size="sm">
             <Link href="/docs/vibes">افتح مشكلة</Link>

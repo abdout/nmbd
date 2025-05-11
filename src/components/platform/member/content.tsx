@@ -32,6 +32,7 @@ import { DataTableFacetedFilter } from '@/components/template/table/faceted-filt
 
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { useFilter } from './useFilter'
+import { member } from './type'
 import { ShadcnDailog } from '@/components/atom/dailog'
 import MemberChart from './chart'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
@@ -43,6 +44,9 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+  // Ensure data is an array
+  const validData = Array.isArray(data) ? data : [];
+  
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -56,7 +60,7 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
   const PAGE_SIZE = 20
 
   const table = useReactTable({
-    data,
+    data: validData,
     columns,
     state: {
       sorting,
@@ -74,8 +78,8 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
     getFilteredRowModel: getFilteredRowModel(),
   })
 
-  const rankOptions = useFilter('rank')
-  const skillOptions = useFilter('skill')
+  const rankOptions = useFilter(validData as member[], 'rank')
+  const skillOptions = useFilter(validData as member[], 'skill')
   const rankColumn = table.getColumn('rank')
   const skillColumn = table.getColumn('skill')
 

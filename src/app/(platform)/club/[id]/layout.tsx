@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function templatesLayout({
+export default async function ClubLayout({
   children,
   params,
 }: {

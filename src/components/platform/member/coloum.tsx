@@ -89,7 +89,7 @@ export const columns: ColumnDef<member>[] = [
   },
   {
     accessorKey: 'rank',
-    header: 'التخصص'    
+    header: () => <div className="text-right">التخصص</div>,
   },
   {
     accessorKey: 'skill',

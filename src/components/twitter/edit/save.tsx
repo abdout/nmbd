@@ -105,7 +105,7 @@ export function SaveActions({ onSave }: SaveActionsProps) {
         }
         
         // Try to find submit button with ID
-        let submitButtonId = `#submit-${currentFormId}`;
+        const submitButtonId = `#submit-${currentFormId}`;
         const submitButton = formRef.current.querySelector(submitButtonId) as HTMLButtonElement;
         
         if (submitButton) {

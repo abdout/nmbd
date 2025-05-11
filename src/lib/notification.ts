@@ -30,7 +30,7 @@ export async function notifyNewApplication(
   applicantName: string,
   applicantEmail: string | null,
   applicantPhone: string | null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   applicantWhatsapp: string | null
 ) {
   if (!notificationEmails.length) return;

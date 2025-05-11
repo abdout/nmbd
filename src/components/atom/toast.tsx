@@ -53,6 +53,25 @@ export const ErrorToast = (message: string) => {
 };
 
 /**
+ * Shows a reusable delete success toast with customizable message
+ * @param message The success message to display (defaults to "تم الحذف بنجاح")
+ */
+export const DeleteToast = (message: string = "تم الحذف بنجاح") => {
+  toast.success(message, {
+    style: {
+      background: 'rgb(34 197 94)',
+      color: 'white',
+      border: 'none',
+      width: '220px',
+      maxWidth: '220px',
+      textAlign: 'right'
+    },
+    duration: 2000,
+    position: 'bottom-right'
+  });
+};
+
+/**
  * Shows an info toast with custom styling
  * @param message The info message to display
  */

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'; // Import React and useEffect
+import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,7 +15,8 @@ import {
 import { Icon } from '@iconify/react';
 import { member } from '../../platform/member/type'
 import Link from 'next/link'
-import { useMember } from '../../platform/member/context'
+import { deleteMember } from '@/components/platform/member/action'
+import { DeleteToast, ErrorToast } from '@/components/atom/toast'
 
 interface ActionsProps {
   row: {
@@ -24,14 +25,30 @@ interface ActionsProps {
 }
 
 const ActionsCell: React.FC<ActionsProps> = ({ row }) => {
-  const { refreshMembers, members, deleteMember } = useMember();
-  
-  useEffect(() => {
-    refreshMembers();
-    console.log(members);
-  }, []);
-
   const user = row.original;
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Handle member deletion with server action
+  const handleDelete = async (id: string) => {
+    if (!id) return;
+    
+    try {
+      setIsDeleting(true);
+      const result = await deleteMember(id);
+      
+      if (result.success) {
+        DeleteToast("تم حذف العضو بنجاح");
+        // Page will refresh automatically due to the refresh interval
+      } else {
+        ErrorToast(result.error || "فشلت عملية الحذف");
+      }
+    } catch (error) {
+      console.error("Error deleting member:", error);
+      ErrorToast("حدث خطأ أثناء محاولة حذف العضو");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -50,12 +67,13 @@ const ActionsCell: React.FC<ActionsProps> = ({ row }) => {
           نسخ 
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={`/member/${user._id}`}>
+          <Link href={`/dashboard/profile?id=${user._id}`}>
             ملف
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>تجميد</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => user._id && deleteMember(user._id)}>حذف</DropdownMenuItem> 
+        <DropdownMenuItem disabled={isDeleting} onClick={() => handleDelete(user._id)}>
+          {isDeleting ? "جاري الحذف..." : "حذف"}
+        </DropdownMenuItem> 
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -81,7 +99,15 @@ export const columns: ColumnDef<member>[] = [
   },
   {
     accessorKey: 'address',
-    header: () => <div className="text-right">العنوان</div>,
+    header: () => <div className="text-right">المحلية</div>,
+    cell: ({ row }) => {
+      const address = row.original.address;
+      return (
+        <div className="text-right font-medium">
+          {address}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'gender',
@@ -124,6 +150,6 @@ export const columns: ColumnDef<member>[] = [
   
   {
     id: 'actions',
-    cell: ActionsCell // Use the new React component or custom hook function here
+    cell: ActionsCell
   }
 ]
