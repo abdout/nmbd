@@ -207,7 +207,7 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
     <>
       {/* Filters */}
       <div className='flex flex-wrap items-center gap-2 md:gap-4'>
-        <div className='flex gap-2 py-4'>
+        <div className='flex gap-2 py-4 items-center'>
           <Input
             placeholder='بحث ...'
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -256,48 +256,48 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
           </div>
         )}
 
-        {/* Column visibility */}
+        {/* Column visibility and chart button as a group */}
         {!isMobile && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                aria-label='اختر الاعمدة'
-                variant='outline'
-                className='ml-auto hidden gap-2 lg:flex reveal'
-              >
-                <MixerHorizontalIcon className='mr-2 size-4' />
-                اعمدة
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className='capitalize'
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label='اختر الاعمدة'
+                  variant='outline'
+                  className='hidden gap-2 lg:flex reveal'
+                >
+                  <MixerHorizontalIcon className='mr-2 size-4' />
+                  اعمدة
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className='capitalize'
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full mr-1"
+              onClick={() => openModal('chart')}
+            >
+              <Icon icon='mdi:analytics' width={24} />
+            </Button>
+          </div>
         )}
-
-        {/* Chart button */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="reveal"
-          onClick={() => openModal('chart')}
-        >
-          <Icon icon='mdi:analytics' width={24} />
-        </Button>
       </div>
 
       {/* Table */}

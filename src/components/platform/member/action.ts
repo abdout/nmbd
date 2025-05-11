@@ -432,7 +432,7 @@ export async function fetchAllMembers(): Promise<{ error: string | null, data: m
 
       return {
         _id: member.id,
-        name: member.fullname || member.name || "",
+        name: member.name || member.fullname || "",
         dob: member.birthDate ? new Date(member.birthDate).toISOString().split('T')[0] : "",
         address: addressDisplay,
         gender: member.gender || "",

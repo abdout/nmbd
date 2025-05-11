@@ -52,6 +52,7 @@ model User {
   telegram             String?
   instagram            String?
   tiktok               String?
+  link                 String?
 
   // Birthday
   birthDate            DateTime?

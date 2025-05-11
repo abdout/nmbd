@@ -136,12 +136,12 @@ export const columns: ColumnDef<member>[] = [
       const { phone, whatsapp } = row.original.contact || {};
 
       return (
-        <div className='flex gap-4'>
+        <div className='flex gap-2'>
           {phone && <a href={phone}>
-            <Icon icon='ph:phone-call-thin' width={24} className='reveal'/>
+            <Icon icon='ph:phone-call-thin' width={20} className='reveal'/>
             </a>}
           {whatsapp && <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">
-          <Icon icon='circum:mail' width={25} className='reveal' />
+            <Icon icon='ph:whatsapp-logo-thin' width={20} className='reveal' />
           </a>}
         </div>
       )
