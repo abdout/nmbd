@@ -48,7 +48,7 @@ export async function generateMetadata(
 }
 
 // Define the layout with the proper parameter structure
-export default async function ClubLayout({
+export default function ClubLayout({
   children,
   params,
 }: {
