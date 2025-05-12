@@ -5,7 +5,8 @@ export const attachmentSchema = z.object({
   image: z.string({ required_error: "الصورة الشخصية مطلوبة" }),
   cv: z.string().optional(),
   portfolio: z.string().optional(),
-  additionalFile: z.string().optional(),
+  cover: z.string().optional(),
+
 });
 
 export type AttachmentSchema = z.infer<typeof attachmentSchema>; 

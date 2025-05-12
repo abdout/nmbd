@@ -16,7 +16,8 @@ export default async function AttachmentPage() {
             image: userData.image || '',
             cv: userData.cv || undefined,
             portfolio: userData.portfolio || undefined,
-            additionalFile: userData.additionalFile || undefined
+            cover: userData.cover || undefined,
+           
           } : undefined} 
         />
       </Suspense>
