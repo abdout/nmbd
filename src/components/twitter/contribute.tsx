@@ -44,6 +44,7 @@ interface UserSkillsData {
   clubMember?: boolean;
   clubName?: string;
   clubType?: string;
+  contribute?: string;
 }
 
 // Custom SVG icons as React components
@@ -222,21 +223,10 @@ export default function Contribute() {
             <CardTitle className="text-lg font-semibold">دعوة</CardTitle>
           </div>
           <CardDescription className="text-foreground leading-normal">
-            <p className="mb-3 leading-normal">
-              شعارات الحركة الوطنية من المجتمع أولًا، والتحصن ضد الطائفية وقداسة الشيخ، والدعوة إلى اللامركزية، والشورى، والشفافية، والمحاسبية، وحكومة الحد الأدنى، وتطلع الحركة إلى قرارات مستندة على علم البيانات، ومركز للدراسات بجهود مشتركة.
-            </p>
-            <p className="mb-3 leading-normal">
-              كل هذه الشعارات مُنزَّلة في مشاريع تقنية – مفتوحة المصدر – عبر آليات وأدوات واضحة.
-            </p>
-            <p className="mb-3 leading-normal">
-              فعلى سبيل المثال، يشارك في مشروع لينكس 16,167 مطورًا، ويضم المشروع أكثر من 1,352,344 عملية تعديل - وقت كتابة هذه الأسطر.
-            </p>
-            <p className="mb-3 leading-normal">
-              هكذا لا أكاد أفهم العمل الجماعي بدون أدوات كتلك التي تُستخدم في مشروع لينكس؛ لديهم ملفات تعريفية واضحة، تنظم المشروع وتوضح أهدافه وخطوات المساهمة فيه، بالإضافة إلى أدوات إدارة الإصدارات ونظام تتبع المشاكل الذي يتيح للمطورين الإحاطة بمجمل التغييرات السابقة والوضع القائم والمشكلات التالية من ثم التعاون والعمل الجماعي.
-            </p>
-            <p className="mb-0 leading-normal">
-              نظام مستوحى من عمل GitHub هو ما أراه ضروريًا لبناء بيئة تعاونية، وهو ما أحب التطوع في سبيله.
-            </p>
+            {userData?.contribute
+              ? <span>{userData.contribute}</span>
+              : <span>لم تتم إضافة وصف للمساهمة بعد.</span>
+            }
           </CardDescription>
         </CardHeader>
       </Card>
