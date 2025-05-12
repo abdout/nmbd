@@ -5,12 +5,29 @@ import { getIssue } from '@/components/platform/issue/action';
 import { IssueType } from '@/components/platform/issue/type';
 import { useParams } from "next/navigation";
 import Loading from '@/components/atom/loading';
+import { Issue as IssueIcon } from '@/components/atom/icon';
+import { Badge } from "@/components/ui/badge";
+import TwitterThread from "@/components/twitter/twitter-thread";
 
 const appendixContent = {
   datasheet: { title: "Datasheet", content: () => <div>Coming soon...</div> },
   manual: { title: "Manual", content: () => <div>Coming soon...</div> },
   calibration: { title: "Calibration", content: () => <div>Coming soon...</div> },
   awesome: { title: "Awesome", content: () => <div>Coming soon...</div> },
+};
+
+const statusArabic: Record<string, string> = {
+  pending: 'محايد',
+  stuck: 'متوقف',
+  in_progress: 'جاري',
+  done: 'تم',
+};
+
+const priorityArabic: Record<string, string> = {
+  pending: 'محايد',
+  high: 'عالي',
+  medium: 'متوسط',
+  low: 'منخفض',
 };
 
 const IssueDetail = () => {
@@ -20,6 +37,16 @@ const IssueDetail = () => {
   const [issue, setIssue] = useState<IssueType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const participantAvatars = [
+    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=facearea&w=80&h=80&facepad=2',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&w=80&h=80&facepad=2',
+  ];
 
   useEffect(() => {
     const fetchIssue = async () => {
@@ -40,7 +67,9 @@ const IssueDetail = () => {
             desc: response.issue.desc || '',
             label: response.issue.label || '',
             tag: response.issue.tag || '',
-            remark: response.issue.remark || ''
+            remark: response.issue.remark || '',
+            repository: response.issue.repository?.title || null,
+            repositoryTitle: response.issue.repository?.title || null,
           });
         }
       } catch (err) {
@@ -74,50 +103,75 @@ const IssueDetail = () => {
 
   return (
     <div className="container px-8 py-28 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-[220px,1fr,1fr] gap-16">
         <div className="flex flex-col justify-start items-start pt-0">
-          <div className="rounded-lg w-full max-w-[250px] h-[180px] flex items-center justify-center text-5xl font-bold select-none">
-            {issue.issue?.slice(0, 2) || 'IS'}
+          <div className="rounded-lg w-full max-w-[250px] select-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 24 24" className="w-40 h-40 text-foreground"><path fill="currentColor" d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12S5.925 1 12 1M2.5 12a9.5 9.5 0 0 0 9.5 9.5a9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5A9.5 9.5 0 0 0 2.5 12m9.5 2a2 2 0 1 1-.001-3.999A2 2 0 0 1 12 14"/></svg>
           </div>
-          <p className="text-xl mx-3 mt-6 mb-3">
-            الحالة: <span className="font-bold">{issue.status}</span>
-          </p>
-          <div className="flex items-center gap-4 mx-2">
-            <span className="px-6 py-3 text-sm rounded-full font-bold text-center inline-block">
-              {issue.priority || '---'}
+          <div className="flex flex-row flex-wrap gap-2 mt-2 mb-1">
+            <span className="inline-block rounded-full bg-muted px-2 py-0.5 text-sm text-foreground">
+              {statusArabic[String(issue.status)] ?? 'غير محدد'}
             </span>
-            <span className="text-sm font-medium">{issue.duration} ساعة</span>
+            <span className="inline-block rounded-full bg-muted px-2 py-0.5 text-sm text-foreground">
+              {priorityArabic[String(issue.priority)] ?? 'غير محدد'}
+            </span>
+            {issue.repositoryTitle && (
+              <span className="inline-block rounded-full bg-muted px-2 py-0.5 text-sm text-foreground">
+                {issue.repositoryTitle}
+              </span>
+            )}
+            {issue.club && (
+              <span className="inline-block rounded-full bg-muted px-2 py-0.5 text-sm text-foreground">
+                {issue.club}
+              </span>
+            )}
+          </div>
+          <div className="mt-8 border-t pt-6 w-full">
+            <div className="flex items-center mb-2">
+              <h3 className="text-sm font-semibold">الوسوم</h3>
+              <span className="mr-2 bg-muted text-muted-foreground rounded-full px-1 py-0 text-[10px]">14</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Badge>figma</Badge>
+              <Badge>after effects</Badge>
+              <Badge>reactjs</Badge>
+              <Badge>vibe coding</Badge>
+              <Badge>content creator</Badge>
+            </div>
+           
+          </div>
+          <div className="mt-8 border-t pt-6 w-full">
+            <div className="flex items-center mb-2">
+              <h3 className="text-sm font-semibold">المشاركين</h3>
+              <span className="mr-2 bg-muted text-muted-foreground rounded-full px-1 py-0 text-[10px]">14</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {participantAvatars.map((url, i) => (
+                <div
+                  key={i}
+                  className="w-10 h-10 rounded-full bg-muted/50 overflow-hidden border border-muted"
+                  title={`مشارك ${i + 1}`}
+                >
+                  <img src={url} alt={`مشارك ${i + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+            <button className="mt-4 text-muted-foreground hover:underline text-sm font-medium">
+              +6 مشارك
+            </button>
           </div>
         </div>
         <div className="md:col-span-2">
-          <h1 className="text-4xl font-bold">{issue.issue}</h1>
-          <h2 className="text-2xl mt-2">{issue.desc}</h2>
+          <h2 className="font-heading">{issue.issue}</h2>
+          <p className="w-[80%] text-muted-foreground text-lg">{issue.desc}</p>
           <div className="mt-8 border-t pt-6">
-            <h3 className="text-xl font-semibold mb-3">تفاصيل</h3>
-            <ul className="list-disc ml-5 space-y-2">
-              <li>المشروع: {issue.repositoryTitle || issue.repository || 'غير محدد'}</li>
-              <li>الأمانة: {issue.club || 'غير محدد'}</li>
-              <li>الوسم: {issue.tag || 'غير محدد'}</li>
-              <li>الملصق: {issue.label || 'غير محدد'}</li>
-              <li>ملاحظة: {issue.remark || 'غير محدد'}</li>
-            </ul>
+            
+            <TwitterThread />
           </div>
-          <div className="mt-8 border-t pt-6">
-            <h3 className="text-xl font-semibold mb-3">الملحقات</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              {Object.keys(appendixContent).map(key => (
-                <button
-                  key={key}
-                  onClick={() => setActiveAppendix(key)}
-                  className="border p-4 rounded-lg flex flex-col items-start text-left cursor-pointer hover:bg-gray-100 transition-colors"
-                >
-                  <span className="text-sm font-medium">{appendixContent[key as keyof typeof appendixContent].title}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          
         </div>
       </div>
+      
       {/* Appendix Dialog */}
       <AnimatePresence>
         {activeAppendix && (

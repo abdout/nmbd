@@ -17,7 +17,7 @@ export const ISSUE_PRIORITY = {
 
 export const issueFormSchema = z.object({
   repository: z.string().optional(),
-  issue: z.string().optional(),
+  issue: z.string().min(1, 'العنوان مطلوب'),
   status: z.enum([
     ISSUE_STATUS.PENDING,
     ISSUE_STATUS.STUCK,
@@ -31,7 +31,7 @@ export const issueFormSchema = z.object({
     ISSUE_PRIORITY.LOW,
   ]).default(ISSUE_PRIORITY.PENDING),
   duration: z.string().optional().default("4"),
-  desc: z.string().optional().default(""),
+  desc: z.string().min(1, 'الوصف مطلوب'),
   tag: z.string().optional().default(""),
   remark: z.string().optional().default(""),
   club: z.string().optional(),

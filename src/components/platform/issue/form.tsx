@@ -37,6 +37,7 @@ import Status from '../repository/status';
 import Priority from './priority';
 import { getRepositories } from '../repository/action';
 import { IssueType } from './type';
+import { ErrorToast } from '@/components/atom/toast';
 
 interface Props {
   onClose: () => void;
@@ -146,20 +147,16 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing
   const nextStep = () => setStep((prev) => (prev < 4 ? prev + 1 : 4));
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const onSubmit = async (data: IssueFormValues) => {
+  const handleValidSubmit = async (data: IssueFormValues) => {
     try {
       setIsSubmitting(true);
-      console.log('Form data:', data);
-      
       // Add club from the selected value and repository from selected repository
       const formData = {
         ...data,
         repository: selectedRepository?.value || '',
         club: selectedClub?.value || '',
       };
-      
       let result;
-      
       if (isEditing && initialData?._id) {
         // Update existing issue
         result = await updateIssue(initialData._id, formData);
@@ -167,25 +164,29 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing
         // Create new issue
         result = await createIssue(formData);
       }
-      
       if (result.error) {
-        toast.error(result.error);
+        ErrorToast(result.error);
         return;
       }
-      
       toast.success(isEditing ? 'تم تحديث المشكلة بنجاح' : 'تم إنشاء المشكلة بنجاح');
       form.reset();
-      
       if (onSuccess) {
         await onSuccess();
       }
-      
       onClose();
     } catch (error: any) {
-      console.error('Error processing issue:', error);
-      toast.error(error.message || 'فشل في معالجة المشكلة');
+      ErrorToast(error.message || 'فشل في معالجة المشكلة');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleInvalidSubmit = (errors: any) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError && typeof firstError === 'object' && 'message' in firstError) {
+      ErrorToast((firstError as any).message);
+    } else {
+      ErrorToast('يرجى تعبئة جميع الحقول المطلوبة بشكل صحيح');
     }
   };
 
@@ -199,7 +200,7 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing
       </div>
       <Form<IssueFormValues> {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleValidSubmit, handleInvalidSubmit)}
           className="w-full max-w-md flex flex-col justify-center items-center gap-6 -mt-40 relative h-full"
         >
           <Button
@@ -232,7 +233,6 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing
                         className='w-72'
                         placeholder="العنوان" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -246,7 +246,6 @@ const IssueForm: React.FC<Props> = ({ onClose, onSuccess, initialData, isEditing
                         className='h-20 w-72'
                         placeholder="الوصف" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

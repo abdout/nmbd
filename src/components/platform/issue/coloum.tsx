@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { SuccessToast } from '@/components/atom/toast';
 
 // Status circle component
 const StatusCircle: React.FC<{ status: string }> = ({ status }) => {
@@ -71,16 +72,16 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, onDelete, onEdit }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => window.location.href = `/issue/${row.original._id}`}>
+          <DropdownMenuItem onClick={e => { e.stopPropagation(); window.location.href = `/issue/${row.original._id}`; }}>
             فتح
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onEdit(row.original)}>
+          <DropdownMenuItem onClick={e => { e.stopPropagation(); onEdit(row.original); }}>
             تعديل
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDelete} disabled={loading}>
+          <DropdownMenuItem onClick={e => { e.stopPropagation(); handleDelete(); }} disabled={loading} className="text-red-500 hover:text-red-500">
             حذف
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => window.location.href = `/issue/${row.original._id}/contribute`}>
+          <DropdownMenuItem onClick={e => { e.stopPropagation(); window.location.href = `/issue/${row.original._id}/contribute`; }}>
             مساهمة
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -138,7 +139,7 @@ export const getColumns = (
     accessorKey: 'club',
     header: () => <div className="text-right w-full">الامانة</div>,
     cell: ({ row }) => (
-      <div className="text-right mr-2">{row.getValue('club')}</div>
+      <div className="text-right mr-2">{row.getValue('club') ? row.getValue('club') : 'لا توجد'}</div>
     )
   },
   {

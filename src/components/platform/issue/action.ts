@@ -86,11 +86,15 @@ export async function getIssues() {
 
 // Get a single issue by ID
 export async function getIssue(id: string) {
-  const issue = await db.issue.findUnique({ where: { id } });
+  const issue = await db.issue.findUnique({ 
+    where: { id },
+    include: { repository: true }
+  });
   if (!issue) {
     return { error: 'Issue not found' };
   }
-  return { success: true, issue };
+  // Add repositoryTitle to match getIssues
+  return { success: true, issue: { ...issue, repositoryTitle: issue.repository?.title || null } };
 }
 
 // Update an issue by ID

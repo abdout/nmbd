@@ -36,6 +36,9 @@ import Modal from '@/components/atom/modal/modal'
 import { getIssues, deleteIssue } from './action'
 import { IssueType } from './type'
 import { useModal } from '@/components/atom/modal/context'
+import { useRouter } from 'next/navigation'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { SuccessToast } from '@/components/atom/toast'
 
 interface ContentProps {
   initialIssues: IssueType[]
@@ -51,8 +54,11 @@ export function Content({ initialIssues }: ContentProps) {
   })
   const [rowSelection, setRowSelection] = useState({})
   const [selectedIssue, setSelectedIssue] = useState<IssueType | null>(null)
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false)
+  const [issueToDelete, setIssueToDelete] = useState<string | null>(null)
 
   const { modal, openModal, closeModal } = useModal();
+  const router = useRouter();
 
   const refreshIssues = async () => {
     try {
@@ -90,8 +96,18 @@ export function Content({ initialIssues }: ContentProps) {
   }
 
   const handleDelete = async (id: string) => {
-    await deleteIssue(id)
-    await refreshIssues()
+    setIssueToDelete(id);
+    setShowDeleteAlert(true);
+  }
+
+  const confirmDelete = async () => {
+    if (issueToDelete) {
+      await deleteIssue(issueToDelete);
+      await refreshIssues();
+      setShowDeleteAlert(false);
+      setIssueToDelete(null);
+      SuccessToast();
+    }
   }
   
   const handleEdit = (issue: IssueType) => {
@@ -224,11 +240,15 @@ export function Content({ initialIssues }: ContentProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  onClick={e => {
+                    if ((e.target as HTMLElement).closest('.actions-cell')) return;
+                    router.push(`/issue/${row.original._id}`);
+                  }}
                   data-state={row.getIsSelected() && 'selected'}
                   className="cursor-pointer hover:bg-neutral-50"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className={cell.column.id === 'actions' ? 'actions-cell' : ''}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -257,6 +277,26 @@ export function Content({ initialIssues }: ContentProps) {
           isEditing={!!selectedIssue}
         />} />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-right">هل أنت متأكد؟</AlertDialogTitle>
+            <AlertDialogDescription className="text-right">
+              لا يمكن التراجع عن هذا الإجراء بعد الحذف.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row-reverse sm:justify-start">
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600 text-white">
+              حذف
+            </AlertDialogAction>
+            <AlertDialogCancel onClick={() => setIssueToDelete(null)}>
+              إلغاء
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
