@@ -69,8 +69,8 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel()
   })
 
-  const rankOptions = useFilter('rank');
-  const skillOptions = useFilter('skill');
+  const rankOptions = useFilter(data, 'rank');
+  const skillOptions = useFilter(data, 'skill');
   const rankColumn = table.getColumn('rank');
   const skillColumn = table.getColumn('skill');
 
