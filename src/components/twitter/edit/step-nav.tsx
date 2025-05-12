@@ -53,7 +53,7 @@ const steps = [
   { title: 'المعلومات', route: 'information', link: '/dashboard/profile/edit/information', icon: 'information' },
   { title: 'الدراسة', route: 'education', link: '/dashboard/profile/edit/education', icon: 'education' },
   { title: 'المساهمة', route: 'contribute', link: '/dashboard/profile/edit/contribute', icon: 'contribute' },
-  { title: 'العنوان', route: 'activity', link: '/onboarding/activity', icon: 'activity' },
+  { title: 'النشاط', route: 'activity', link: '/dashboard/profile/edit/activity', icon: 'activity' },
 ];
 
 // Map localStorage keys to form routes
