@@ -10,11 +10,11 @@ export const userSchema = z.object({
   isTwoFactorEnabled: z.boolean().default(false),
   
   // Profile
-  description: z.string().optional().nullable(),
+  contribute: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   cv: z.string().optional().nullable(),
   portfolio: z.string().optional().nullable(),
-  additionalFile: z.string().optional().nullable(),
+  cover: z.string().optional().nullable(),
 
   // Contact
   phone: z.string().optional().nullable(),

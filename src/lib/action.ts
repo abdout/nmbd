@@ -22,11 +22,11 @@ export const createUser = async (
         isTwoFactorEnabled: data.isTwoFactorEnabled,
         
         // Profile
-        description: data.description,
+        contribute: data.contribute,
         bio: data.bio,
         cv: data.cv,
         portfolio: data.portfolio,
-        additionalFile: data.additionalFile,
+        cover: data.cover,
 
         // Contact
         phone: data.phone,
@@ -132,11 +132,11 @@ export const updateUser = async (
         isTwoFactorEnabled: data.isTwoFactorEnabled,
         
         // Profile
-        description: data.description,
+        contribute: data.contribute,
         bio: data.bio,
         cv: data.cv,
         portfolio: data.portfolio,
-        additionalFile: data.additionalFile,
+        cover: data.cover,
 
         // Contact
         phone: data.phone,
