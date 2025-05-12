@@ -103,7 +103,7 @@ export async function getInformation() {
       select: {
         name: true,
         fullname: true,
-        description: true,
+        contribute: true,
         // bio: true,
         birthCountry: true,
         birthState: true,
@@ -219,7 +219,7 @@ export async function deleteInformation() {
       data: {
         name: null,
         fullname: null,
-        description: null,
+        contribute: null,
         bio: null,
         birthCountry: null,
         birthState: null,
