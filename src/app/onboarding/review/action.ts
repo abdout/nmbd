@@ -21,7 +21,7 @@ export type UserReviewData = {
   birthNeighborhood?: string;
   birthMonth?: number;
   birthYear?: number;
-  description?: string;
+  contribute?: string;
   bio?: string;
   
   // Skills and Interests
@@ -170,7 +170,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         updatedAt: true,
         
         // Personal info
-        description: true,
+        contribute: true,
         bio: true,
         phone: true,
         whatsapp: true,
@@ -283,7 +283,7 @@ export async function fetchUserForReview(): Promise<{ error: string | null, data
         image: true,
         cv: true,
         portfolio: true,
-        additionalFile: true,
+        cover: true,
         
         // Skills and Interests
         skills: true,
