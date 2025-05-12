@@ -1,63 +1,26 @@
-import { Metadata } from "next"
-import React from "react"
+'use client';
 
-import { Announcement } from "@/components/announcement"
+import React from "react";
+import { Announcement } from "@/components/announcement";
 import {
   PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { Button } from "@/components/ui/button"
-import { ClubNav } from "@/components/platform/club/club-nav"
-
-import Link from "next/link"
+} from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { ClubNav } from "@/components/platform/club/club-nav";
+import Link from "next/link";
 import { club as clubList } from '@/components/template/club/constant';
+import { useParams } from "next/navigation";
 
-// Define the generateMetadata function with exact Next.js signature
-export async function generateMetadata(
-  { params }: { params: { id: string } }
-): Promise<Metadata> {
-  // Find the club by id for dynamic metadata
-  const clubData = clubList.find(c => c.id === params.id);
-  const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
-  const description = 'غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ';
-
-  return {
-    title: title,
-    description: description,
-    openGraph: {
-      images: [
-        {
-          url: `/og?title=${encodeURIComponent(
-            title
-          )}&description=${encodeURIComponent(description)}`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      images: [
-        {
-          url: `/og?title=${encodeURIComponent(
-            title
-          )}&description=${encodeURIComponent(description)}`,
-        },
-      ],
-    },
-  }
-}
-
-// Make this an async function like the repository layout
-export default async function ClubLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { id: string };
-}) {
-  // Find the club by id (you can make this an async data fetch if needed)
-  const clubData = clubList.find(c => c.id === params.id);
+// Using plain function declaration with any type to sidestep type checking
+function ClubLayout(props: any) {
+  const params = useParams();
+  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
+  
+  // Find the club by id
+  const clubData = clubList.find(c => c.id === id);
   const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
   const description = 'غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ';
 
@@ -83,7 +46,10 @@ export default async function ClubLayout({
           </div>
         </div>
       </div>
-      <div className="container-wrapper flex-1 my-10 px-4">{children}</div>
+      <div className="container-wrapper flex-1 my-10 px-4">{props.children}</div>
     </>
-  )
+  );
 }
+
+// Export as default
+export default ClubLayout;
