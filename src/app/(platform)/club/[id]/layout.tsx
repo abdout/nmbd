@@ -14,14 +14,9 @@ import { ClubNav } from "@/components/platform/club/club-nav"
 import Link from "next/link"
 import { club as clubList } from '@/components/template/club/constant';
 
-type Props = {
-  params: { id: string }
-  children: React.ReactNode
-}
-
 // Define the generateMetadata function with exact Next.js signature
 export async function generateMetadata(
-  { params }: Props
+  { params }: { params: { id: string } }
 ): Promise<Metadata> {
   // Find the club by id for dynamic metadata
   const clubData = clubList.find(c => c.id === params.id);
@@ -53,9 +48,15 @@ export async function generateMetadata(
   }
 }
 
-// Use the same Props type for layout
-export default function ClubLayout({ children, params }: Props) {
-  // Find the club by id
+// Make this an async function like the repository layout
+export default async function ClubLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { id: string };
+}) {
+  // Find the club by id (you can make this an async data fetch if needed)
   const clubData = clubList.find(c => c.id === params.id);
   const title = `أمانة ${clubData ? clubData.label : 'غير معروف'}`;
   const description = 'غنى هاتيك القرى غنى المدائن لحن حب واخاء وتعاون ';
