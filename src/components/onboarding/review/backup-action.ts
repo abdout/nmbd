@@ -163,7 +163,7 @@ export async function fetchUserForLabReview(userId: string): Promise<{ error: st
         applicationStatus: true,
         
         // Personal info
-        description: true,
+        contribute: true,
         bio: true,
         phone: true,
         whatsapp: true,
@@ -267,7 +267,7 @@ export async function fetchUserForLabReview(userId: string): Promise<{ error: st
         image: true,
         cv: true,
         portfolio: true,
-        additionalFile: true,
+        cover: true,
         
         // Skills and Interests
         skills: true,
