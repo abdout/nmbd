@@ -145,7 +145,7 @@ export function DashboardSidebar() {
   ];
 
   return (
-    <aside className="pl-14 h-full w-auto bg-background flex-col items-start hidden md:block">
+    <aside className="pl-4 h-full w-auto bg-background flex-col items-start hidden md:block">
       <div className="sticky top-8 flex flex-col gap-1 items-start w-full">
         {sidebarItems.map((item) => (
           <SidebarItem

@@ -34,7 +34,7 @@ export default async function TwitterProfile() {
   
 
   return (
-    <div className="max-w-2xl mx-auto overflow-hidden">
+    <div className="max-w-2xl mx-20 overflow-hidden">
       {/* Banner */}
       <div className="relative h-48 w-full bg-yellow-400">
         {cover && (
