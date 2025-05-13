@@ -25,6 +25,7 @@ function extractDomainName(url: string): string {
 export default async function TwitterProfile() {
   const attachment = await getAttachment();
   const image = attachment?.image || "/placeholder.svg?height=128&width=128";
+  const cover = attachment?.cover || null;
 
   const { data: userData } = await fetchUserForReview();
   const name = userData?.name || "غير معروف";
@@ -35,7 +36,18 @@ export default async function TwitterProfile() {
   return (
     <div className="max-w-2xl mx-auto overflow-hidden">
       {/* Banner */}
-      <div className="relative h-48 w-full bg-yellow-400"></div>
+      <div className="relative h-48 w-full bg-yellow-400">
+        {cover && (
+          <Image
+            src={cover}
+            alt="Cover image"
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover"
+            quality={100}
+          />
+        )}
+      </div>
 
       {/* Profile Section */}
       <div className="px-5">
