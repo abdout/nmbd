@@ -11,6 +11,7 @@ import { SuccessToast, ErrorToast } from '@/components/atom/toast';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FormProps {
   type: "create" | "update";
@@ -81,13 +82,13 @@ export default function Form({ type, data }: FormProps) {
       <Card>
         <CardContent className="pt-6">
           <Label className="flex items-center gap-2 py-2">
-            المساهمة
+            الدعوة
           </Label>
-          <Input
+          <Textarea
             id="contribute"
             {...register("contribute")}
-            placeholder="اكتب مساهمتك هنا"
-            className="w-full border rounded-md"
+            placeholder="دعوتك شنو؟ عايز تطوع في شنو؟"
+            className="w-full h-28 border rounded-md"
             dir="rtl"
           />
           {errors.contribute && (

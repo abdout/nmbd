@@ -96,30 +96,33 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange, onRoleChange
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
         <Button variant='ghost' className='h-8 w-8 p-0'>
           <span className='sr-only'>Open menu</span>
           <MoreHorizontal className='h-4 w-4' />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent align='end' onClick={(e) => e.stopPropagation()}>
         <DropdownMenuItem asChild>
-          <Link href={`/dashboard/membership/${user.id}`}>
+          <Link href={`/dashboard/membership/${user.id}`} onClick={(e) => e.stopPropagation()}>
             فتح
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger disabled={loading}>
+          <DropdownMenuSubTrigger disabled={loading} onClick={(e) => e.stopPropagation()}>
             <span>الدور</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
-            <DropdownMenuSubContent>
+            <DropdownMenuSubContent onClick={(e) => e.stopPropagation()}>
               {roleOptions.map(option => (
                 <DropdownMenuItem 
                   key={option.value}
                   disabled={loading || user.role === option.value}
-                  onClick={() => handleRoleChange(option.value)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRoleChange(option.value);
+                  }}
                 >
                   {option.label}
                   {user.role === option.value && <span className="ml-2">✓</span>}
@@ -130,13 +133,19 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onStatusChange, onRoleChange
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
-          onClick={handleApprove}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleApprove(e);
+          }}
           disabled={user.applicationStatus === "APPROVED"}
         >
           قبول
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={handleReject}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleReject(e);
+          }}
           disabled={user.applicationStatus === "REJECTED"}
           className="text-red-600"
         >

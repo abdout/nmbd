@@ -106,7 +106,7 @@ const IssueDetail = () => {
   }
 
   return (
-    <div className="container px-8 py-28 min-h-screen">
+    <div className="py-8  min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-[220px,1fr,1fr] gap-16">
         <Sidebar issue={issue} participantAvatars={participantAvatars} />
         <div className="md:col-span-2">

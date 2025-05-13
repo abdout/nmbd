@@ -38,6 +38,7 @@ import { useModal } from "@/components/atom/modal/context"
 import Modal from "@/components/atom/modal/modal"
 import FilterModal from './filter-modal'
 import { Filter } from '@/components/atom/icon'
+import { useRouter } from 'next/navigation'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -68,6 +69,7 @@ export function UserTable<TData, TValue>({
   const [isRoleOpen, setIsRoleOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { modal, openModal, closeModal } = useModal()
+  const router = useRouter()
 
   // Check for mobile screen on mount and when window resizes
   useEffect(() => {
@@ -319,7 +321,25 @@ export function UserTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
+                <TableRow 
+                  key={row.id} 
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={(e) => {
+                    // Don't navigate if clicking on a dropdown or button
+                    if (
+                      e.target instanceof HTMLElement && 
+                      (e.target.closest('button') || e.target.closest('[role="menu"]'))
+                    ) {
+                      return;
+                    }
+                    
+                    const user = row.original as any;
+                    if (user?.id) {
+                      router.push(`/dashboard/membership/${user.id}`);
+                    }
+                  }}
+                >
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
