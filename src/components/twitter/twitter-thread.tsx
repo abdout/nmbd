@@ -7,7 +7,7 @@ export default function TwitterThread() {
         <div className="p-5">
             <div className="">
                 {/* Main tweet */}
-                <div className="flex gap-3 mb-4 w-full">
+                <div className="flex gap-3  w-full">
                     {/* Avatar outside border */}
                     <div className="flex flex-col items-center justify-start">
                         <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center z-20 bg-white relative -mr-6 border-4 border-white">
@@ -44,15 +44,28 @@ export default function TwitterThread() {
                         </div>
                     </div>
                 </div>
+                {/* Label row above the vertical line */}
+               
                 {/* Vertical line with label icon between tweets */}
-                <div className="relative w-full flex flex-col items-start pr-16" style={{ height: '48px' }}>
-                    <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#e1e8ed]" style={{ zIndex: 0 }}></div>
-                    <div className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 border border-[#e1e8ed] flex items-center justify-center">
-                        <svg width="18" height="18" fill="none" stroke="#57606a" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M17 7a5 5 0 01-7.07 7.07l-4-4A5 5 0 0117 7z"/><path d="M6.5 6.5l7 7"/></svg>
+                <div className="relative w-full flex flex-col items-end pl-0 pr-0" style={{ height: '80px' }}>
+                    <div className="absolute right-[68px] top-0 bottom-0 w-0.5 bg-[#e1e8ed]" style={{ zIndex: 0 }}></div>
+                    <div className="absolute right-14 top-1/2 -translate-y-1/2 z-10 flex items-center gap-2">
+                        <span className="bg-muted rounded-full p-1 border border-background flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M20.162 10.926L13.716 4.48a2.5 2.5 0 0 0-1.767-.732h-5.2a3 3 0 0 0-3 3v5.2a2.5 2.5 0 0 0 .731 1.768l6.445 6.446a4 4 0 0 0 5.657 0l1.79-1.79l1.79-1.79a4 4 0 0 0 0-5.657"/><circle cx="7.738" cy="7.738" r="1.277" fill="currentColor" transform="rotate(-45 7.738 7.738)"/></g></svg>
+                        </span>
+                        <div className="flex items-center justify-center gap-2  w-full">
+                    <span className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center">
+                        <Image src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=96&h=96&facepad=2" alt="Avatar" width={24} height={24} className="object-cover w-4 h-4 rounded-full" />
+                    </span>
+                    <span className="font-mdeium text-sm">محمد علي</span>
+                    <span className="text-xs text-[#888]">اضافة</span>
+                    <span className="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">area: request</span>
+                    <span className="text-xs text-[#888]">الاسبوع الفات</span>
+                </div>
                     </div>
                 </div>
                 {/* Reply tweet */}
-                <div className="flex gap-3 mt-6 ml-8 w-full">
+                <div className="flex gap-3   w-full">
                     {/* Avatar outside border for reply */}
                     <div className="flex flex-col items-center justify-start">
                         <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center z-20 bg-white relative -mr-6 border-4 border-white">
