@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { NotificationIcon } from '@/components/notifications/NotificationIcon';
+import { useCurrentRole } from '@/components/auth/hooks/use-current-role';
 
 // Custom SVG icons as React components
 const HomeIcon = ({ className }: { className?: string }) => (
@@ -108,6 +109,7 @@ const SidebarItem = ({ href, icon, label, active }: SidebarItemProps) => {
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const userRole = useCurrentRole();
   
   const sidebarItems = [
     {
@@ -130,11 +132,11 @@ export function DashboardSidebar() {
       icon: <UserIcon className="h-5 w-5" />,
       label: 'الملف'
     },
-    {
+    ...(userRole === "ADMIN" ? [{
       href: '/dashboard/membership',
       icon: <MembershipIcon className="h-5 w-5" />,
       label: 'العضوية'
-    },
+    }] : []),
     {
       href: '/dashboard/settings',
       icon: <SettingsIcon className="h-[18px] w-[18px]" />,
