@@ -63,7 +63,7 @@ export default function IssueThread() {
                     <div className="absolute right-[68px] top-0 bottom-0 w-0.5 bg-[#e1e8ed] md:block hidden" style={{ zIndex: 0 }}></div>
                     <div className="absolute md:right-14 right-2 top-1/2 -translate-y-1/2 z-10 flex items-center gap-2">
                         <span className="bg-muted rounded-full p-1 border border-background flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M20.162 10.926L13.716 4.48a2.5 2.5 0 0 0-1.767-.732h-5.2a3 3 0 0 0-3 3v5.2a2.5 2.5 0 0 0 .731 1.768l6.445 6.446a4 4 0 0 0 5.657 0l1.79-1.79l1.79-1.79a4 4 0 0 0 0-5.657"/><circle cx="7.738" cy="7.738" r="1.277" fill="currentColor" transform="rotate(-45 7.738 7.738)"/></g></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M20.162 10.926L13.716 4.48a2.5 2.5 0 0 0-1.767-.732h-5.2a3 3 0 0 0-3 3v5.2a2.5 2.5 0 0 0 .731 1.768l6.445 6.446a4 4 0 0 0 5.657 0l1.79-1.79l1.79-1.79a4 4 0 0 0 0-5.657"/><circle cx="7.738" cy="7.738" r="1.277" fill="currentColor" transform="rotate(-45 7.738 7.738)"/></g></svg>
                         </span>
                         <div className="flex items-center justify-center gap-2 w-full">
                             <span className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center">
@@ -126,7 +126,7 @@ export default function IssueThread() {
                 {/* File upload and info row (GitHub style, Arabic, with button) */}
 
                 <div className="flex items-center gap-2 mt-6 md:pr-12 pr-2 text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 48 48"><circle cx="24" cy="34.748" r=".75" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M23.975 30.275V12.502" stroke-width="2"/><circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 48 48"><circle cx="24" cy="34.748" r=".75" fill="currentColor"/><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M23.975 30.275V12.502" strokeWidth="2"/><circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"/></svg>
                     <span>تذكر، يجب أن تتبع المساهمات في هذا المستودع     
                          <span> </span> 
                         <Link href="#" className="text-blue-600 underline">إرشادات المساهمة</Link> 

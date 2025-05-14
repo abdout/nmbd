@@ -12,6 +12,7 @@ import { Icon } from "@iconify/react";
 import Indicator from "@/components/atom/modal/indicator";
 import { createRepository, updateRepository } from "./action";
 import { SuccessToast, ErrorToast } from '@/components/atom/toast';
+import { Repository } from './type';
 
 export type StatusType = "pending" | "stuck" | "in_progress" | "done";
 
@@ -100,7 +101,7 @@ const RepositoryForm: React.FC<Props> = ({ onClose, repositoryToEdit }) => {
   }, [repositoryToEdit]);
 
   // Determine if we are editing
-  const isEdit = Boolean(repositoryToEdit && repositoryToEdit.id);
+  const isEdit = Boolean(repositoryToEdit?.id);
 
   const handleSubmit = async (data: FormData) => {
     try {
@@ -110,7 +111,7 @@ const RepositoryForm: React.FC<Props> = ({ onClose, repositoryToEdit }) => {
         club: selectedClub?.value || data.club,
       };
       let result;
-      if (isEdit) {
+      if (repositoryToEdit?.id) {
         result = await updateRepository(repositoryToEdit.id, formData);
       } else {
         result = await createRepository(formData);

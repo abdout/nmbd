@@ -1,4 +1,5 @@
 export interface Repository {
+  id?: string;
   _id?: string;
   title: string;
   desc: string;

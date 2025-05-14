@@ -2,7 +2,7 @@
 // import Footer from "@/components/template/footer/footer"
 import "../globals.css";
 import { PlatformHeader } from "@/components/template/header-latest/platform-header"
-import { MemberProvider } from "@/components/platform/member/context";
+// import { MemberProvider } from "@/components/platform/member/context";
 import { UploadProvider } from "@/components/upload/context";
 
 import { usePathname } from 'next/navigation';
@@ -35,9 +35,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
        
           
             <UploadProvider>
-              <MemberProvider>
+              {/* <MemberProvider> */}
                 {children}
-              </MemberProvider>
+              {/* </MemberProvider> */}
             </UploadProvider>
          
         
