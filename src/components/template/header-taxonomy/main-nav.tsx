@@ -29,7 +29,7 @@ export function MainNav({ items, children }: MainNavProps) {
     <div className="flex gap-6 md:gap-10 antialiased font-sans">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
         {/* <Icons.logo /> */}
-        <div className="w-[18px] h-[18px] bg-yellow-400 rounded-full flex items-center justify-center ml-2"/>
+        <div className="w-[16px] h-[16px] bg-yellow-400 rounded-full flex items-center justify-center ml-2"/>
         <span className="hidden font-bold text-[16px] sm:inline-block">
           {siteConfig.name}
         </span>

@@ -7,7 +7,7 @@ export default function IssueHeader({ issue }: IssueHeaderProps) {
     <>
       <h2 className="font-heading">{issue.issue}</h2>
       {issue.desc && (
-        <p className="w-[80%] text-muted-foreground text-lg">{issue.desc}</p>
+        <p className="md:w-[80%] text-muted-foreground text-lg">{issue.desc}</p>
       )}
     </>
   );

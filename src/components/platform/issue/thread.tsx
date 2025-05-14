@@ -6,13 +6,13 @@ import CommentSection from "./comment"
 
 export default function IssueThread() {
     return (
-        <div className="p-5">
+        <div className="md:p-5">
             <div className="">
                 {/* Main tweet */}
                 <div className="flex gap-3 w-full">
                     {/* Avatar outside border - visible on medium screens and up */}
                     <div className="hidden md:flex flex-col items-center justify-start">
-                        <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center z-20 bg-white relative -mr-6 border-4 border-white">
+                        <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center z-20 relative -mr-6 border-4">
                             <Image
                                 src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=96&h=96&facepad=2"
                                 alt="Avatar"
