@@ -1,17 +1,27 @@
 export interface Repository {
-  id?: string;
-  _id?: string;
+  id: string;
   title: string;
   desc: string;
   club: string;
   status: string;
   readme: string;
   roadmap: string;
-  issue: string;
   contributor: string;
   material: string;
   chat: string;
-  updatedAt: string;
+  issues: Array<{
+    id: string;
+    repositoryId: string | null;
+    label: string | null;
+    desc: string | null;
+    club: string | null;
+    status: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    remark: string | null;
+  }>;
+  updatedAt: string | Date;
+  createdAt?: Date;
 }
 
 export interface RepositoryContextProps {

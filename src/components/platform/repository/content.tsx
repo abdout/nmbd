@@ -9,6 +9,7 @@ import RepositoryForm from "@/components/platform/repository/form";
 import { getRepositories, deleteRepository } from "./action";
 import { SuccessToast, ErrorToast, DeleteToast } from "@/components/atom/toast";
 import Loading from "@/components/atom/loading";
+import { Repository } from './type';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,20 +20,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-
-interface Repository {
-  id: string;
-  title: string;
-  desc: string;
-  club: string;
-  status: string;
-  readme: string;
-  roadmap: string;
-  contributor: string;
-  material: string;
-  chat: string;
-  issues: any[];
-}
 
 const RepositoryContent: React.FC = () => {
     const { modal, openModal, closeModal } = useModal();
@@ -48,7 +35,12 @@ const RepositoryContent: React.FC = () => {
         setIsLoading(true);
         const result = await getRepositories();
         if (result.repositories) {
-          setRepositories(result.repositories);
+          // Transform the data to match Repository type
+          const transformedRepositories = result.repositories.map(repo => ({
+            ...repo,
+            updatedAt: repo.updatedAt instanceof Date ? repo.updatedAt : new Date(repo.updatedAt)
+          }));
+          setRepositories(transformedRepositories);
         }
       } catch (error) {
         ErrorToast("Failed to fetch repositories");
@@ -77,7 +69,7 @@ const RepositoryContent: React.FC = () => {
         fetchRepositories();
     };
 
-    const confirmDelete = (repositoryId: string | null, e: React.MouseEvent) => {
+    const confirmDelete = (repositoryId: string, e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setRepositoryToDelete(repositoryId);
@@ -111,7 +103,7 @@ const RepositoryContent: React.FC = () => {
         handleCloseContextMenu();
     };
 
-    const repositoryToEdit = editingRepositoryId ? repositories.find(repo => repo.id === editingRepositoryId) : null;
+    const repositoryToEdit = editingRepositoryId ? repositories.find(repo => repo.id === editingRepositoryId) || null : null;
 
     if (isLoading) {
         return <Loading />;
@@ -119,7 +111,7 @@ const RepositoryContent: React.FC = () => {
 
     return (
         <>
-            {modal.open && <Modal content={<RepositoryForm onClose={handleCloseModal} repositoryToEdit={repositoryToEdit} />} />}
+            {modal.open && <Modal content={<RepositoryForm onClose={handleCloseModal} repositoryToEdit={repositoryToEdit || undefined} />} />}
             
             <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
                 <AlertDialogContent>
@@ -168,14 +160,14 @@ const RepositoryContent: React.FC = () => {
                                 onMouseLeave={handleCloseContextMenu}
                             >
                                 <button 
-                                    onClick={(e) => confirmDelete(repository.id, e)}
+                                    onClick={(e) => repository.id && confirmDelete(repository.id, e)}
                                     disabled={isLoading}
                                     className="z-10"
                                 >
                                     <Icon icon="ant-design:delete-filled" width={40} />
                                 </button>
                                 <button 
-                                    onClick={(e) => handleEditRepository(repository.id, e)} 
+                                    onClick={(e) => repository.id && handleEditRepository(repository.id, e)} 
                                     className="flex gap-4 z-10"
                                     disabled={isLoading}
                                 >
