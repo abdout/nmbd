@@ -34,7 +34,7 @@ export default async function TwitterProfile() {
   
 
   return (
-    <div className="max-w-2xl mx-20 overflow-hidden">
+    <div className="md:max-w-2xl md:mx-20 overflow-hidden">
       {/* Banner */}
       <div className="relative h-48 w-full bg-yellow-400">
         {cover && (
@@ -53,7 +53,7 @@ export default async function TwitterProfile() {
       <div className="px-5">
         {/* Profile Picture and Edit Button */}
         <div className="flex justify-between items-start">
-          <div className="relative -mt-16 h-32 w-32 overflow-hidden">
+          <div className="relative -mt-16 md:h-32 md:w-32 h-24 w-24 overflow-hidden">
             <div className="relative h-full w-full border-4 border-background rounded-full overflow-hidden">
               <Image
                 src={image}
