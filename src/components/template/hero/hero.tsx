@@ -56,7 +56,7 @@ const MobileHero = () => {
           المجتمع أولاً
         </Link>
         <h1 className="font-heading text-4xl leading-tight">
-          الحركة الوطنية<br /> للبنـاء والتنميــة
+          الحركة الوطنية<br /> للبنـاء والتنميـة
         </h1>
         <p className="leading-normal text-muted-foreground px-4">
           هي حركة إصلاح اجتماعي وسياسي شامل،
