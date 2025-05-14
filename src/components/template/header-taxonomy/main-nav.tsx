@@ -58,7 +58,7 @@ export function MainNav({ items, children }: MainNavProps) {
         onClick={() => setShowMobileMenu(!showMobileMenu)}
       >
         {showMobileMenu ? 
-          <div className="ml-2"><Icons.close /></div> : <div className="w-6 h-6 bg-yellow-400 rounded-full ml-2"/>}
+          <div className="ml-2 items-center"><Icons.close /></div> : <div className="w-5 h-5 bg-yellow-400 rounded-full ml-2"/>}
         <span className="font-bold text-lg">القائمة</span>
       </button>
       {showMobileMenu && items && (
