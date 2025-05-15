@@ -36,7 +36,7 @@ export default async function TwitterProfile() {
   return (
     <div className="md:max-w-2xl md:mx-20 overflow-hidden">
       {/* Banner */}
-      <div className="relative h-48 w-full bg-yellow-400">
+      <div className="relative md:h-48 h-32 w-full bg-yellow-400">
         {cover && (
           <Image
             src={cover}
@@ -50,11 +50,11 @@ export default async function TwitterProfile() {
       </div>
 
       {/* Profile Section */}
-      <div className="px-5">
+      <div className="md:px-5 px-3">
         {/* Profile Picture and Edit Button */}
         <div className="flex justify-between items-start">
-          <div className="relative -mt-16 md:h-32 md:w-32 h-24 w-24 overflow-hidden">
-            <div className="relative h-full w-full border-4 border-background rounded-full overflow-hidden">
+          <div className="relative -mt-12 md:-mt-16 md:h-32 md:w-32 h-24 w-24 overflow-hidden">
+            <div className="relative h-full w-full md:border-4 border-[3px] border-background rounded-full overflow-hidden">
               <Image
                 src={image}
                 alt="Profile picture"
@@ -66,17 +66,17 @@ export default async function TwitterProfile() {
             </div>
           </div>
           <Link href="/dashboard/profile/edit">
-            <Button variant="outline" size='sm' className="mt-4 rounded-full border border-primary">
+            <Button variant="outline" size='sm' className="md:mt-4 mt-3 rounded-full border border-primary">
               تعديل
             </Button>
           </Link>
         </div>
 
         {/* Profile Info */}
-        <div className="mt-3 space-y-1 pr-2">
+        <div className="md:mt-3 mt-2 space-y-1 md:pr-2">
           <h1 className="text-xl font-bold">{name}</h1>
           <p className="text-[#5b7083]">@abdout</p>
-          <p className="text-[#0f1419] py-2">{occupation}</p>
+          <p className="py-2">{occupation}</p>
 
           <div className="flex flex-wrap gap-x-4 text-[#5b7083] text-sm">
             <div className="flex items-center gap-1">
@@ -117,7 +117,7 @@ export default async function TwitterProfile() {
 
       {/* Navigation Tabs */}
       <div className="mt-3 relative">
-        <Tabs dir="rtl" defaultValue="about" className="w-full">
+        <Tabs dir="rtl" defaultValue="about" className="-mx-3 md:mx-1">
           <div className="relative">
             <TabsList className="flex w-full h-auto bg-transparent border-0 p-0 shadow-none relative z-10">
               <TabsTrigger 
@@ -150,7 +150,7 @@ export default async function TwitterProfile() {
             <div className="h-[1px] bg-border w-screen absolute bottom-0 left-1/2 right-1/2 -mx-[50vw]"></div>
           </div>
           
-          <TabsContent value="about">
+          <TabsContent value="about" className="">
             <About userData={userData as AboutUserData} />
           </TabsContent>
           
