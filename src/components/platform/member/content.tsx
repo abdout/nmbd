@@ -39,6 +39,7 @@ import MemberChart from './chart'
 import { Icon } from '@iconify/react'
 import { useModal } from "@/components/atom/modal/context"
 import Modal from "@/components/atom/modal/modal"
+import { Filter } from '@/components/atom/icon'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -220,14 +221,24 @@ export function Content<TData, TValue>({ columns, data }: DataTableProps<TData, 
 
         {/* Mobile filter trigger */}
         {isMobile && (
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="md:hidden"
-            onClick={() => openModal('filter')}
-          >
-            <Icon icon='mdi:filter' width={24} />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="rounded-full"
+              onClick={() => openModal('filter')}
+            >
+              <Filter className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => openModal('chart')}
+            >
+              <Icon icon='mdi:analytics' width={20} height={20} />
+            </Button>
+          </div>
         )}
 
         {/* Desktop filters */}

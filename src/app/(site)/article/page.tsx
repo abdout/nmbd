@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Head from '@/components/atom/site-heading';
+import SiteHeading from '@/components/atom/site-heading';
 import { getAllArticles, deleteArticle } from '@/components/article/action';
 import { articles as staticArticles } from '@/components/template/article/constant';
 import ArticleHoverEffect from '@/components/atom/card-article';
@@ -168,15 +168,16 @@ export default function AllArticlesPage() {
   }
 
   return (
-    <div className="container">
-      <Head 
+    <div className="">
+      <div className="pr-2">
+      <SiteHeading 
         title="المقالات" 
         description="" 
         align="start"
       />
-      
+      </div>
       <div className="max-w-5xl mx-auto -mt-14">
-        <div className="flex justify-between items-center mt-6 ">
+        <div className="flex justify-between items-center md:mt-6 mt-10">
           {session && session.user?.role === "CONTENT" && (
             <Button variant='outline' onClick={() => {
               setEditingArticleId(null);

@@ -51,7 +51,7 @@ export function ChartTotal() {
     };
 
     return (
-        <Card className="flex flex-col">
+        <Card className="flex flex-col md:px-0 px-8">
             <CardContent className="w-60 h-60">
                 <ChartContainer
                     config={chartConfig}

@@ -160,10 +160,10 @@ export function UserTable<TData, TValue>({
           <Button 
             variant="outline" 
             size="icon"
-            className="md:hidden"
+            className="md:hidden rounded-full"
             onClick={() => openModal('filter')}
           >
-            <Filter className="size-4" />
+            <Filter className=" " />
           </Button>
         )}
         

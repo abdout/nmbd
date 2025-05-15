@@ -115,15 +115,39 @@ export const columns: ColumnDef<member>[] = [
   },
   {
     accessorKey: 'rank',
-    header: () => <div className="text-right">التخصص</div>    
+    header: () => <div className="text-right">التخصص</div>,
+    cell: ({ row }) => {
+      const rank = row.getValue('rank');
+      return (
+        <div className="text-right">
+          {rank ? String(rank) : 'لا يوجد'}
+        </div>
+      );
+    }
   },
   {
     accessorKey: 'skill',
-    header: () => <div className="text-right">المهارة</div>,    
+    header: () => <div className="text-right">المهارة</div>,
+    cell: ({ row }) => {
+      const skill = row.getValue('skill');
+      return (
+        <div className="text-right">
+          {skill ? String(skill) : 'لا توجد'}
+        </div>
+      );
+    }
   },
   {
     accessorKey: 'interest',
-    header: () => <div className="text-right">الاهتمام</div>,    
+    header: () => <div className="text-right">الاهتمام</div>,
+    cell: ({ row }) => {
+      const interest = row.getValue('interest');
+      return (
+        <div className="text-right">
+          {interest ? String(interest) : 'لا يوجد'}
+        </div>
+      );
+    }
   },
   {
     accessorKey: 'dob',

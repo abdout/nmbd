@@ -13,7 +13,7 @@ interface MemberChartProps {
 const MemberChart: React.FC<MemberChartProps> = () => {
   return (
     <div className='flex flex-col -mt-6'>
-      <div className='flex '>
+      <div className='flex flex-col md:flex-row gap-2'>
         <ChartRank />
         <ChartTotal />
         <ChartActive />

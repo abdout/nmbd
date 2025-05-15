@@ -77,14 +77,14 @@ export async function notifyOnboardingSubmission(
       if (process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID) {
         await sendTelegramNotification({
           chatId: process.env.MEMBERSHIP_SECRETARY_TELEGRAM_CHAT_ID,
-          message: `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\nرقم الهاتف: ${applicantPhone || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+          message: `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\nرقم الهاتف: ${applicantPhone || 'غير متوفر'}\n\nيرجي مراجعة الطلب من هنا:\nnmbdsd.org/dashboard/membership`,
         });
       }
       
       // Send to a channel if defined
       if (process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL) {
         await sendChannelNotification(
-          `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\n\nيرجى مراجعة الطلب في لوحة التحكم.`,
+          `<b>طلب عضوية جديد</b>\n\nالاسم: ${applicantName}\nالبريد الإلكتروني: ${applicantEmail || 'غير متوفر'}\n\nيرجي مراجعة الطلب من هنا:\nnmbdsd.org/dashboard/membership`,
           process.env.MEMBERSHIP_NOTIFICATIONS_CHANNEL
         );
       }

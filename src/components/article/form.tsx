@@ -167,7 +167,7 @@ export default function ArticleForm({
   return (
     <form 
       onSubmit={form.handleSubmit(handleSubmit)} 
-      className="space-y-8 text-right rtl"
+      className="space-y-8 text-right"
       dir="rtl"
       style={{ direction: "rtl" }}
     >
