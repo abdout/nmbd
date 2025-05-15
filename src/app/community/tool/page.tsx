@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const Tool = () => {
   return (
-    <div className="-mx-8" dir="ltr">
+    <div className="-mx-8 py-10" dir="ltr">
       <div className="flex items-center gap-4">
         <Image src="/x/magic.png" width={50} height={50} alt="tool" />
 

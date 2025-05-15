@@ -51,7 +51,7 @@ const MobileHero = () => {
         <Link
           href='/community'
           className="rounded-2xl bg-muted px-4 py-1.5 text-sm font-medium -mt-28"
-          target="_blank"
+          // target="_blank"
         >
           المجتمع أولاً
         </Link>
