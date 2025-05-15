@@ -53,7 +53,7 @@ const mobileFooterLinks = [
 const DesktopFooter = () => {
   return (
     <div className="hidden md:block">
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-20 gap-y-10 md:gap-48">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-20 gap-y-10 md:gap-44 pr-12">
         {desktopFooterSections.map((section, index) => (
           <div key={index} className="w-full text-right">
             <h3 className="text-lg font-bold text-black dark:text-neutral-100">
@@ -108,7 +108,7 @@ const Footer = () => {
         <MobileFooter />
         
         <hr className="my-4 md:my-6 border-gray-200 dark:border-neutral-800" />
-        <div className="flex gap-8 pr-3 md:pr-0 items-center justify-start text-gray-500 dark:text-neutral-400">
+        <div className="flex gap-8 pr-3 md:pr-12 items-center justify-start text-gray-500 dark:text-neutral-400">
           <p>السودان</p>
           <p>العربية</p>
         </div>
