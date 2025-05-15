@@ -6,8 +6,8 @@ import Image from "next/image";
 const Tool = () => {
   return (
     <div className="-mx-8 py-10" dir="ltr">
-      <div className="flex items-center gap-4">
-        <Image src="/x/magic.png" width={50} height={50} alt="tool" />
+      <div className="flex gap-4">
+        <Image src="/community/harry-potter.png" width={100} height={100} alt="tool" />
 
       <p className="text-[11.5px] tracking-wide font-light md:text-lg md:pt-3">
         The most magical part of the Harry Potter books, <br/> is that they eventually
